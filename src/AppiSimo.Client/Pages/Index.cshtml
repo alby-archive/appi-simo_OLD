@@ -1,0 +1,9 @@
+﻿@page "/"
+@inherits AppiSimo.Client.Components.IndexComponent
+
+<ul>
+    @foreach (var user in Users)
+    {
+        <li>@user.Name @user.Surname</li>
+    }
+</ul>

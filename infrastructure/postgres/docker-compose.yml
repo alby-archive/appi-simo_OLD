@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+    appi_simo:
+        image: postgres:10.2
+        environment:
+            - POSTGRES_USER=SamuraiTeam
+            - POSTGRES_PASSWORD=SamuraiTeam
+            - POSTGRES_DB=KingRoger_DEV
+        ports:
+            - 5432:5432
+        volumes:
+            - ./data/appi_simo:/var/lib/postgresql
