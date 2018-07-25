@@ -1,9 +1,24 @@
 ﻿@page "/"
+@using AppiSimo.Shared.Model
 @inherits AppiSimo.Client.Components.IndexComponent
 
-<ul>
+<table>
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Cognome</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
     @foreach (var user in Users)
     {
-        <li>@user.Name @user.Surname</li>
-    }
-</ul>
+        <tr>
+            <td>@user.Name</td>
+            <td>@user.Surname</td>
+            <td><a class="btn btn-outline-dark" href=@($"user/{@user.Id}")>Modifica</a></td>
+        </tr>
+    }                                                                             
+    </tbody>
+    
+</table>
