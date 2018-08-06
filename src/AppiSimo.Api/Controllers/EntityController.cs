@@ -1,15 +1,13 @@
 ﻿﻿namespace AppiSimo.Api.Controllers
 {
     using System;
-    using System.Collections.Generic;
-    using System.Net;
     using System.Threading.Tasks;
     using Data;
+    using Microsoft.AspNet.OData;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using Shared.Abstract;
 
-    public class EntityController<TEntity> : DefaultController
+    public class EntityController<TEntity> : ODataController
         where TEntity : class, IEntity, new()
     {
         readonly KingRogerContext _context;
@@ -19,79 +17,44 @@
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TEntity>>> Get() => await _context.Set<TEntity>().ToListAsync();
+        [EnableQuery][HttpGet]
+        public virtual IActionResult Get() => Ok(_context.Set<TEntity>());
 
-        [HttpGet]
-        [Route("{id}")]
-        public virtual async Task<ActionResult<TEntity>> Get(Guid id)
+        [EnableQuery][HttpGet("{key}")]
+        public virtual async Task<IActionResult> Get(Guid key) => Ok(await _context.Set<TEntity>().FindAsync(key));
+
+        [EnableQuery][HttpPost]
+        public virtual async Task<IActionResult> Post([FromBody]TEntity entity)
         {
-            TEntity entity;
+            var result = await _context.Set<TEntity>().AddAsync(entity);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                entity = await _context.FindAsync<TEntity>(id);
-            }
-            catch
-            {
-                return new TEntity();
-            }
+            return Created(result.Entity);
+        }
+
+        [EnableQuery][HttpPut("{key}")]
+        public virtual async Task<IActionResult> Put(Guid key, [FromBody]TEntity entity)
+        {
+            entity.Id = key;
+
+            var result = _context.Set<TEntity>().Update(entity);            
+            await _context.SaveChangesAsync();
             
-            return entity;
+            return Ok(result.Entity);
         }
-
-        [HttpPost]
-        public async Task<HttpStatusCode> Post([FromBody] TEntity entity)
-        {
-            try
-            {
-                await _context.AddAsync(entity);
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                return HttpStatusCode.InternalServerError;
-            }
-
-            return HttpStatusCode.Created;
-        }
-
-        [HttpPut]
-        public async Task<HttpStatusCode> Put(TEntity entity)
-        {
-            try
-            {
-                _context.Set<TEntity>().Update(entity);
-               
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                return HttpStatusCode.InternalServerError;
-            }
-
-            return HttpStatusCode.OK;
-        }
-
-        [HttpDelete("{id}")]
-        public virtual async Task<HttpStatusCode> Delete(Guid id)
+        
+        [EnableQuery][HttpDelete("{key}")]
+        public async Task<IActionResult> Delete(Guid key)
         {
             var entity = new TEntity
             {
-                Id = id
+                Id = key
             };
+            
+            var result = _context.Set<TEntity>().Remove(entity);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                _context.Set<TEntity>().Remove(entity);
-                await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                return HttpStatusCode.InternalServerError;
-            }
-
-            return HttpStatusCode.OK;
+            return Ok(result.Entity);
         }
     }
 }
