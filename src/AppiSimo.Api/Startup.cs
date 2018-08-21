@@ -37,6 +37,10 @@
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            // Shows UseCors with CorsPolicyBuilder.
+            app.UseCors(builder =>
+                builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -46,9 +50,7 @@
                 app.UseHsts();
             }
 
-            // Shows UseCors with CorsPolicyBuilder.
-            app.UseCors(builder =>
-                builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            
 
             // app.UseHttpsRedirection();
             app.UseMvc(b =>
