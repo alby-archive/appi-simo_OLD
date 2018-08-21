@@ -3,18 +3,21 @@
     using System;
     using System.Net.Http;
     using AppiSimo.Shared.Model;
+    using Microsoft.OData.Client;
 
     public class AppiSimoClient
     {
         public readonly HttpClient _client;
-        readonly Uri _baseUri;
+        readonly DataServiceContext _context;
 
         public AppiSimoClient(HttpClient client, Uri baseUri)
         {
             _client = client;
-            _baseUri = baseUri;
+            _client.BaseAddress = baseUri;
+            
+            _context = new DataServiceContext(baseUri);
         }
         
-        public EndPoint<User> Users => new EndPoint<User>(_baseUri, "users");
+        public EndPoint<User> Users => new EndPoint<User>(_context, "users", _client);
     }
 }

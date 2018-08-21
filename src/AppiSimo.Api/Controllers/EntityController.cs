@@ -5,7 +5,7 @@
     using Data;
     using Microsoft.AspNet.OData;
     using Microsoft.AspNetCore.Mvc;
-    using Shared.Abstract;
+    using AppiSimo.Shared.Abstract;
 
     public class EntityController<TEntity> : ODataController
         where TEntity : class, IEntity, new()

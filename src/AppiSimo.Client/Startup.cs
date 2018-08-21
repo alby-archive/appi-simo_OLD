@@ -10,7 +10,7 @@ namespace AppiSimo.Client
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(provider => new AppiSimoClient(provider.GetRequiredService<HttpClient>(), new Uri("http://localhost:5002/odata")));
+            services.AddSingleton(provider => new AppiSimoClient(provider.GetRequiredService<HttpClient>(), new Uri("http://localhost:5002/odata/")));
         }
 
         public void Configure(IBlazorApplicationBuilder app)
