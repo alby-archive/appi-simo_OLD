@@ -1,10 +1,6 @@
 ﻿namespace AppiSimo.Client.Clients
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Linq.Expressions;
     using System.Net.Http;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Blazor;
@@ -15,26 +11,19 @@
         where TEntity : class, IEntity, new()
     {
         readonly HttpClient _client;
+
         readonly DataServiceContext _context;
         readonly string _resourceUri;
-        readonly DataServiceQuery<TEntity> _queryable;
 
-        public EndPoint(DataServiceContext context, string resourceUri, HttpClient client)
+        public EndPoint(DataServiceContext context, HttpClient client, string resourceUri)
         {
             _context = context;
-            _resourceUri = resourceUri;
-            
-            _queryable = context.CreateQuery<TEntity>(_resourceUri);
-
             _client = client;
+
+            _resourceUri = resourceUri;
         }
 
-        public Type ElementType => _queryable.ElementType;
-        public Expression Expression => _queryable.Expression;
-        public IQueryProvider Provider => _queryable.Provider;
-
-        public IEnumerator<TEntity> GetEnumerator() => throw new NotSupportedException();
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public DataServiceQuery<TEntity> Entities => _context.CreateQuery<TEntity>(_resourceUri);
 
         public async Task Save(TEntity entity)
         {

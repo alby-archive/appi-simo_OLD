@@ -1,16 +1,14 @@
-﻿namespace AppiSimo.Client.Components
+﻿namespace AppiSimo.Client.Pages.UserDetail
 {
     using System;
     using System.Linq;
-    using System.Net;
-    using System.Net.Http;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Blazor.Components;
-    using AppiSimo.Shared.Model;
     using Clients;
+    using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
+    using AppiSimo.Shared.Model;
 
-    public class UserComponent : BlazorComponent
+    public class UserDetailComponent : BlazorComponent
     {
         [Parameter]
         string Id { get; set; }   
@@ -26,7 +24,7 @@
         protected override async Task OnInitAsync()
         {
             if ((Id != null) & Guid.TryParse(Id, out var id))
-                User = (await Client.Users.Where(u => u.Id == id).ToListAsync(Client._client)).FirstOrDefault();
+                User = (await Client.Users.Entities.Where(u => u.Id == id).ToListAsync(Client.Client)).Value.FirstOrDefault();
         }
 
         protected async Task Submit()

@@ -1,5 +1,6 @@
 ﻿@page "/"
-@inherits AppiSimo.Client.Components.IndexComponent
+
+@inherits AppiSimo.Client.Pages.IndexComponent
 
 <div class="row">
     <div class="table-responsive">
@@ -9,7 +10,9 @@
             <tr>
                 <th>Nome</th>
                 <th>Cognome</th>
-                <th><a class="btn btn-block btn-outline-primary" href="/user">Nuovo</a></th>
+                <th>
+                    <a class="btn btn-block btn-outline-primary" href="/user">Nuovo</a>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -23,9 +26,11 @@
                     </td>
                 </tr>
             }
-            
+
             </tbody>
         </table>
-        
     </div>
+</div>
+<div class="row">
+    <Pager TotalItems="@TotalItems" PageSize="@PageSize" CurrentPage="@CurrentPage" CurrentPageChanged="@PagerFiredEvent"/>
 </div>

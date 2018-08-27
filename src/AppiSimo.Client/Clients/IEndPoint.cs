@@ -1,11 +1,12 @@
 ﻿namespace AppiSimo.Client.Clients
 {
     using System;
-    using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.OData.Client;
 
-    public interface IEndPoint<T> : IQueryable<T>
+    public interface IEndPoint<T>
     {
+        DataServiceQuery<T> Entities { get; }
         Task Save(T entity);
         Task Remove(Guid id);
     }

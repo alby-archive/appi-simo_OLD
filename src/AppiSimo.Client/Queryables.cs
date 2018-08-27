@@ -8,9 +8,8 @@ namespace AppiSimo.Client
     using System.Reflection;
     using System.Runtime.ExceptionServices;
     using System.Threading.Tasks;
-    using Microsoft.AspNetCore.Blazor;
     using Microsoft.OData.Client;
-
+    using Newtonsoft.Json;
         
 
     public static class Queryables
@@ -51,20 +50,22 @@ namespace AppiSimo.Client
             }
         }
 
-        class ODataResult<T>
+        public class ODataResult<T>
         {
             public T Value { get; set; }
+            
+            [JsonProperty("@odata.count")]
+            public int Count { get; set; }
         }
         
-        public static async Task<List<T>> ToListAsync<T>(this IQueryable<T> source, HttpClient http)
+        public static async Task<ODataResult<List<T>>> ToListAsync<T>(this IQueryable<T> source, HttpClient http)
         {
             var provider = (DataServiceQueryProvider) source.Provider;
             var expression = source.Expression;
 
             var uri = toUri(provider, expression);
 
-            var result = await http.GetJsonAsync<ODataResult<List<T>>>(uri.AbsoluteUri);
-            return result.Value;
+            return JsonConvert.DeserializeObject<ODataResult<List<T>>>(await http.GetStringAsync(uri.AbsoluteUri));
         }
     }
 }
