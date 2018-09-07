@@ -15,8 +15,11 @@
         [Inject]
         AppiSimoClient Client { get; set; }
 
-        protected BaseRxService<Pager> PagerService { get; set; } = new PagerService();
-        protected BaseRxService<Searcher> SearcherService { get; set; } = new SearcherService();
+        [Inject]
+        protected BaseRxService<Pager> PagerService { get; set; }
+        
+        [Inject]
+        protected BaseRxService<Searcher> SearcherService { get; set; }
 
         protected int TotalItems { get; private set; }
         protected IEnumerable<User> Users { get; private set; } = new List<User>();
@@ -29,14 +32,12 @@
 
         async Task GetUsers()
         {
-            var pager = PagerService.Value;
-
             var response = await Client.Users.Entities
                 .IncludeTotalCount()
                 .Where(user => user.Surname.Contains(SearcherService.Value.Filter))
                 .OrderBy(user => user.Name)
-                .Skip(pager.CurrentPage * pager.PageSize)
-                .Take(pager.PageSize)
+                .Skip(PagerService.Value.CurrentPage * PagerService.Value.PageSize)
+                .Take(PagerService.Value.PageSize)
                 .ToListAsync(Client.Client);
 
             Users = response.Value;
