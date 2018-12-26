@@ -67,7 +67,8 @@
 
             builder.EnableLowerCamelCase();
 
-            builder.EntitySet<User>("Users");
+            builder.EntitySet<User>("Users");            
+            builder.EntitySet<Event>("Events");
             
             return builder.GetEdmModel();
         }

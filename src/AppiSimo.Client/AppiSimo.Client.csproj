@@ -19,4 +19,12 @@
   <ItemGroup>
     <ProjectReference Include="..\AppiSimo.Shared\AppiSimo.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include=".\Environment\config.dev.json" Condition="'$(Configuration)' == 'Debug'">
+      <LogicalName>config.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include=".\Environment\config.prod.json" Condition="'$(Configuration)' == 'Release'">
+      <LogicalName>config.json</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

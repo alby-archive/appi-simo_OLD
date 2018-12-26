@@ -3,9 +3,9 @@
     using System;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using AppiSimo.Shared.Abstract;
     using Microsoft.AspNetCore.Blazor;
     using Microsoft.OData.Client;
-    using AppiSimo.Shared.Abstract;
 
     public class EndPoint<TEntity> : IEndPoint<TEntity>
         where TEntity : class, IEntity, new()

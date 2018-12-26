@@ -5,7 +5,8 @@
 
     public class UsersController : EntityController<User>
     {
-        public UsersController(KingRogerContext context) : base(context)
+        public UsersController(KingRogerContext context)
+            : base(context)
         {
         }
     }

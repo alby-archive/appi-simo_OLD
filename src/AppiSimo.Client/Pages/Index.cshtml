@@ -1,42 +1,42 @@
 ﻿@page "/"
-@inherits IndexComponent
-
-<br/>
-
-<div class="row">
-    <SearcherView SearcherService="@SearcherService"/>
-</div>
-
-<div class="row">
-    <div class="table-responsive">
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Cognome</th>
-                <th>
-                    <a class="btn btn-block btn-outline-primary" href="/user">Nuovo</a>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var user in Users)
-            {
-                <tr>
-                    <td>@user.Name</td>
-                    <td>@user.Surname</td>
-                    <td>
-                        <a class="btn btn-block btn-outline-dark" href=@($"user/{user.Id}")>Modifica</a>
-                    </td>
-                </tr>
-            }
-
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<div class="row">
-    <PagerView PagerService="@PagerService" TotalItems="@TotalItems"/>
-</div>
+      @inherits IndexComponent
+      
+      <br/>
+      
+      <div class="row">
+          <SearcherView SearcherService="@SearcherService"/>
+      </div>
+      
+      <div class="row">
+          <div class="table-responsive">
+      
+              <table class="table">
+                  <thead>
+                  <tr>
+                      <th>Nome</th>
+                      <th>Cognome</th>
+                      <th>
+                          <a class="btn btn-block btn-outline-primary" href="/user">Nuovo</a>
+                      </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  @foreach (var user in Entities)
+                  {
+                      <tr>
+                          <td>@user.Name</td>
+                          <td>@user.Surname</td>
+                          <td>
+                              <a class="btn btn-block btn-outline-dark" href=@($"user/{user.Id}")>Modifica</a>
+                          </td>
+                      </tr>
+                  }
+      
+                  </tbody>
+              </table>
+          </div>
+      </div>
+      
+      <div class="row">
+          <PagerView PagerService="@PagerService" TotalItems="@TotalItems"/>
+      </div>

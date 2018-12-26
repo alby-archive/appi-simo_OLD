@@ -1,0 +1,42 @@
+@page "/events"
+@inherits EventsComponent
+
+<br/>
+
+<div class="row">
+    <SearcherView SearcherService="@SearcherService"/>
+</div>
+
+<div class="row">
+    <div class="table-responsive">
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>
+                    <a class="btn btn-block btn-outline-primary" href="/user">Nuovo</a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var @event in Entities)
+            {
+                <tr>
+                    <td>@(@event.Id)</td>
+                    <td>Ciao</td>
+                    <td>
+                        <a class="btn btn-block btn-outline-dark" href=@($"/")>Modifica</a>
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <PagerView PagerService="@PagerService" TotalItems="@TotalItems"/>
+</div>

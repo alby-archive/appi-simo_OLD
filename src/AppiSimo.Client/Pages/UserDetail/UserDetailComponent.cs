@@ -14,30 +14,37 @@
         string Id { get; set; }
 
         [Inject]
-        AppiSimoClient Client { get; set; }
+        AppiSimoClient<User> Client { get; set; }
 
         [Inject]
         IUriHelper UriHelper { get; set; }
 
         protected User User { get; private set; } = new User();
 
+        readonly EndPoint<User> _endPoint;
+
+        protected UserDetailComponent()
+        {
+            _endPoint = Client.GetEndPoint();
+        }
+        
         protected override async Task OnInitAsync()
         {
             if ((Id != null) & Guid.TryParse(Id, out var id))
             {
-                User = (await Client.Users.Entities.Where(u => u.Id == id).ToListAsync(Client.Client)).Value.FirstOrDefault();
+                User = (await _endPoint.Entities.Where(u => u.Id == id).ToListAsync(Client.Client)).Value.FirstOrDefault();
             }
         }
 
         protected async Task Submit()
         {
-            await Client.Users.Save(User);
+            await _endPoint.Save(User);
             GoToHome();
         }
 
         protected async Task Delete()
         {
-            await Client.Users.Remove(User.Id);
+            await _endPoint.Remove(User.Id);
             GoToHome();
         }
 
