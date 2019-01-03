@@ -69,6 +69,7 @@
 
             builder.EntitySet<User>("Users");            
             builder.EntitySet<Event>("Events");
+            builder.EntitySet<Court>("Courts");
             
             return builder.GetEdmModel();
         }
