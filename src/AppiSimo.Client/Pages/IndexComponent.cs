@@ -2,6 +2,7 @@
 {
     using System.Linq;
     using AppiSimo.Shared.Model;
+    using Shared.Pages.Abstract;
 
     public class IndexComponent : BaseFilterComponent<User>
     {

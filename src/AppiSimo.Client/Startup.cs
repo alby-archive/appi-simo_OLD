@@ -4,29 +4,30 @@ namespace AppiSimo.Client
     using System.IO;
     using System.Net.Http;
     using System.Reflection;
-    using AppiSimo.Shared.Model;
-    using Clients;
     using Environment;
+    using Microsoft.AspNetCore.Blazor.Browser.Http;
     using Microsoft.AspNetCore.Blazor.Builder;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.JSInterop;
-    using Shared.Pages.Pager;
-    using Shared.Pages.Searcher;
-    using Shared.Services;
+    using Middelwares;
 
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            var config = GetConfiguration();
+            var config = GetConfiguration();       
+            
+            services.AddSingleton<HttpMessageHandler, BrowserHttpMessageHandler>();
+            
+            services.AddSingleton(sp => {
+                var handler = sp.GetService<HttpMessageHandler>();
+                var client = handler != null ? new HttpClient(handler) : new HttpClient();
+                client.BaseAddress = new Uri(config.Api);
+                return client;
+            });
 
-            var apiUri = new Uri(config.Api);
-
-            services.AddSingleton(provider => new AppiSimoClient<User>(provider.GetRequiredService<HttpClient>(), apiUri));
-            services.AddSingleton(provider => new AppiSimoClient<Event>(provider.GetRequiredService<HttpClient>(), apiUri));
-
-            services.AddScoped<BaseRxService<Pager>, PagerService>();
-            services.AddScoped<BaseRxService<Searcher>, SearcherService>();
+            services.AddEndPoints(config);
+            services.AddRxServices();
         }
 
         public void Configure(IBlazorApplicationBuilder app)

@@ -1,4 +1,4 @@
-namespace AppiSimo.Client
+namespace AppiSimo.Client.Shared.Pages.Abstract
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,16 +6,14 @@ namespace AppiSimo.Client
     using AppiSimo.Shared.Abstract;
     using Clients;
     using Microsoft.AspNetCore.Blazor.Components;
-    using Shared.Pages.Pager;
-    using Shared.Pages.Searcher;
-    using Shared.Services;
+    using Pager;
+    using Searcher;
+    using Services;
+    using Shared;
 
-    public abstract class BaseFilterComponent<TEntity> : BlazorComponent
+    public abstract class BaseFilterComponent<TEntity> : BaseComponent<TEntity>
         where TEntity : class, IEntity, new()
     {
-        [Inject]
-        AppiSimoClient<TEntity> Client { get; set; }
-
         [Inject]
         protected BaseRxService<Pager> PagerService { get; set; }
 
@@ -24,7 +22,7 @@ namespace AppiSimo.Client
 
         protected IEnumerable<TEntity> Entities = new List<TEntity>();
 
-        protected int TotalItems { get; set; }
+        protected int TotalItems { get; private set; }
 
         protected override void OnInit()
         {
@@ -36,21 +34,20 @@ namespace AppiSimo.Client
 
         async Task Call()
         {
-            var endPoint = Client.GetEndPoint();
-
-            var builder = endPoint.Entities.IncludeTotalCount().AsQueryable();
+            var builder = EndPoint.Entities.IncludeTotalCount().AsQueryable();
 
             builder = Selector(builder);
 
             var response = await builder
                 .Skip(PagerService.Value.CurrentPage * PagerService.Value.PageSize)
                 .Take(PagerService.Value.PageSize)
-                .ToListAsync(Client.Client);
+                .ToListAsync(EndPoint._client);
 
             Entities = response.Value;
             TotalItems = response.Count;
 
             StateHasChanged();
         }
+
     }
 }

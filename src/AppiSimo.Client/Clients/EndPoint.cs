@@ -1,6 +1,7 @@
 ﻿namespace AppiSimo.Client.Clients
 {
     using System;
+    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Abstract;
@@ -10,7 +11,7 @@
     public class EndPoint<TEntity> : IEndPoint<TEntity>
         where TEntity : class, IEntity, new()
     {
-        readonly HttpClient _client;
+        public readonly HttpClient _client;
 
         readonly DataServiceContext _context;
         readonly string _resourceUri;
@@ -25,6 +26,15 @@
 
         public DataServiceQuery<TEntity> Entities => _context.CreateQuery<TEntity>(_resourceUri);
 
+        public async Task<TEntity> Entity(Guid id) =>
+        (
+            await Entities
+                .Where(u => u.Id == id)
+                .ToListAsync(_client)
+        ).Value.FirstOrDefault();
+
+        // TODO: move odata uri from string builder.
+        
         public async Task Save(TEntity entity)
         {
             if (entity.Id == Guid.Empty)
@@ -33,10 +43,10 @@
             }
             else
             {
-                await _client.SendJsonAsync<TEntity>(HttpMethod.Put, $"{_resourceUri}({entity.Id})", entity);
+                await _client.SendJsonAsync<TEntity>(HttpMethod.Put, $"/odata/{_resourceUri}({entity.Id})", entity);
             }
         }
 
-        public async Task Remove(Guid id) => await _client.DeleteAsync($"{_resourceUri}/{id}");
+        public async Task Delete(Guid id) => await _client.DeleteAsync($"/odata/{_resourceUri}/{id}");
     }
 }

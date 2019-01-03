@@ -8,6 +8,6 @@
     {
         DataServiceQuery<T> Entities { get; }
         Task Save(T entity);
-        Task Remove(Guid id);
+        Task Delete(Guid id);
     }
 }

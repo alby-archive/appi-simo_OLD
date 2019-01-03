@@ -1,4 +1,4 @@
-﻿namespace AppiSimo.Client.Pages.UserDetail
+namespace AppiSimo.Client.Pages.UserDetail
 {
     using System;
     using System.Linq;
@@ -7,8 +7,9 @@
     using Clients;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
+    using Shared.Pages.Abstract;
 
-    public class UserDetailComponent : BlazorComponent
+    public class UserDetailComponent : BaseComponent<User>
     {
         [Parameter]
         string Id { get; set; }
