@@ -1,4 +1,4 @@
-﻿namespace AppiSimo.Client.Clients
+﻿namespace AppiSimo.Client.EndPoints
 {
     using System;
     using System.Threading.Tasks;

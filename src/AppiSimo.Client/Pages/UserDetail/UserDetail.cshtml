@@ -1,19 +1,19 @@
 @page "/user"
 @page "/user/{Id}"
 
-@inherits UserDetailComponent
+@inherits UserDetailDetailComponent
 
 <form>
     <div class="form-group">
         <label for="Name" class="control-label">Name</label>
-        <input for="Name" class="form-control" bind="@User.Name"/>
+        <input for="Name" class="form-control" bind="@Entity.Name"/>
     </div>
     <div class="form-group">
         <label asp-for="Surname" class="control-label">Surname</label>
-        <input asp-for="Surname" class="form-control" bind="@User.Surname"/>
+        <input asp-for="Surname" class="form-control" bind="@Entity.Surname"/>
     </div>
     <div class="form-group">
-        <button type="button" class="btn btn-block btn-outline-success" onclick="@(async () => await Submit())">Salva</button>
-        <button type="button" class="btn btn-block btn-outline-danger" style="display: @(User.Id != Guid.Empty ? "inline-block;" : "none");" onclick="@(async () => await Delete())">Cancella</button>
+        <button type="button" class="btn btn-block btn-outline-success" onclick="@(async () => await Save())">Salva</button>
+        <button type="button" class="btn btn-block btn-outline-danger" style="display: @(Entity.Id != Guid.Empty ? "inline-block;" : "none");" onclick="@(async () => await Delete())">Cancella</button>
     </div>
 </form>

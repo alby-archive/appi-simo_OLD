@@ -3,9 +3,8 @@ namespace AppiSimo.Shared.Model
     using System;
     using Abstract;
 
-    public class Court : IEntity
+    public class Court : Entity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
     }
 }

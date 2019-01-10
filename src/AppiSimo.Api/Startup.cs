@@ -51,14 +51,17 @@
                 app.UseHsts();
             }
 
-            
-
             // app.UseHttpsRedirection();
-            app.UseMvc(b =>
+
+            //app.Map("/odata", api =>
             {
-                b.Select().Expand().Filter().OrderBy().MaxTop(maxTopValue: 100).Count();
-                b.MapODataServiceRoute("odata", "odata", GetEdmModel());
-            });
+                app.UseMvc(b =>
+                {
+                    b.Select().Expand().Filter().OrderBy().MaxTop(maxTopValue: 100).Count();
+                    b.EnableDependencyInjection();
+                    b.MapODataServiceRoute("odata", routePrefix: "odata", model: GetEdmModel());
+                });
+            }//);
         }
 
         static IEdmModel GetEdmModel()

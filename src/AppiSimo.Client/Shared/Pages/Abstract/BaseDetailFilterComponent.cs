@@ -4,14 +4,13 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
     using System.Linq;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Abstract;
-    using Clients;
     using Microsoft.AspNetCore.Blazor.Components;
+    using Microsoft.OData.Client;
     using Pager;
     using Searcher;
     using Services;
-    using Shared;
 
-    public abstract class BaseFilterComponent<TEntity> : BaseComponent<TEntity>
+    public abstract class BaseDetailFilterComponent<TEntity> : BaseComponent<TEntity>
         where TEntity : class, IEntity, new()
     {
         [Inject]
@@ -30,13 +29,11 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
             PagerService.Subscribe(async pager => await Call());
         }
 
-        protected abstract IQueryable<TEntity> Selector(IQueryable<TEntity> entities);
+        protected abstract IQueryable<TEntity> Selector(DataServiceQuery<TEntity> entities, Searcher searcher);
 
         async Task Call()
         {
-            var builder = EndPoint.Entities.IncludeTotalCount().AsQueryable();
-
-            builder = Selector(builder);
+            var builder = Selector(EndPoint.Entities.IncludeTotalCount(), SearcherService.Value);
 
             var response = await builder
                 .Skip(PagerService.Value.CurrentPage * PagerService.Value.PageSize)

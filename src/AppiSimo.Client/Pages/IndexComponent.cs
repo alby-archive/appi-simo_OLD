@@ -2,12 +2,15 @@
 {
     using System.Linq;
     using AppiSimo.Shared.Model;
+    using Microsoft.OData.Client;
     using Shared.Pages.Abstract;
+    using Shared.Pages.Searcher;
 
-    public class IndexComponent : BaseFilterComponent<User>
+    public class IndexComponent : BaseDetailFilterComponent<User>
     {
-        protected override IQueryable<User> Selector(IQueryable<User> users) => users
-            .Where(user => user.Surname.Contains(SearcherService.Value.Filter))
+        // TODO: Move Where in base component
+        protected override IQueryable<User> Selector(DataServiceQuery<User> users, Searcher searcher) => users
+            .Where(user => user.Surname.ToUpper().Contains(searcher.Filter.ToUpper()))
             .OrderBy(user => user.Name);
     }
 }

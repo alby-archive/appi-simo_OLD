@@ -1,4 +1,4 @@
-﻿namespace AppiSimo.Client.Clients
+﻿namespace AppiSimo.Client.EndPoints
 {
     using System;
     using System.Linq;
@@ -34,19 +34,19 @@
         ).Value.FirstOrDefault();
 
         // TODO: move odata uri from string builder.
-        
+
         public async Task Save(TEntity entity)
         {
             if (entity.Id == Guid.Empty)
             {
-                await _client.SendJsonAsync<TEntity>(HttpMethod.Post, _resourceUri, entity);
+                await _client.SendJsonAsync<TEntity>(HttpMethod.Post, $"/odata/{_resourceUri}/Post", entity);
             }
             else
             {
-                await _client.SendJsonAsync<TEntity>(HttpMethod.Put, $"/odata/{_resourceUri}({entity.Id})", entity);
+                await _client.SendJsonAsync<TEntity>(HttpMethod.Put, $"/odata/{_resourceUri}/Put", entity);
             }
         }
 
-        public async Task Delete(Guid id) => await _client.DeleteAsync($"/odata/{_resourceUri}/{id}");
+        public async Task Delete(Guid id) => await _client.DeleteAsync($"/odata/{_resourceUri}/Delete/{id}");
     }
 }

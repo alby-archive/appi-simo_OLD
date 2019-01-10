@@ -5,7 +5,7 @@ namespace AppiSimo.Api.Controllers
 
     public class CourtsController : EntityController<Court>
     {
-        protected CourtsController(KingRogerContext context)
+        public CourtsController(KingRogerContext context)
             : base(context)
         {
         }
