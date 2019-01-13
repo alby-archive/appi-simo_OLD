@@ -121,3 +121,14 @@ app {
         display: block;
     }
 }
+
+.user-add-li:hover{
+    background-color: #b3ffb3;
+    cursor: pointer;
+}
+
+.user-remove-li:hover{
+    background-color: #ff9999;
+    cursor: pointer;
+}
+

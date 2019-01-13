@@ -7,12 +7,12 @@
 
     <div class="form-group">
         <label for="users" class="control-label">Users</label>
-        <input bind="@Filter" />
-        <ul class="overflow-auto" style="max-height: 200px">
+        <input bind="@Filter"/>
+        <ul class="overflow-auto list-group list-group-flush" style="max-height: 200px">
 
             @foreach (var user in FilteredUsers.Where(user => user.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.Name))
             {
-                <li onclick="@(() => AddUser(user))">@user.Name @user.Surname</li>
+                <li class="list-group-item user-add-li" onclick="@(() => AddUser(user))"><span>@user.Name @user.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span></li>
             }
 
         </ul>
@@ -20,14 +20,15 @@
 
     <div class="form-group">
         <label for="startDate" class="control-label">Selected User</label>
-        <ul>
+        <ul class="list-group list-group-flush">
 
             @foreach (var user in SelectedUsers)
             {
-                <li>
-                    <span class="oi oi-minus" onclick="@(() => RemoveUser(user))"></span><span>@user.Name @user.Surname</span>
+                <li class="list-group-item user-remove-li" onclick="@(() => RemoveUser(user))">
+                    <span>@user.Name @user.Surname</span><span class="oi oi-minus float-right" data-toggle="tooltip" aria-hidden="true"></span>
                 </li>
             }
+            
         </ul>
     </div>
 

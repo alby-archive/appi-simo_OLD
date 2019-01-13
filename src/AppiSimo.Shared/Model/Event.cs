@@ -10,7 +10,8 @@ namespace AppiSimo.Shared.Model
         public Guid CourtId { get; set; }
         public Court Court { get; set; }
         public Light Light { get; set; }
-        public Heat Heat { get; set; }
+        public Heat Heat { get; set; }        
+        public int Users { get; set; }
         
         public ICollection<UserEvent> UsersEvents { get; set; }
     }

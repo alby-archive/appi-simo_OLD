@@ -73,7 +73,7 @@ namespace AppiSimo.Client.Pages.EventDetail
         }
 
         protected override async Task Save()
-        {
+        {            
             await base.Save();
             GoToEvents();
         }
