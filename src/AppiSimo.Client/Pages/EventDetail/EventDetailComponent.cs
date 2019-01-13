@@ -13,35 +13,63 @@ namespace AppiSimo.Client.Pages.EventDetail
     {
         [Inject]
         IUriHelper UriHelper { get; set; }
-        
+
         [Inject]
         EndPoint<Court> CourtEndPoint { get; set; }
 
-        protected IEnumerable<Court> Courts { get; private set; } = new List<Court>();
+        [Inject]
+        EndPoint<Light> LightEndPoint { get; set; }
 
+        [Inject]
+        EndPoint<Heat> HeatEndPoint { get; set; }
+
+        [Inject]
+        EndPoint<User> UserEndPoint { get; set; }
+        
+        ICollection<User> Users { get; set; } = new List<User>();
+
+        protected IEnumerable<Court> Courts { get; private set; } = new List<Court>();
+        protected IEnumerable<Light> Lights { get; private set; } = new List<Light>();
+        protected IEnumerable<Heat> Heats { get; private set; } = new List<Heat>();
+        protected ICollection<User> SelectedUsers { get; } = new List<User>();
+        protected ICollection<User> FilteredUsers { get; private set; } = new List<User>();
+
+        protected string Filter { get; set; } = string.Empty;
+        
         protected override async Task OnInitAsync()
         {
             await base.OnInitAsync();
-            
-            Courts = (await CourtEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint._client)).Value; 
-        }        
-        
-        protected string StartDate
-        {
-            get => Entity.StartDate == DateTime.MinValue ? string.Empty : Entity.StartDate.ToString("g");
-            set => Entity.StartDate = DateTime.Parse(value);
+
+            Courts = (await CourtEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint._client)).Value;
+            Lights = (await LightEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint._client)).Value;
+            Heats = (await HeatEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint._client)).Value;
+            Users = (await UserEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint._client)).Value;
+
+            FilteredUsers = Users;
         }
 
-        protected string EndDate
+        protected string StartDate { get => Entity.StartDate == DateTime.MinValue ? string.Empty : Entity.StartDate.ToString("g"); set => Entity.StartDate = DateTime.Parse(value); }
+
+        protected string EndDate { get => Entity.EndDate == DateTime.MinValue ? string.Empty : Entity.EndDate.ToString("g"); set => Entity.EndDate = DateTime.Parse(value); }
+
+        protected string SelectedCourt { get => Entity.CourtId.ToString(); set => Entity.CourtId = Guid.Parse(value); }
+
+        protected string SelectedLight { get => Entity.Light != null ? Entity.Light.Id.ToString() : string.Empty; set => Entity.Light.Id = Guid.Parse(value); }
+
+        protected string SelectedHeat { get => Entity.Heat != null ? Entity.Heat.Id.ToString() : string.Empty; set => Entity.Heat.Id = Guid.Parse(value); }
+
+        protected void AddUser(User user)
         {
-            get => Entity.EndDate == DateTime.MinValue ? string.Empty : Entity.EndDate.ToString("g");
-            set => Entity.EndDate = DateTime.Parse(value);
+            SelectedUsers.Add(user);
+            FilteredUsers.Remove(user);
+            StateHasChanged();
         }
 
-        protected string SelectedCourt
+        protected void RemoveUser(User user)
         {
-            get => Entity.CourtId.ToString();
-            set => Entity.CourtId = Guid.Parse(value);
+            SelectedUsers.Remove(user);
+            FilteredUsers.Add(user);
+            StateHasChanged();
         }
 
         protected override async Task Save()

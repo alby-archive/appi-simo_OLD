@@ -51,9 +51,6 @@
                 app.UseHsts();
             }
 
-            // app.UseHttpsRedirection();
-
-            //app.Map("/odata", api =>
             {
                 app.UseMvc(b =>
                 {
@@ -61,7 +58,7 @@
                     b.EnableDependencyInjection();
                     b.MapODataServiceRoute("odata", routePrefix: "odata", model: GetEdmModel());
                 });
-            }//);
+            }
         }
 
         static IEdmModel GetEdmModel()
@@ -73,6 +70,8 @@
             builder.EntitySet<User>("Users");            
             builder.EntitySet<Event>("Events");
             builder.EntitySet<Court>("Courts");
+            builder.EntitySet<Light>("Lights");
+            builder.EntitySet<Heat>("Heats");
             
             return builder.GetEdmModel();
         }

@@ -4,41 +4,105 @@
 @inherits EventDetailComponent
 
 <form>
+
     <div class="form-group">
-        <label for="StartDate" class="control-label">StartDate</label>
-        <input id="StartDate" class="form-control" bind="@StartDate"/>
+        <label for="users" class="control-label">Users</label>
+        <input bind="@Filter" />
+        <ul class="overflow-auto" style="max-height: 200px">
+
+            @foreach (var user in FilteredUsers.Where(user => user.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.Name))
+            {
+                <li onclick="@(() => AddUser(user))">@user.Name @user.Surname</li>
+            }
+
+        </ul>
     </div>
-    
+
     <div class="form-group">
-        <label for="EndDate" class="control-label">EndDate</label>
-        <input id="EndDate" class="form-control" bind="@EndDate"/>
+        <label for="startDate" class="control-label">Selected User</label>
+        <ul>
+
+            @foreach (var user in SelectedUsers)
+            {
+                <li>
+                    <span class="oi oi-minus" onclick="@(() => RemoveUser(user))"></span><span>@user.Name @user.Surname</span>
+                </li>
+            }
+        </ul>
     </div>
-    
+
+    <div class="form-group">
+        <label for="startDate" class="control-label">StartDate</label>
+        <input id="startDate" class="form-control" bind="@StartDate"/>
+    </div>
+
+    <div class="form-group">
+        <label for="endDate" class="control-label">EndDate</label>
+        <input id="endDate" class="form-control" bind="@EndDate"/>
+    </div>
+
     <div class="form-group">
         <label for="courtsSelect">Campo</label>
         <select class="form-control" id="courtsSelect" bind="@SelectedCourt">
-            <option>-- Selezionare un Campo --</option>
-            @foreach (var court in @Courts)
+
+            @if (Entity.Court != null)
+            {
+                <option value="@Entity.CourtId">@Entity.Court.Name</option>
+            }
+            else
+            {
+                <option>-- Selezionare un Campo --</option>
+            }
+
+            @foreach (var court in (Entity.CourtId != Guid.Empty ? Courts.Where(c => c.Id != Entity.CourtId) : Courts).OrderBy(c => c.Name))
             {
                 <option value="@court.Id">@court.Name</option>
             }
         </select>
     </div>
-    
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="headCheck" bind="@Entity.Heat" />
-        <label class="form-check-label" for="headCheck">
-            Riscaldamento
-        </label>
+
+    <div class="form-group">
+        <label for="lightsSelect">Luce</label>
+        <select class="form-control" id="lightsSelect" bind="@SelectedLight">
+
+            @if (Entity.Light != null)
+            {
+                <option value="@Entity.Light.Id">@Entity.Light.LightType</option>
+            }
+            else
+            {
+                <option>-- Selezionare l&#39;Illuminazione --</option>
+            }
+
+            @foreach (var light in Entity.Light != null ? Lights.Where(l => l.Id != Entity.Light.Id) : Lights)
+            {
+                <option value="@light.Id">@light.LightType</option>
+            }
+        </select>
     </div>
-    
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="lightCheck" bind="@Entity.Light" />
-        <label class="form-check-label" for="lightCheck">
-            Illuminazione
-        </label>
+
+    <div class="form-group">
+        <label for="heatsSelect">Riscaldamento</label>
+        <select class="form-control" id="heatsSelect" bind="@SelectedHeat">
+            @if (Entity.Heat != null)
+            {
+                <option value="@Entity.Heat.Id">@Entity.Heat.HeatType</option>
+            }
+            else
+            {
+                <option>-- Selezionare il Riscaldamento --</option>
+            }
+
+            @foreach (var heat in  
+                Entity.Heat != null ?
+                    Heats.Where(l => l.Id != Entity.Heat.Id) :
+                    Heats)
+            {
+                <option value="@heat.Id">@heat.HeatType</option>
+            }
+        </select>
     </div>
-    
+
     <div class="form-group">
         <button type="button" class="btn btn-block btn-outline-success" onclick="@(async () => await Save())">Salva</button>
         <button type="button" class="btn btn-block btn-outline-danger" style="display: @(Entity.Id != Guid.Empty ? "inline-block;" : "none");" onclick="@(async () => await Delete())">Cancella</button>

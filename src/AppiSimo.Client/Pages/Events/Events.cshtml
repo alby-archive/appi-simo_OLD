@@ -12,19 +12,19 @@
     <a class="btn btn-block btn-outline-primary" href="/event">Nuovo</a>
 </div>
 
-@foreach (var @event in Entities)
+@foreach (var e in Entities)
 {
     <div class="row card text-center mt-2">
         <div class="card-header">
-            <span class="text-left">@(@event.Court?.Name)</span>
+            <span class="text-left">@(e.Court?.Name)</span>
             <span class="text-right">
 
-                @if (@event.Heat)
+                @if (e.Heat != null)
                 {
                     <span class="oi oi-fire"></span>
                 }
 
-                @if (@event.Light)
+                @if (e.Light != null)
                 {
                     <span class="oi oi-lightbulb"></span>
                 }
@@ -36,13 +36,13 @@
                 <h5 class="card-title">Resoconto</h5>
 
                 <div class="col">
-                    <p class="card-text">Data: @(@event.StartDate.ToString("D"))</p>
-                    <p class="card-text">Ora Inizio: @(@event.StartDate.ToString("HH:mm"))</p>
-                    <p class="card-text">Ora Fine: @(@event.EndDate.ToString("HH:mm"))</p>
+                    <p class="card-text">Data: @e.StartDate.ToString("D")</p>
+                    <p class="card-text">Ora Inizio: @e.StartDate.ToString("HH:mm")</p>
+                    <p class="card-text">Ora Fine: @e.EndDate.ToString("HH:mm")</p>
                 </div>
             </div>
             <div class="card-footer text-muted">
-                <a class="btn btn-block btn-outline-dark" href=@($"/event/{@event.Id}")>Modifica</a>
+                <a class="btn btn-block btn-outline-dark" href=@($"/event/{e.Id}")>Modifica</a>
                 <a class="btn btn-block btn-outline-danger">Elimina</a>
             </div>
         </div>

@@ -16,13 +16,12 @@ namespace AppiSimo.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("AppiSimo.Shared.Model.Court", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("Id");
 
                     b.Property<string>("Name");
 
@@ -31,18 +30,36 @@ namespace AppiSimo.Api.Migrations
                     b.ToTable("Courts");
                 });
 
+            modelBuilder.Entity("AppiSimo.Shared.Model.CourtRate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("CourtId");
+
+                    b.Property<Guid>("RateId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourtId");
+
+                    b.HasIndex("RateId");
+
+                    b.ToTable("CourtRate");
+                });
+
             modelBuilder.Entity("AppiSimo.Shared.Model.Event", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid?>("CourtId");
+                    b.Property<Guid>("CourtId");
 
                     b.Property<DateTime>("EndDate");
 
-                    b.Property<bool>("Heat");
+                    b.Property<Guid?>("HeatId");
 
-                    b.Property<bool>("Light");
+                    b.Property<Guid?>("LightId");
 
                     b.Property<DateTime>("StartDate");
 
@@ -50,7 +67,57 @@ namespace AppiSimo.Api.Migrations
 
                     b.HasIndex("CourtId");
 
+                    b.HasIndex("HeatId");
+
+                    b.HasIndex("LightId");
+
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("AppiSimo.Shared.Model.Heat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("HeatType");
+
+                    b.Property<decimal>("Price");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Heats");
+                });
+
+            modelBuilder.Entity("AppiSimo.Shared.Model.Light", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("LightType");
+
+                    b.Property<decimal>("Price");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Lights");
+                });
+
+            modelBuilder.Entity("AppiSimo.Shared.Model.Rate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("EndHour");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.Property<DateTime>("StartHour");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Rates");
                 });
 
             modelBuilder.Entity("AppiSimo.Shared.Model.User", b =>
@@ -85,22 +152,44 @@ namespace AppiSimo.Api.Migrations
                     b.ToTable("UserEvent");
                 });
 
+            modelBuilder.Entity("AppiSimo.Shared.Model.CourtRate", b =>
+                {
+                    b.HasOne("AppiSimo.Shared.Model.Court", "Court")
+                        .WithMany("CourtsRates")
+                        .HasForeignKey("CourtId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("AppiSimo.Shared.Model.Rate", "Rate")
+                        .WithMany("CourtsRates")
+                        .HasForeignKey("RateId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("AppiSimo.Shared.Model.Event", b =>
                 {
                     b.HasOne("AppiSimo.Shared.Model.Court", "Court")
                         .WithMany()
-                        .HasForeignKey("CourtId");
+                        .HasForeignKey("CourtId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("AppiSimo.Shared.Model.Heat", "Heat")
+                        .WithMany()
+                        .HasForeignKey("HeatId");
+
+                    b.HasOne("AppiSimo.Shared.Model.Light", "Light")
+                        .WithMany()
+                        .HasForeignKey("LightId");
                 });
 
             modelBuilder.Entity("AppiSimo.Shared.Model.UserEvent", b =>
                 {
                     b.HasOne("AppiSimo.Shared.Model.Event", "Event")
-                        .WithMany("UserEvents")
+                        .WithMany("UsersEvents")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("AppiSimo.Shared.Model.User", "User")
-                        .WithMany("UserEvents")
+                        .WithMany("UsersEvents")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
