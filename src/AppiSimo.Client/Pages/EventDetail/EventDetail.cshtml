@@ -50,7 +50,7 @@
 
             <option disabled>-- Selezionare un Campo --</option>
 
-            @* TODO: *@
+            @* TODO: ISSUE https://github.com/aspnet/AspNetCore/issues/5616*@
 
             @foreach (var court in Courts.OrderBy(c => c.Name))
             {
@@ -70,7 +70,7 @@
         <label for="lightsSelect">Luce</label>
         <select class="form-control" id="lightsSelect" bind="@SelectedLight">
 
-            @foreach (var light in Lights.OrderBy(l => l.Priority))
+            @foreach (var light in Lights.OrderBy(l => l.Priority).ThenBy(l => l.LightType))
             {
                 if (Entity.Light?.Id == light.Id)
                 {
@@ -87,7 +87,7 @@
         <label for="heatsSelect">Riscaldamento</label>
         <select class="form-control" id="heatsSelect" bind="@SelectedHeat">
 
-            @foreach (var heat in Heats.OrderBy(h => h.Priority))
+            @foreach (var heat in Heats.OrderBy(h => h.Priority).ThenBy(h => h.HeatType))
             {
                 if (Entity.Heat?.Id == heat.Id)
                 {

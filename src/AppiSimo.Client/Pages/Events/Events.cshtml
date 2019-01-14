@@ -19,12 +19,12 @@
             <span class="text-left">@(e.Court?.Name)</span>
             <span class="text-right">
 
-                @if (e.Heat != null)
+                @if (!e.Heat.Default)
                 {
                     <span class="oi oi-fire"></span>
                 }
 
-                @if (e.Light != null)
+                @if (!e.Light.Default)
                 {
                     <span class="oi oi-lightbulb"></span>
                 }

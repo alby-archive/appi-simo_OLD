@@ -9,6 +9,6 @@ namespace AppiSimo.Client.Pages.Events
     public class EventsComponent : BaseDetailFilterComponent<Event>
     {       
         protected override IQueryable<Event> Selector(DataServiceQuery<Event> events, Searcher _) 
-            => events.Expand(e => e.Court);
+            => events.Expand(e => e.Court).Expand(e => e.Heat).Expand(e => e.Light);
     }
 }
