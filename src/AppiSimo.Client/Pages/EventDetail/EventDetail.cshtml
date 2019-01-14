@@ -12,7 +12,9 @@
 
             @foreach (var user in FilteredUsers.Where(user => user.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.Name))
             {
-                <li class="list-group-item user-add-li" onclick="@(() => AddUser(user))"><span>@user.Name @user.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span></li>
+                <li class="list-group-item user-add-li" onclick="@(() => AddUser(user))">
+                    <span>@user.Name @user.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
+                </li>
             }
 
         </ul>
@@ -28,7 +30,7 @@
                     <span>@user.Name @user.Surname</span><span class="oi oi-minus float-right" data-toggle="tooltip" aria-hidden="true"></span>
                 </li>
             }
-            
+
         </ul>
     </div>
 
@@ -46,17 +48,19 @@
         <label for="courtsSelect">Campo</label>
         <select class="form-control" id="courtsSelect" bind="@SelectedCourt">
 
-            @if (Entity.Court != null)
-            {
-                <option value="@Entity.CourtId">@Entity.Court.Name</option>
-            }
-            else
-            {
-                <option>-- Selezionare un Campo --</option>
-            }
+            <option disabled>-- Selezionare un Campo --</option>
 
-            @foreach (var court in (Entity.CourtId != Guid.Empty ? Courts.Where(c => c.Id != Entity.CourtId) : Courts).OrderBy(c => c.Name))
+            @* TODO: *@
+
+            @foreach (var court in Courts.OrderBy(c => c.Name))
             {
+                if (Entity.CourtId == court.Id)
+                {
+                    <option selected value="@court.Id">@court.Name</option>
+
+                    continue;
+                }
+
                 <option value="@court.Id">@court.Name</option>
             }
         </select>
@@ -66,17 +70,14 @@
         <label for="lightsSelect">Luce</label>
         <select class="form-control" id="lightsSelect" bind="@SelectedLight">
 
-            @if (Entity.Light != null)
+            @foreach (var light in Lights.OrderBy(l => l.Priority))
             {
-                <option value="@Entity.Light.Id">@Entity.Light.LightType</option>
-            }
-            else
-            {
-                <option>-- Selezionare l&#39;Illuminazione --</option>
-            }
+                if (Entity.Light?.Id == light.Id)
+                {
+                    <option selected value="@light.Id">@light.LightType</option>
+                    continue;
+                }
 
-            @foreach (var light in Entity.Light != null ? Lights.Where(l => l.Id != Entity.Light.Id) : Lights)
-            {
                 <option value="@light.Id">@light.LightType</option>
             }
         </select>
@@ -85,22 +86,18 @@
     <div class="form-group">
         <label for="heatsSelect">Riscaldamento</label>
         <select class="form-control" id="heatsSelect" bind="@SelectedHeat">
-            @if (Entity.Heat != null)
-            {
-                <option value="@Entity.Heat.Id">@Entity.Heat.HeatType</option>
-            }
-            else
-            {
-                <option>-- Selezionare il Riscaldamento --</option>
-            }
 
-            @foreach (var heat in  
-                Entity.Heat != null ?
-                    Heats.Where(l => l.Id != Entity.Heat.Id) :
-                    Heats)
+            @foreach (var heat in Heats.OrderBy(h => h.Priority))
             {
+                if (Entity.Heat?.Id == heat.Id)
+                {
+                    <option selected value="@heat.Id">@heat.HeatType</option>
+                    continue;
+                }
+
                 <option value="@heat.Id">@heat.HeatType</option>
             }
+
         </select>
     </div>
 

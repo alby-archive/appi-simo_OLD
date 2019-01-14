@@ -9,10 +9,9 @@ namespace AppiSimo.Shared.Model
         public DateTime EndDate { get; set; }
         public Guid CourtId { get; set; }
         public Court Court { get; set; }
-        public Light Light { get; set; }
-        public Heat Heat { get; set; }        
+        public Light Light { get; set; } = new Light();
+        public Heat Heat { get; set; } = new Heat();
         public int Users { get; set; }
-        
         public ICollection<UserEvent> UsersEvents { get; set; }
     }
 }

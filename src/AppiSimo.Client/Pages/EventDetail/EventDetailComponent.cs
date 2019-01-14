@@ -7,6 +7,7 @@ namespace AppiSimo.Client.Pages.EventDetail
     using EndPoints;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
+    using Microsoft.OData.Client;
     using Shared.Pages.Abstract;
 
     public class EventDetailComponent : BaseDetailComponent<Event>
@@ -25,7 +26,7 @@ namespace AppiSimo.Client.Pages.EventDetail
 
         [Inject]
         EndPoint<User> UserEndPoint { get; set; }
-        
+
         ICollection<User> Users { get; set; } = new List<User>();
 
         protected IEnumerable<Court> Courts { get; private set; } = new List<Court>();
@@ -35,15 +36,19 @@ namespace AppiSimo.Client.Pages.EventDetail
         protected ICollection<User> FilteredUsers { get; private set; } = new List<User>();
 
         protected string Filter { get; set; } = string.Empty;
-        
+
+        protected override DataServiceQuery<Event> Selector(DataServiceQuery<Event> @event) => @event
+            .Expand(e => e.Light)
+            .Expand(e => e.Heat);
+
         protected override async Task OnInitAsync()
         {
             await base.OnInitAsync();
 
-            Courts = (await CourtEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint._client)).Value;
-            Lights = (await LightEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint._client)).Value;
-            Heats = (await HeatEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint._client)).Value;
-            Users = (await UserEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint._client)).Value;
+            Courts = (await CourtEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
+            Lights = (await LightEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
+            Heats = (await HeatEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
+            Users = (await UserEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
 
             FilteredUsers = Users;
         }
@@ -54,9 +59,9 @@ namespace AppiSimo.Client.Pages.EventDetail
 
         protected string SelectedCourt { get => Entity.CourtId.ToString(); set => Entity.CourtId = Guid.Parse(value); }
 
-        protected string SelectedLight { get => Entity.Light != null ? Entity.Light.Id.ToString() : string.Empty; set => Entity.Light.Id = Guid.Parse(value); }
+        protected string SelectedLight { get => Entity.Light?.Id.ToString(); set => Entity.Light.Id = Guid.Parse(value); }
 
-        protected string SelectedHeat { get => Entity.Heat != null ? Entity.Heat.Id.ToString() : string.Empty; set => Entity.Heat.Id = Guid.Parse(value); }
+        protected string SelectedHeat { get => Entity.Heat?.Id.ToString(); set => Entity.Heat.Id = Guid.Parse(value); }
 
         protected void AddUser(User user)
         {
@@ -73,7 +78,7 @@ namespace AppiSimo.Client.Pages.EventDetail
         }
 
         protected override async Task Save()
-        {            
+        {
             await base.Save();
             GoToEvents();
         }

@@ -4,5 +4,6 @@ namespace AppiSimo.Shared.Model
     {
         public string HeatType { get; set; }
         public decimal Price { get; set; }
+        public int Priority { get; set; }
     }
 }
