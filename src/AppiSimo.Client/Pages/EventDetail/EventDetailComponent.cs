@@ -37,9 +37,7 @@ namespace AppiSimo.Client.Pages.EventDetail
 
         protected string Filter { get; set; } = string.Empty;
 
-        protected override DataServiceQuery<Event> Selector(DataServiceQuery<Event> @event) => @event
-            .Expand(e => e.Light)
-            .Expand(e => e.Heat);
+        protected override DataServiceQuery<Event> Selector(DataServiceQuery<Event> @event) => @event;
 
         protected override async Task OnInitAsync()
         {
@@ -59,9 +57,38 @@ namespace AppiSimo.Client.Pages.EventDetail
 
         protected string SelectedCourt { get => Entity.CourtId.ToString(); set => Entity.CourtId = Guid.Parse(value); }
 
-        protected string SelectedLight { get => Entity.Light?.Id.ToString(); set => Entity.Light.Id = Guid.Parse(value); }
-
-        protected string SelectedHeat { get => Entity.Heat?.Id.ToString(); set => Entity.Heat.Id = Guid.Parse(value); }
+        // TODO: https://github.com/aspnet/Blazor/issues/576
+        protected string SelectedLight
+        {
+            get => Entity.LightId?.ToString();
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    Entity.LightId = null;
+                }
+                else
+                {
+                    Entity.LightId = Guid.Parse(value);
+                }
+            }
+        }
+        
+        protected string SelectedHeat
+        {
+            get => Entity.HeatId?.ToString();
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    Entity.HeatId = null;
+                }
+                else
+                {
+                    Entity.HeatId = Guid.Parse(value);
+                }
+            }
+        }
 
         protected void AddUser(User user)
         {

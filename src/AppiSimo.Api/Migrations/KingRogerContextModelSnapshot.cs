@@ -81,13 +81,9 @@ namespace AppiSimo.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("Default");
-
                     b.Property<string>("HeatType");
 
                     b.Property<decimal>("Price");
-
-                    b.Property<int>("Priority");
 
                     b.HasKey("Id");
 
@@ -99,13 +95,9 @@ namespace AppiSimo.Api.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("Default");
-
                     b.Property<string>("LightType");
 
                     b.Property<decimal>("Price");
-
-                    b.Property<int>("Priority");
 
                     b.HasKey("Id");
 
