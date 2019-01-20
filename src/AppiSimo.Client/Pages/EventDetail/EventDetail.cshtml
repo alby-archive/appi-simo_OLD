@@ -48,8 +48,6 @@
         <label for="courtsSelect">Campo</label>
         <select class="form-control" id="courtsSelect" bind="@SelectedCourt">
 
-            <option disabled>-- Selezionare un Campo --</option>
-
             @* TODO: ISSUE https://github.com/aspnet/AspNetCore/issues/5616*@
             @foreach (var court in Courts.OrderBy(c => c.Name))
             {

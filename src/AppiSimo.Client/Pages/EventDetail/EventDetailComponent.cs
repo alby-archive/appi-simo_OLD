@@ -50,15 +50,27 @@ namespace AppiSimo.Client.Pages.EventDetail
             Heats = (await HeatEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
             Users = (await UserEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
 
+            if (Entity.UsersEvents == null)
+            {
+                Entity.UsersEvents = new List<UserEvent>();
+            }
+            
             SelectedUsers = Entity.UsersEvents.Select(eu => eu.User).ToList();
             FilteredUsers = Users.Except(SelectedUsers).ToList();
+            Console.WriteLine("COURT: " + Entity.CourtId);
+            
+            Entity.CourtId = Entity.CourtId == Guid.Empty ? Courts.OrderBy(court => court.Name).First().Id : Entity.CourtId;
         }
 
         protected string StartDate { get => Entity.StartDate == DateTime.MinValue ? string.Empty : Entity.StartDate.ToLocalTime().ToString("g"); set => Entity.StartDate = DateTime.Parse(value).ToUniversalTime(); }
 
         protected string EndDate { get => Entity.EndDate == DateTime.MinValue ? string.Empty : Entity.EndDate.ToLocalTime().ToString("g"); set => Entity.EndDate = DateTime.Parse(value).ToUniversalTime(); }
 
-        protected string SelectedCourt { get => Entity.CourtId.ToString(); set => Entity.CourtId = Guid.Parse(value); }
+        protected string SelectedCourt
+        {
+            get => Entity.CourtId.ToString();
+            set => Entity.CourtId = Guid.Parse(value);
+        }
 
         // TODO: https://github.com/aspnet/Blazor/issues/576
         protected string SelectedLight
