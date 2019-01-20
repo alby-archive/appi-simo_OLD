@@ -10,26 +10,26 @@
     public abstract class EntityController<TEntity> : ODataController
         where TEntity : class, IEntity, new()
     {
-        readonly KingRogerContext _context;
+        protected readonly KingRogerContext Context;
 
         protected EntityController(KingRogerContext context)
         {
-            _context = context;
+            Context = context;
         }
 
         [EnableQuery]
         [HttpGet]
-        public virtual IActionResult Get() => Ok(_context.Set<TEntity>());
+        public virtual IActionResult Get() => Ok(Context.Set<TEntity>());
 
         [HttpGet("{key}")]
-        public virtual async Task<IActionResult> Get(Guid key) => Ok(await _context.Set<TEntity>().FindAsync(key));
+        public virtual async Task<IActionResult> Get(Guid key) => Ok(await Context.Set<TEntity>().FindAsync(key));
 
         [HttpPost]   
         [Route("odata/[controller]/[action]")]
         public virtual async Task<IActionResult> Post([FromBody] TEntity entity)
         {
-            var result = await _context.Set<TEntity>().AddAsync(entity);
-            await _context.SaveChangesAsync();
+            var result = await Context.Set<TEntity>().AddAsync(entity);
+            await Context.SaveChangesAsync();
 
             return Created("/", result.Entity);
         }
@@ -38,8 +38,8 @@
         [Route("odata/[controller]/[action]")]
         public virtual async Task<IActionResult> Put([FromBody] TEntity entity)
         {
-            var result = _context.Set<TEntity>().Update(entity);
-            await _context.SaveChangesAsync();
+            var result = Context.Set<TEntity>().Update(entity);
+            await Context.SaveChangesAsync();
 
             return Ok(result.Entity);
         }
@@ -53,8 +53,8 @@
                 Id = key
             };
 
-            var result = _context.Set<TEntity>().Remove(entity);
-            await _context.SaveChangesAsync();
+            var result = Context.Set<TEntity>().Remove(entity);
+            await Context.SaveChangesAsync();
 
             return Ok(result.Entity);
         }

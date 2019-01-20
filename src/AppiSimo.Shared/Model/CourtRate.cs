@@ -1,7 +1,9 @@
 namespace AppiSimo.Shared.Model
 {
     using System;
+    using System.ComponentModel.DataAnnotations.Schema;
 
+    [Table("CourtRate")]
     public class CourtRate : Entity
     {
         public Guid RateId { get; set; }

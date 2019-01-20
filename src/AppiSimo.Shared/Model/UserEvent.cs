@@ -1,8 +1,9 @@
 namespace AppiSimo.Shared.Model
 {
     using System;
-    using Abstract;  
-    
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    [Table("UserEvent")]
     public class UserEvent : Entity
     {
         public User User { get; set; }

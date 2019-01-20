@@ -1,6 +1,10 @@
 namespace AppiSimo.Api.Controllers
 {
+    using System.Linq;
+    using System.Threading.Tasks;
     using Data;
+    using Data.ContextExtensions;
+    using Microsoft.AspNetCore.Mvc;
     using Shared.Model;
 
     public class EventsController : EntityController<Event>
@@ -8,6 +12,15 @@ namespace AppiSimo.Api.Controllers
         public EventsController(KingRogerContext context)
             : base(context)
         {
+        }
+
+        public override async Task<IActionResult> Put(Event entity)
+        {
+            await Context.TryUpdateManyToMany(Context.UserEvents.Where(ue => ue.EventId == entity.Id), entity.UsersEvents, e => e.UserId);
+
+            entity.UsersEvents = null;
+
+            return await base.Put(entity);
         }
     }
 }
