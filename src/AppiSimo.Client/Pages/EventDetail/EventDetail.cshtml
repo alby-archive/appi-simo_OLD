@@ -3,6 +3,8 @@
 
 @inherits EventDetailComponent
 
+@Cost
+
 <form>
 
     <div class="form-group">
@@ -10,10 +12,10 @@
         <input bind="@Filter"/>
         <ul class="overflow-auto list-group list-group-flush" style="max-height: 200px">
 
-            @foreach (var user in FilteredUsers.Where(user => user.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.Name))
+            @foreach (var userEvent in FilteredUserEvents.Where(userEvent => userEvent.User.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
             {
-                <li class="list-group-item user-add-li" onclick="@(() => AddUser(user))">
-                    <span>@user.Name @user.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
+                <li class="list-group-item user-add-li" onclick="@(() => AddUser(userEvent))">
+                    <span>@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
                 </li>
             }
 
@@ -24,10 +26,10 @@
         <label for="startDate" class="control-label">Selected User</label>
         <ul class="list-group list-group-flush">
 
-            @foreach (var user in SelectedUsers)
+            @foreach (var userEvent in Entity.UsersEvents.OrderBy(ue => ue.User.Name))
             {
-                <li class="list-group-item user-remove-li" onclick="@(() => RemoveUser(user))">
-                    <span>@user.Name @user.Surname</span><span class="oi oi-minus float-right" data-toggle="tooltip" aria-hidden="true"></span>
+                <li class="list-group-item user-remove-li" onclick="@(() => RemoveUser(userEvent))">
+                    <span>@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-minus float-right" data-toggle="tooltip" aria-hidden="true"></span><input bind="@userEvent.Cost"/> 
                 </li>
             }
 
@@ -81,6 +83,11 @@
             }
         </select>
     </div>
+    
+    <div class="form-group">
+        <label for="lightDuration" class="control-label">Durata Luce</label>
+        <input id="lightDuration" class="form-control" bind="@Entity.LightDuration"/>
+    </div>
 
     <div class="form-group">
         <label for="heatsSelect">Riscaldamento</label>
@@ -101,6 +108,13 @@
 
         </select>
     </div>
+    
+    <div class="form-group">
+        <label for="heatDuration" class="control-label">Durata Riscaldamento</label>
+        <input id="heatDuration" class="form-control" bind="@Entity.HeatDuration"/>
+    </div>
+    
+    
 
     <div class="form-group">
         <button type="button" class="btn btn-block btn-outline-success" onclick="@(async () => await Save())">Salva</button>

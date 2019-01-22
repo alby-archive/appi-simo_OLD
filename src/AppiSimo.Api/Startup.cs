@@ -74,6 +74,7 @@
             builder.EntitySet<Court>("Courts");
             builder.EntitySet<Light>("Lights");
             builder.EntitySet<Heat>("Heats");
+            builder.EntitySet<Rate>("Rates");
             
             return builder.GetEdmModel();
         }

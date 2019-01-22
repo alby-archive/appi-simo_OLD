@@ -11,9 +11,11 @@ namespace AppiSimo.Shared.Model
         public Court Court { get; set; }
         public Guid? LightId { get; set; }
         public Light Light { get; set; }
+        public double LightDuration { get; set; }
         public Guid? HeatId { get; set; }
         public Heat Heat { get; set; }
+        public double HeatDuration { get; set; }
         public int Users { get; set; }
-        public ICollection<UserEvent> UsersEvents { get; set; }
+        public ICollection<UserEvent> UsersEvents { get; set; } = new List<UserEvent>();
     }
 }
