@@ -3,13 +3,15 @@
 
 @inherits EventDetailComponent
 
-@Cost
-
 <form>
 
     <div class="form-group">
-        <label for="users" class="control-label">Users</label>
-        <input bind="@Filter"/>
+        <div class="input-group mt-3 mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Utenti</span>
+            </div>
+            <input class="form-control" bind="@Filter" placeholder="Cerca..."/>
+        </div>
         <ul class="overflow-auto list-group list-group-flush" style="max-height: 200px">
 
             @foreach (var userEvent in FilteredUserEvents.Where(userEvent => userEvent.User.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
@@ -29,7 +31,24 @@
             @foreach (var userEvent in Entity.UsersEvents.OrderBy(ue => ue.User.Name))
             {
                 <li class="list-group-item user-remove-li" onclick="@(() => RemoveUser(userEvent))">
-                    <span>@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-minus float-right" data-toggle="tooltip" aria-hidden="true"></span><input bind="@userEvent.Cost"/> 
+                    <div class="container">
+                        <div class="row align-middle align-items-center">
+                            <div class="col-7">
+                                <span>@userEvent.User.Name @userEvent.User.Surname</span>
+                            </div>
+                            <div class="col-4">
+                                <div class="input-group">
+                                    <input class="form-control" bind="@userEvent.Cost"/>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">&euro;</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-1">
+                                <span class="oi oi-minus" data-toggle="tooltip" aria-hidden="true"></span>
+                            </div>
+                        </div>
+                    </div>
                 </li>
             }
 
@@ -84,10 +103,13 @@
         </select>
     </div>
     
-    <div class="form-group">
-        <label for="lightDuration" class="control-label">Durata Luce</label>
-        <input id="lightDuration" class="form-control" bind="@Entity.LightDuration"/>
-    </div>
+    @if (SelectedLight != null)
+    {
+        <div class="form-group">
+            <label for="lightDuration" class="control-label">Durata Luce</label>
+            <input id="lightDuration" class="form-control" bind="@Entity.LightDuration"/>
+        </div>
+    }
 
     <div class="form-group">
         <label for="heatsSelect">Riscaldamento</label>
@@ -109,12 +131,13 @@
         </select>
     </div>
     
-    <div class="form-group">
-        <label for="heatDuration" class="control-label">Durata Riscaldamento</label>
-        <input id="heatDuration" class="form-control" bind="@Entity.HeatDuration"/>
-    </div>
-    
-    
+    @if (SelectedHeat != null)
+    {
+        <div class="form-group">
+            <label for="heatDuration" class="control-label">Durata Riscaldamento</label>
+            <input id="heatDuration" class="form-control" bind="@Entity.HeatDuration"/>
+        </div>
+    }
 
     <div class="form-group">
         <button type="button" class="btn btn-block btn-outline-success" onclick="@(async () => await Save())">Salva</button>
