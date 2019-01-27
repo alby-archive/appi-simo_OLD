@@ -12,7 +12,7 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
         [Parameter]
         string Id { get; set; }
 
-        protected TEntity Entity { get; private set; } = new TEntity();
+        protected TEntity Entity { get; set; } = new TEntity();
 
         protected abstract DataServiceQuery<TEntity> Selector(DataServiceQuery<TEntity> entity);
 

@@ -16,6 +16,11 @@ namespace AppiSimo.Api.Controllers
 
         public override async Task<IActionResult> Put(Event entity)
         {
+            foreach (var usersEvent in entity.UsersEvents)
+            {
+                usersEvent.User = null;
+            }
+        
             await Context.TryUpdateManyToMany(Context.UserEvents.Where(ue => ue.EventId == entity.Id), entity.UsersEvents, e => e.UserId);
 
             entity.UsersEvents = null;

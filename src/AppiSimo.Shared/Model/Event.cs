@@ -2,6 +2,7 @@ namespace AppiSimo.Shared.Model
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Event : Entity
     {
@@ -17,5 +18,7 @@ namespace AppiSimo.Shared.Model
         public double HeatDuration { get; set; }
         public int Users { get; set; }
         public ICollection<UserEvent> UsersEvents { get; set; } = new List<UserEvent>();
+        [NotMapped]
+        public decimal Cost { get; set; }
     }
 }

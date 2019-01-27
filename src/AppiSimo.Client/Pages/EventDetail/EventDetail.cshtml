@@ -14,7 +14,7 @@
         </div>
         <ul class="overflow-auto list-group list-group-flush" style="max-height: 200px">
 
-            @foreach (var userEvent in FilteredUserEvents.Where(userEvent => userEvent.User.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
+            @foreach (var userEvent in ViewModel.FilteredUserEvents.Where(userEvent => userEvent.User.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
             {
                 <li class="list-group-item user-add-li" onclick="@(() => AddUser(userEvent))">
                     <span>@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
@@ -28,7 +28,7 @@
         <label for="startDate" class="control-label">Selected User</label>
         <ul class="list-group list-group-flush">
 
-            @foreach (var userEvent in Entity.UsersEvents.OrderBy(ue => ue.User.Name))
+            @foreach (var userEvent in ViewModel.SelectedUserEvents.OrderBy(ue => ue.User.Name))
             {
                 <li class="list-group-item user-remove-li" onclick="@(() => RemoveUser(userEvent))">
                     <div class="container">
@@ -38,7 +38,7 @@
                             </div>
                             <div class="col-4">
                                 <div class="input-group">
-                                    <input class="form-control" bind="@userEvent.Cost"/>
+                                    <input class="form-control" bind="@userEvent.FormattedCost"/>
                                     <div class="input-group-append">
                                         <span class="input-group-text">&euro;</span>
                                     </div>
@@ -57,22 +57,22 @@
 
     <div class="form-group">
         <label for="startDate" class="control-label">StartDate</label>
-        <input id="startDate" class="form-control" bind="@StartDate"/>
+        <input id="startDate" class="form-control" bind="@ViewModel.SelectedStartDate"/>
     </div>
 
     <div class="form-group">
         <label for="endDate" class="control-label">EndDate</label>
-        <input id="endDate" class="form-control" bind="@EndDate"/>
+        <input id="endDate" class="form-control" bind="@ViewModel.SelectedEndDate"/>
     </div>
 
     <div class="form-group">
         <label for="courtsSelect">Campo</label>
-        <select class="form-control" id="courtsSelect" bind="@SelectedCourt">
-
+        <select class="form-control" id="courtsSelect" bind="@ViewModel.SelectedCourt">
+            
             @* TODO: ISSUE https://github.com/aspnet/AspNetCore/issues/5616*@
-            @foreach (var court in Courts.OrderBy(c => c.Name))
+            @foreach (var court in ViewModel.Courts.OrderBy(c => c.Name))
             {
-                if (Entity.CourtId == court.Id)
+                if (ViewModel.SelectedCourt == court.Id.ToString())
                 {
                     <option selected value="@court.Id">@court.Name</option>
 
@@ -86,13 +86,13 @@
 
     <div class="form-group">
         <label for="lightsSelect">Luce</label>
-        <select class="form-control" id="lightsSelect" bind="@SelectedLight">
+        <select class="form-control" id="lightsSelect" bind="@ViewModel.SelectedLight">
 
             <option value="">No Luce</option>
 
-            @foreach (var light in Lights.OrderBy(l => l.LightType))
+            @foreach (var light in ViewModel.Lights.OrderBy(l => l.LightType))
             {
-                if (Entity.Light?.Id == light.Id)
+                if (ViewModel.SelectedLight == light.Id.ToString())
                 {
                     <option selected value="@light.Id">@light.LightType</option>
                     continue;
@@ -103,23 +103,23 @@
         </select>
     </div>
     
-    @if (SelectedLight != null)
+    @if (ViewModel.SelectedLight != null)
     {
         <div class="form-group">
             <label for="lightDuration" class="control-label">Durata Luce</label>
-            <input id="lightDuration" class="form-control" bind="@Entity.LightDuration"/>
+            <input id="lightDuration" class="form-control" bind="@ViewModel.SelectedLightDuration"/>
         </div>
     }
 
     <div class="form-group">
         <label for="heatsSelect">Riscaldamento</label>
-        <select class="form-control" id="heatsSelect" bind="@SelectedHeat">
+        <select class="form-control" id="heatsSelect" bind="@ViewModel.SelectedHeat">
 
             <option value="">No Riscaldamento</option>
 
-            @foreach (var heat in Heats.OrderBy(h => h.HeatType))
+            @foreach (var heat in ViewModel.Heats.OrderBy(h => h.HeatType))
             {
-                if (Entity.HeatId == heat.Id)
+                if (ViewModel.SelectedHeat == heat.Id.ToString())
                 {
                     <option selected value="@heat.Id">@heat.HeatType</option>
                     continue;
@@ -131,16 +131,16 @@
         </select>
     </div>
     
-    @if (SelectedHeat != null)
+    @if (ViewModel.SelectedHeat != null)
     {
         <div class="form-group">
             <label for="heatDuration" class="control-label">Durata Riscaldamento</label>
-            <input id="heatDuration" class="form-control" bind="@Entity.HeatDuration"/>
+            <input id="heatDuration" class="form-control" bind="@ViewModel.SelectedHeatDuration"/>
         </div>
     }
 
     <div class="form-group">
         <button type="button" class="btn btn-block btn-outline-success" onclick="@(async () => await Save())">Salva</button>
-        <button type="button" class="btn btn-block btn-outline-danger" style="display: @(Entity.Id != Guid.Empty ? "inline-block;" : "none");" onclick="@(async () => await Delete())">Cancella</button>
+        <button type="button" class="btn btn-block btn-outline-danger" style="display: @(ViewModel.IsNewEntity() ? "inline-block;" : "none");" onclick="@(async () => await Delete())">Cancella</button>
     </div>
 </form>
