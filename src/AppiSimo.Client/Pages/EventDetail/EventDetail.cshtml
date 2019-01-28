@@ -58,37 +58,37 @@
     <div class="form-group">
         <label for="startDate" class="control-label">StartDate</label>
         <input id="startDate" class="form-control" bind="@ViewModel.SelectedStartDate"/>
-        @if (!ViewModel.IsValidStarDate)
-        {
-            <label class="is-invalid">Il formato della data non &egrave; corretto</label>
-        }
-        @if (ViewModel.State.Properties.ContainsKey("StartDate"))
-        {
-            <label class="is-invalid">
-                @foreach (var error in ViewModel.State.Properties["StartDate"].Errors)
+        <ul>
+            @if (!ViewModel.IsValidStarDate)
+            {
+                <li class="text-danger">Il formato della data non &egrave; corretto</li>
+            }
+            else if (ViewModel.State.Properties.ContainsKey("StartDate"))
+            {
+                foreach (var error in ViewModel.State.Properties["StartDate"].Errors)
                 {
-                    @error
+                    <li class="text-danger">@error</li>
                 }
-            </label>
-        }
+            }
+        </ul>
     </div>
 
     <div class="form-group">
         <label for="endDate" class="control-label">EndDate</label>
         <input id="endDate" class="form-control" bind="@ViewModel.SelectedEndDate"/>
-        @if (!ViewModel.IsValidEndDate)
-        {
-            <label class="is-invalid">Il formato della data non &egrave; corretto</label>
-        }
-        @if (ViewModel.State.Properties.ContainsKey("EndDate"))
-        {
-            <label class="is-invalid">
-                @foreach (var error in ViewModel.State.Properties["EndDate"].Errors)
+        <ul>
+            @if (!ViewModel.IsValidEndDate)
+            {
+                <li class="text-danger">Il formato della data non &egrave; corretto</li>
+            }
+            else if (ViewModel.State.Properties.ContainsKey("EndDate"))
+            {
+                foreach (var error in ViewModel.State.Properties["EndDate"].Errors)
                 {
-                    @error
+                    <li class="text-danger">@error</li>
                 }
-            </label>
-        }
+            }
+        </ul>
     </div>
 
     <div class="form-group">
