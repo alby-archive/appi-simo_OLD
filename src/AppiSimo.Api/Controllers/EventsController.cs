@@ -21,7 +21,7 @@ namespace AppiSimo.Api.Controllers
                 usersEvent.User = null;
             }
         
-            await Context.TryUpdateManyToMany(Context.UserEvents.Where(ue => ue.EventId == entity.Id), entity.UsersEvents, e => e.UserId);
+            await Context.TryUpdateManyToMany(Context.UserEvents.Where(ue => ue.EventId == entity.Id), entity.UsersEvents, e => (e.UserId, e.Cost));
 
             entity.UsersEvents = null;
 

@@ -71,6 +71,7 @@ namespace AppiSimo.Client.Pages.EventDetail
         protected override async Task Save()
         {
             Entity = ViewModel.Event;
+            Entity.UsersEvents = ViewModel.SelectedUserEvents;
 
             await base.Save();
             GoToEvents();

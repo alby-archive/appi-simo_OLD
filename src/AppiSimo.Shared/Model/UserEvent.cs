@@ -2,7 +2,6 @@ namespace AppiSimo.Shared.Model
 {
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
-    using System.Runtime.ExceptionServices;
 
     [Table("UserEvent")]
     public class UserEvent : Entity
@@ -13,6 +12,7 @@ namespace AppiSimo.Shared.Model
         public Guid EventId { get; set; }
         public decimal Cost { get; private set; }
         
+        // TODO: evaluate if leave this property 
         [NotMapped]
         public string FormattedCost
         {
