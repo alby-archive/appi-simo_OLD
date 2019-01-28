@@ -27,6 +27,7 @@ namespace AppiSimo.Client
             });
 
             services.AddEndPoints(config);
+            services.AddValidatorModdleWare();
             services.AddRxServices();
         }
 

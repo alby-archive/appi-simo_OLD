@@ -5,10 +5,13 @@ namespace AppiSimo.Client.Shared.Model
     using System.Linq;
     using Abstract;
     using AppiSimo.Shared.Model;
+    using AppiSimo.Shared.Validators.Abstract;
+    using AppiSimo.Shared.Validators.Model;
 
     public class EventDetailView : IViewModel<Event>
     {
-        public Event Entity { get; }
+        readonly IValidator<Event> _validator;
+        public Event Event { get; }
 
         public ICollection<UserEvent> SelectedUserEvents { get; set; } = new List<UserEvent>();
 
@@ -24,103 +27,111 @@ namespace AppiSimo.Client.Shared.Model
         public bool IsValidStarDate { get; set; }
         public bool IsValidEndDate { get; set; }
 
+        public Result State { get; set; } = Result.Valid;
+
         public EventDetailView()
         {
-            Entity = new Event();
+            Event = new Event();
         }
 
-        public EventDetailView(Event @event, IEnumerable<User> users, IEnumerable<Court> courts, IEnumerable<Light> lights, IEnumerable<Heat> heats)
+        public EventDetailView(Event @event, IEnumerable<User> users, IEnumerable<Court> courts, IEnumerable<Light> lights, IEnumerable<Heat> heats, IValidator<Event> validator)
         {
-            Entity = @event;
+            Event = @event;
+
+            _validator = validator;
 
             Lights = lights.ToList();
             Heats = heats.ToList();
             Courts = courts.ToList();
 
             SelectedCourt = @event.CourtId == Guid.Empty ? Courts.OrderBy(court => court.Name).First().Id.ToString() : @event.CourtId.ToString();
-            
+
             SelectedUserEvents = @event.UsersEvents;
             FilteredUserEvents = users.Where(user => !SelectedUserEvents.Select(sue => sue.UserId).Contains(user.Id)).Select(user => new UserEvent { EventId = @event.Id, UserId = user.Id, User = user }).ToList();
+
+            IsValidStarDate = IsValidEndDate = !IsNewEntity();
         }
 
-        public bool IsNewEntity() => Entity.Id == Guid.Empty;
+        public bool IsNewEntity() => Event.Id == Guid.Empty;
 
         public string SelectedStartDate
         {
-            get => Entity.StartDate == DateTime.MinValue ? string.Empty : Entity.StartDate.ToLocalTime().ToString("g");
+            get => Event.StartDate == DateTime.MinValue ? string.Empty : Event.StartDate.ToLocalTime().ToString("g");
             set
             {
                 IsValidStarDate = DateTime.TryParse(value, out var datetime);
 
-                Entity.StartDate = datetime.ToUniversalTime();
+                Event.StartDate = datetime.ToUniversalTime();
                 SetLightAndHeatDuration();
+                State = _validator.Validate(Event);
             }
         }
 
         public string SelectedEndDate
         {
-            get => Entity.EndDate == DateTime.MinValue ? string.Empty : Entity.EndDate.ToLocalTime().ToString("g");
+            get => Event.EndDate == DateTime.MinValue ? string.Empty : Event.EndDate.ToLocalTime().ToString("g");
             set
             {
                 IsValidEndDate = DateTime.TryParse(value, out var datetime);
 
-                Entity.EndDate = datetime.ToUniversalTime();
+                Event.EndDate = datetime.ToUniversalTime();
                 SetLightAndHeatDuration();
+                State = _validator.Validate(Event);
             }
         }
 
-        public string SelectedCourt { get => Entity.CourtId.ToString(); set => Entity.CourtId = Guid.Parse(value); }
+        public string SelectedCourt { get => Event.CourtId.ToString(); set => Event.CourtId = Guid.Parse(value); }
 
         // TODO: https://github.com/aspnet/Blazor/issues/576
         public string SelectedLight
         {
-            get => Entity.LightId?.ToString();
+            get => Event.LightId?.ToString();
             set
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    Entity.LightId = null;
+                    Event.LightId = null;
                 }
                 else
                 {
-                    Entity.LightId = Guid.Parse(value);
+                    Event.LightId = Guid.Parse(value);
                 }
             }
         }
 
         public string SelectedLightDuration
         {
-            get => Entity.LightDuration.ToString("0.0");
+            get => Event.LightDuration.ToString("0.0");
             set
             {
                 var isValidDuration = double.TryParse(value, out var duration);
-                Entity.LightDuration = isValidDuration ? duration : 0;
+                Event.LightDuration = isValidDuration ? duration : 0;
             }
         }
 
         public string SelectedHeat
         {
-            get => Entity.HeatId?.ToString();
+            get => Event.HeatId?.ToString();
             set
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    Entity.HeatId = null;
+                    Event.HeatId = null;
                 }
                 else
                 {
-                    Entity.HeatId = Guid.Parse(value);
+                    Event.HeatId = Guid.Parse(value);
                 }
             }
         }
 
         public string SelectedHeatDuration
         {
-            get => Entity.HeatDuration.ToString("0.0");
+            get => Event.HeatDuration.ToString("0.0");
             set
             {
                 var isValidDuration = double.TryParse(value, out var duration);
-                Entity.HeatDuration = isValidDuration ? duration : 0;
+                Event.HeatDuration = isValidDuration ? duration : 0;
             }
         }
 
@@ -133,14 +144,18 @@ namespace AppiSimo.Client.Shared.Model
                 return duration;
             }
 
-            duration = (Entity.EndDate - Entity.StartDate).TotalMinutes > 0 ? (Entity.EndDate - Entity.StartDate).TotalMinutes : 0;
+            duration = (Event.EndDate - Event.StartDate).TotalMinutes > 0 ? (Event.EndDate - Event.StartDate).TotalMinutes : 0;
 
             return duration;
         }
 
         void SetLightAndHeatDuration()
         {
-            Entity.LightDuration = Entity.HeatDuration = GetDuration() / 60;
+            Event.LightDuration = Event.HeatDuration = GetDuration() / 60;
+        }
+
+        void Validate()
+        {
         }
     }
 }

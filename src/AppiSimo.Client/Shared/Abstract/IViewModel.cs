@@ -2,6 +2,6 @@ namespace AppiSimo.Client.Shared.Abstract
 {
     public interface IViewModel<out T>
     {
-        T Entity { get; }
+        T Event { get; }
     }
 }

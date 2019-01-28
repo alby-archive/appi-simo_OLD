@@ -4,6 +4,8 @@ namespace AppiSimo.Client.Pages.EventDetail
     using System.Linq;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Model;
+    using AppiSimo.Shared.Validators;
+    using AppiSimo.Shared.Validators.Abstract;
     using EndPoints;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
@@ -27,6 +29,9 @@ namespace AppiSimo.Client.Pages.EventDetail
 
         [Inject]
         EndPoint<User> UserEndPoint { get; set; }
+        
+        [Inject]
+        IValidator<Event> Validator { get; set; }
 
         protected override DataServiceQuery<Event> Selector(DataServiceQuery<Event> @event) => @event.Expand("UsersEvents($expand=User)");
 
@@ -43,7 +48,8 @@ namespace AppiSimo.Client.Pages.EventDetail
             var heats = (await HeatEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
             var courts = (await CourtEndPoint.Entities.IncludeTotalCount().Expand("CourtsRates($expand=Rate)").ToListAsync(CourtEndPoint.Client)).Value;
             
-            ViewModel = new EventDetailView(Entity, users, courts, lights, heats);
+            ViewModel = new EventDetailView(Entity, users, courts, lights, heats, Validator);
+            StateHasChanged();
         }
 
         protected void AddUser(UserEvent userEvent)
@@ -64,7 +70,7 @@ namespace AppiSimo.Client.Pages.EventDetail
 
         protected override async Task Save()
         {
-            Entity = ViewModel.Entity;
+            Entity = ViewModel.Event;
 
             await base.Save();
             GoToEvents();
