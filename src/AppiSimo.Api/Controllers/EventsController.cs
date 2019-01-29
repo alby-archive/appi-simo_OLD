@@ -27,5 +27,15 @@ namespace AppiSimo.Api.Controllers
 
             return await base.Put(entity);
         }
+        
+        public override async Task<IActionResult> Post(Event entity)
+        {
+            foreach (var usersEvent in entity.UsersEvents)
+            {
+                usersEvent.User = null;
+            }
+        
+            return await base.Post(entity);
+        }
     }
 }

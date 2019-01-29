@@ -10,7 +10,7 @@ namespace AppiSimo.Shared.Model
         public Guid UserId { get; set; }
         public Event Event { get; set; }
         public Guid EventId { get; set; }
-        public decimal Cost { get; private set; }
+        public decimal Cost { get; set; }
         
         // TODO: evaluate if leave this property 
         [NotMapped]

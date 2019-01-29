@@ -72,6 +72,7 @@ namespace AppiSimo.Client.Pages.EventDetail
         {
             Entity = ViewModel.Event;
             Entity.UsersEvents = ViewModel.SelectedUserEvents;
+            Entity.Users = Entity.UsersEvents.Count;
 
             await base.Save();
             GoToEvents();

@@ -26,7 +26,10 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<KingRogerContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("KingRoger_DEV_Database"), b => b.MigrationsAssembly("AppiSimo.Api")));
+            {
+                options.EnableSensitiveDataLogging();
+                options.UseNpgsql(Configuration.GetConnectionString("KingRoger_DEV_Database"), b => b.MigrationsAssembly("AppiSimo.Api"));
+            });
 
             services.AddOData();
             
