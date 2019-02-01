@@ -19,8 +19,6 @@ namespace AppiSimo.Client.Shared.Model
 
         public ICollection<Court> Courts { get; } = new List<Court>();
 
-        public ICollection<Heat> Heats { get; } = new List<Heat>();
-
         // Validation Properties
         public bool IsValidStarDate { get; set; }
         public bool IsValidEndDate { get; set; }
@@ -32,26 +30,19 @@ namespace AppiSimo.Client.Shared.Model
             Event = new Event();
         }
 
-        public EventDetailView(Event @event, IEnumerable<User> users, IEnumerable<Court> courts, IEnumerable<Heat> heats, IValidator<Event> validator)
+        public EventDetailView(Event @event, IEnumerable<User> users, IEnumerable<Court> courts, IValidator<Event> validator)
         {
             Event = @event;
 
             _validator = validator;
 
-            Heats = heats.ToList();
             Courts = courts.ToList();
             
-            Console.WriteLine("QUI 1");
-
             SelectedCourt = @event.CourtId == Guid.Empty ? Courts.OrderBy(court => court.Name).First().Id.ToString() : @event.CourtId.ToString();
 
-            Console.WriteLine("QUI 1");
-            
             SelectedUserEvents = @event.UsersEvents;
             FilteredUserEvents = users.Where(user => !SelectedUserEvents.Select(sue => sue.UserId).Contains(user.Id)).Select(user => new UserEvent { EventId = @event.Id, UserId = user.Id, User = user }).ToList();
 
-            Console.WriteLine("QUI 1");
-            
             IsValidStarDate = IsValidEndDate = !IsNewEntity();
         }
 
@@ -113,6 +104,8 @@ namespace AppiSimo.Client.Shared.Model
                 Event.LightDuration = isValidDuration ? duration : 0;
             }
         }
+        
+        public Heat SelectedCourtHeat => Courts.FirstOrDefault(court => court.Id.ToString() == SelectedCourt)?.Heat ?? new Heat();
 
         public string SelectedHeat
         {

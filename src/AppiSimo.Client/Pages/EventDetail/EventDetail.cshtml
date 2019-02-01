@@ -142,15 +142,13 @@
 
             <option value="">No Riscaldamento</option>
 
-            @foreach (var heat in ViewModel.Heats.OrderBy(h => h.HeatType))
+            @if(ViewModel.SelectedHeat != null)
             {
-                if (ViewModel.SelectedHeat == heat.Id.ToString())
-                {
-                    <option selected value="@heat.Id">@heat.HeatType</option>
-                    continue;
-                }
-
-                <option value="@heat.Id">@heat.HeatType</option>
+                <option selected value="@ViewModel.SelectedCourtHeat.Id">@ViewModel.SelectedCourtHeat.HeatType</option>
+            }
+            else
+            {
+                <option value="@ViewModel.SelectedCourtHeat.Id">@ViewModel.SelectedCourtHeat.HeatType</option>
             }
 
         </select>
