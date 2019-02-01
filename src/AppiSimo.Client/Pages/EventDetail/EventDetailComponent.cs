@@ -20,10 +20,6 @@ namespace AppiSimo.Client.Pages.EventDetail
 
         [Inject]
         EndPoint<Court> CourtEndPoint { get; set; }
-
-        [Inject]
-        EndPoint<Light> LightEndPoint { get; set; }
-
         [Inject]
         EndPoint<Heat> HeatEndPoint { get; set; }
 
@@ -44,11 +40,10 @@ namespace AppiSimo.Client.Pages.EventDetail
             await base.OnInitAsync();
 
             var users = (await UserEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
-            var lights = (await LightEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
             var heats = (await HeatEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
-            var courts = (await CourtEndPoint.Entities.IncludeTotalCount().Expand("CourtsRates($expand=Rate)").ToListAsync(CourtEndPoint.Client)).Value;
+            var courts = (await CourtEndPoint.Entities.IncludeTotalCount().Expand(court => court.Light).Expand("CourtsRates($expand=Rate)").ToListAsync(CourtEndPoint.Client)).Value;
             
-            ViewModel = new EventDetailView(Entity, users, courts, lights, heats, Validator);
+            ViewModel = new EventDetailView(Entity, users, courts, heats, Validator);
             StateHasChanged();
         }
 

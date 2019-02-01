@@ -5,6 +5,7 @@ namespace AppiSimo.Shared.Model
     public class Court : Entity
     {
         public string Name { get; set; }
+        public Light Light { get; set; } = new Light();
         public ICollection<CourtRate> CourtsRates { get; set; }
     }
 }

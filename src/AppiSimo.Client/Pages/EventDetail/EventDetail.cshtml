@@ -116,16 +116,15 @@
 
             <option value="">No Luce</option>
 
-            @foreach (var light in ViewModel.Lights.OrderBy(l => l.LightType))
+            @if(ViewModel.SelectedLight != null)
             {
-                if (ViewModel.SelectedLight == light.Id.ToString())
-                {
-                    <option selected value="@light.Id">@light.LightType</option>
-                    continue;
-                }
-
-                <option value="@light.Id">@light.LightType</option>
+                <option selected value="@ViewModel.SelectedCourtLight.Id">@ViewModel.SelectedCourtLight.LightType</option>
             }
+            else
+            {
+                <option value="@ViewModel.SelectedCourtLight.Id">@ViewModel.SelectedCourtLight.LightType</option>
+            }
+
         </select>
     </div>
 
