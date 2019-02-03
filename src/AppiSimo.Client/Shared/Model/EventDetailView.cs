@@ -37,7 +37,7 @@ namespace AppiSimo.Client.Shared.Model
             _validator = validator;
 
             Courts = courts.ToList();
-            
+
             SelectedCourt = @event.CourtId == Guid.Empty ? Courts.OrderBy(court => court.Name).First().Id.ToString() : @event.CourtId.ToString();
 
             SelectedUserEvents = @event.UsersEvents;
@@ -47,6 +47,16 @@ namespace AppiSimo.Client.Shared.Model
         }
 
         public bool IsNewEntity() => Event.Id == Guid.Empty;
+
+        public void SwitchPayment(Guid id)
+        {
+            var userEvent = SelectedUserEvents.FirstOrDefault(ue => ue.UserId == id);
+
+            if (userEvent != null)
+            {
+                userEvent.Paid = !userEvent.Paid;
+            }
+        }
 
         public string SelectedStartDate
         {
@@ -104,7 +114,7 @@ namespace AppiSimo.Client.Shared.Model
                 Event.LightDuration = isValidDuration ? duration : 0;
             }
         }
-        
+
         public Heat SelectedCourtHeat => Courts.FirstOrDefault(court => court.Id.ToString() == SelectedCourt)?.Heat ?? new Heat();
 
         public string SelectedHeat
@@ -150,10 +160,6 @@ namespace AppiSimo.Client.Shared.Model
         void SetLightAndHeatDuration()
         {
             Event.LightDuration = Event.HeatDuration = GetDuration() / 60;
-        }
-
-        void Validate()
-        {
         }
     }
 }

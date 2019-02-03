@@ -33,7 +33,10 @@
                 <li class="list-group-item user-remove-li">
                     <div class="container">
                         <div class="row align-middle align-items-center">
-                            <div class="col-7" onclick="@(() => RemoveUser(userEvent))">
+                            <div class="col-1" onclick="@(() => ViewModel.SwitchPayment(userEvent.UserId))">
+                                <input type="checkbox" class="form-check-input" bind="@userEvent.Paid"/>
+                            </div>
+                            <div class="col-6" onclick="@(() => RemoveUser(userEvent))">
                                 <span>@userEvent.User.Name @userEvent.User.Surname</span>
                             </div>
                             <div class="col-4">
@@ -57,7 +60,7 @@
 
     <div class="form-group">
         <label for="startDate" class="control-label">StartDate</label>
-        <input id="startDate" class="form-control" bind="@ViewModel.SelectedStartDate"/>
+        <input id="startDate" class="form-control" bind="@ViewModel.SelectedStartDate" placeholder="gg/mm/aaaa hh:mm"/>
         <ul>
             @if (!ViewModel.IsValidStarDate)
             {
@@ -75,7 +78,7 @@
 
     <div class="form-group">
         <label for="endDate" class="control-label">EndDate</label>
-        <input id="endDate" class="form-control" bind="@ViewModel.SelectedEndDate"/>
+        <input id="endDate" class="form-control" bind="@ViewModel.SelectedEndDate" placeholder="gg/mm/aaaa hh:mm"/>
         <ul>
             @if (!ViewModel.IsValidEndDate)
             {
@@ -116,7 +119,7 @@
 
             <option value="">No Luce</option>
 
-            @if(ViewModel.SelectedLight != null)
+            @if (ViewModel.SelectedLight != null)
             {
                 <option selected value="@ViewModel.SelectedCourtLight.Id">@ViewModel.SelectedCourtLight.LightType</option>
             }
@@ -142,7 +145,7 @@
 
             <option value="">No Riscaldamento</option>
 
-            @if(ViewModel.SelectedHeat != null)
+            @if (ViewModel.SelectedHeat != null)
             {
                 <option selected value="@ViewModel.SelectedCourtHeat.Id">@ViewModel.SelectedCourtHeat.HeatType</option>
             }

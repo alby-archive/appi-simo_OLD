@@ -20,5 +20,7 @@ namespace AppiSimo.Shared.Model
         public ICollection<UserEvent> UsersEvents { get; set; } = new List<UserEvent>();
         [NotMapped]
         public decimal Cost { get; set; }
+        
+        public bool Paid { get; set; }
     }
 }

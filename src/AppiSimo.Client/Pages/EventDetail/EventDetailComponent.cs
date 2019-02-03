@@ -1,10 +1,8 @@
 namespace AppiSimo.Client.Pages.EventDetail
 {
-    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Model;
-    using AppiSimo.Shared.Validators;
     using AppiSimo.Shared.Validators.Abstract;
     using EndPoints;
     using Microsoft.AspNetCore.Blazor.Components;
@@ -23,7 +21,7 @@ namespace AppiSimo.Client.Pages.EventDetail
 
         [Inject]
         EndPoint<User> UserEndPoint { get; set; }
-        
+
         [Inject]
         IValidator<Event> Validator { get; set; }
 
@@ -39,7 +37,7 @@ namespace AppiSimo.Client.Pages.EventDetail
 
             var users = (await UserEndPoint.Entities.IncludeTotalCount().ToListAsync(CourtEndPoint.Client)).Value;
             var courts = (await CourtEndPoint.Entities.IncludeTotalCount().Expand(court => court.Light).Expand(court => court.Heat).Expand("CourtsRates($expand=Rate)").ToListAsync(CourtEndPoint.Client)).Value;
-            
+
             ViewModel = new EventDetailView(Entity, users, courts, Validator);
             StateHasChanged();
         }

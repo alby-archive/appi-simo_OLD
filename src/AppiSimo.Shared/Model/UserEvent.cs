@@ -11,6 +11,7 @@ namespace AppiSimo.Shared.Model
         public Event Event { get; set; }
         public Guid EventId { get; set; }
         public decimal Cost { get; set; }
+        public bool Paid { get; set; }
         
         // TODO: evaluate if leave this property 
         [NotMapped]
