@@ -34,10 +34,5 @@ namespace AppiSimo.Client.Pages.PaymentsDetail
             var eventsNotPaid = Entities.Where(userEvent => !userEvent.Paid);
             return eventsNotPaid.Sum(userEvent => userEvent.Cost);
         }
-
-        protected void GoToEventDetail(Guid id)
-        {
-            UriHelper.NavigateTo($"/event/{id}");
-        }
     }
 }

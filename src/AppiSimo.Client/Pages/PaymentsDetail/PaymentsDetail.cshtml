@@ -1,71 +1,84 @@
 @page "/payments/{id}"
 
+@using AppiSimo.Shared.Model
 @inherits PaymentsDetailComponent
 
 <br/>
 
 @if (!Entities.Any())
 {
-    <h2>L'utente selezionato non ha prenotazioni!</h2>
+    <h2 class="display-4">L'utente selezionato non ha prenotazioni!</h2>
     return;
 }
 
 <div class="row">
-    <h2>@Entities.FirstOrDefault()?.User.Name @Entities.FirstOrDefault()?.User.Surname</h2>
+    <h2 class="display-3">@Entities.FirstOrDefault()?.User.Name @Entities.FirstOrDefault()?.User.Surname</h2>
 </div>
 
 <div class="row">
-    <h4>Totale da corrispondere: @GetTotalNotPaid() &euro;</h4>
+    <h4 class="display-4 text-muted">Totale da corrispondere: @GetTotalNotPaid() &euro;</h4>
 </div>
 
 <div class="row">
-    <SearcherView SearcherService="@SearcherService"/>
-</div>
-
-<div class="row">
-    <div class="table-responsive">
-
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Importo Dovuto</th>
-                <th>Data</th>
-                <th>Ora Inizio</th>
-                <th>Ora Fine</th>
-                <th>Pagato</th>
-                <th></th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var userEvent in Entities)
+    @foreach (var userEvent in Entities
+        .OrderByDescending(userEvent => userEvent.Paid)
+        .ThenByDescending(userEvent => userEvent.Event.StartDate))
+    {
+        <div class="card text-center m-2" style="min-width: 320px">
+            @if (!userEvent.Paid)
             {
-                <tr>
-                    <td>@userEvent.Cost &euro;</td>
-                    <td>
-                        @(userEvent.Event.StartDate.DayOfWeek == userEvent.Event.EndDate.DayOfWeek
-                              ? userEvent.Event.StartDate.ToString("d")
-                              : $"{userEvent.Event.StartDate:d} - {userEvent.Event.StartDate:d}"
-                              )
-                    </td>
-                    <td>@userEvent.Event.StartDate.ToLocalTime().ToString("t")</td>
-                    <td>@userEvent.Event.EndDate.ToLocalTime().ToString("t")</td>
-                    <td>@(userEvent.Paid ? "Si" : "No")</td>
-                    <td>
-                        <input type="button" class="btn btn-outline-dark" onclick="@(() => GoToEventDetail(userEvent.Event.Id))" value="Dettaglio"/>
-                    </td>
-                    <td>
-                        @if (!userEvent.Paid)
-                        {
-                            <input type="button" class="btn btn-outline-dark" onclick="@(async () => await MarkAsPaid(userEvent))" value="Pagato"/>
-                        }
-                    </td>
-                </tr>
+                <div class="card-header bg-success text-white font-weight-bold">Pagato</div>
             }
-
-            </tbody>
-        </table>
-    </div>
+            else
+            {
+                <div class="card-header bg-danger text-white font-weight-bold">Ancora da Pagare</div>
+            }
+            <div class="card-body text-justify container-fluid font-weight-bold bg-light">
+                <p>
+                    <span>Importo: </span><span class="text-secondary">@userEvent.Cost &euro;</span>
+                </p>
+                <p>
+                    <span>Giorno: </span>
+                    <span class="text-secondary">
+                        @(userEvent.Event.StartDate.DayOfWeek == userEvent.Event.EndDate.DayOfWeek ? $"{userEvent.Event.StartDate:d}" : $"{userEvent.Event.StartDate:d} - {userEvent.Event.StartDate:d}")
+                    </span>
+                </p>
+                <p>
+                    <span>Data Inizio: </span><span class="text-secondary">@userEvent.Event.StartDate.ToLocalTime().ToString("t")</span>
+                </p>
+                <p>
+                    <span>Data Fine: </span><span class="text-secondary">@userEvent.Event.EndDate.ToLocalTime().ToString("t")</span>
+                </p>
+                @if (userEvent.Event.LightDuration > 0)
+                {
+                    <p>
+                        <span class="oi oi-lightbulb"></span>
+                        &nbsp;
+                        <span class="text-secondary">@($"{userEvent.Event.LightDuration:0.0}")</span>
+                    </p>
+                }
+                @if (userEvent.Event.HeatDuration > 0)
+                {
+                    <p>
+                        <span class="oi oi-fire"></span>
+                        &nbsp;
+                        <span class="text-secondary">@($"{userEvent.Event.HeatDuration:0.0}")</span>
+                    </p>
+                }
+            </div>
+            <div class="card-footer bg-light text-white d-flex">
+                <a class="btn btn-outline-info w-50 mr-2" href=@($"/event/{userEvent.EventId}")>Dettaglio</a>
+                @if (userEvent.Paid)
+                {
+                    <input type="button" class="btn btn-outline-success w-50 ml-2" onclick="@(async () => await MarkAsPaid(userEvent))" value="Paga"/>
+                }
+                else
+                {
+                    <input type="button" class="btn btn-outline-danger w-50 ml-2" onclick="@(async () => await MarkAsPaid(userEvent))" value="Annulla"/>
+                }
+            </div>
+        </div>
+    }
 </div>
 
 <div class="row">
