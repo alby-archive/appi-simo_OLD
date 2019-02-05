@@ -8,9 +8,11 @@ namespace AppiSimo.Client.Pages.Events
 
     public class EventsComponent : BaseDetailFilterComponent<Event>
     {
-        protected override IQueryable<Event> Selector(DataServiceQuery<Event> events, Searcher _) => events
+        protected override IQueryable<Event> Selector(DataServiceQuery<Event> events, Searcher searcher) => events
             .Expand(userEvent => userEvent.Court)
             .Expand("UsersEvents($expand=User)")
-            .Expand("UsersEvents($expand=Event)");
+            .Expand("UsersEvents($expand=Event)")
+            .Where(@event => @event.UsersEvents.Any(userEvent => userEvent.User.Surname.ToUpper().Contains(searcher.Filter.ToUpper())))
+            .OrderByDescending(userEvent => userEvent.StartDate);
     }
 }

@@ -1,7 +1,7 @@
 namespace AppiSimo.Shared.Model
 {
     using System.Collections.Generic;
-
+    
     public class Light : Entity
     {
         public string LightType { get; set; }

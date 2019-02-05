@@ -61,6 +61,14 @@
             modelBuilder.Entity<Event>()
                 .Property(e => e.EndDate)
                 .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            
+            modelBuilder.Entity<Fit>()
+                .Property(c => c.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<CivicAddress>()
+                .Property(h => h.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿namespace AppiSimo.Client.Pages.UserDetail
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Model;
     using Microsoft.AspNetCore.Blazor.Components;
@@ -13,7 +12,9 @@
         [Inject]
         IUriHelper UriHelper { get; set; }
 
-        protected override DataServiceQuery<User> Selector(DataServiceQuery<User> user) => user;
+        protected override DataServiceQuery<User> Selector(DataServiceQuery<User> user) => user
+            .Expand(u => u.CivicAddress)
+            .Expand(u => u.Fit);
 
         protected override async Task Save()
         {

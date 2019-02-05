@@ -11,87 +11,86 @@
 <div class="row">
     <a class="btn btn-block btn-outline-primary" href="/event">Nuovo</a>
 </div>
+<div class="row">
+    @foreach (var e in Entities)
+    {
+        <div class="card d-flex my-2 ml-4">
+            @if (e.UsersEvents.All(ue => !ue.Paid))
+            {
+                <div class="card-header alert text-center font-weight-bold alert-danger">
+                    Prenotazione Non Ancora Pagata
+                </div>
+            }
+            else if (e.UsersEvents.All(ue => ue.Paid))
+            {
+                <div class="card-header alert text-center font-weight-bold alert-success">
+                    Prenotazione Pagata
+                </div>
+            }
+            else
+            {
+                <div class="card-header alert text-center font-weight-bold alert-warning">
+                    Prenotazione Pagata Parzialmente
+                </div>
+            }
 
-@foreach (var e in Entities)
-{
-    <div class="card d-flex my-2">
-        @if (e.UsersEvents.All(ue => !ue.Paid))
-        {
-            <div class="card-header alert text-center font-weight-bold alert-danger">
-                Prenotazione Non Ancora Pagata
-            </div>
-        }
-        else if (e.UsersEvents.All(ue => ue.Paid))
-        {
-            <div class="card-header alert text-center font-weight-bold alert-success">
-                Prenotazione Pagata
-            </div>
-        }
-        else
-        {
-            <div class="card-header alert text-center font-weight-bold alert-warning">
-                Prenotazione Pagata Parzialmente
-            </div>
-        }
-
-        <div class="card-body row text-justify font-weight-bold">
-            <div class="col">
-                <p>
-                    <span>Campo:&nbsp;</span>
-                    <span class="text-secondary">@e.Court.Name</span>
-                </p>
-                <p>
-                    <span>Data:&nbsp;</span>
-                    <span class="text-secondary">
-                        @(e.StartDate.DayOfWeek == e.EndDate.DayOfWeek
-                              ? $"{e.StartDate:d}"
-                              : $"{e.StartDate:d} - {e.StartDate:d}")
-                    </span>
-                </p>
-                <p>
-                    <span>Ora Inizio:&nbsp;</span>
-                    <span class="text-secondary">@e.StartDate.ToString("HH:mm")</span>
-                </p>
-                <p>
-                    <span>Ora Fine:&nbsp;</span>
-                    <span class="text-secondary">@e.StartDate.ToString("HH:mm")</span>
-
-                </p>
-                @if (e.LightDuration > 0)
-                {
+            <div class="card-body row text-justify font-weight-bold">
+                <div class="col">
                     <p>
-                        <span class="oi oi-lightbulb"></span>
-                        &nbsp;
-                        <span class="text-secondary">@($"{e.LightDuration:0.0}")</span>
+                        <span>Campo:&nbsp;</span>
+                        <span class="text-secondary">@e.Court.Name</span>
                     </p>
-                }
-                @if (e.HeatDuration > 0)
-                {
                     <p>
-                        <span class="oi oi-fire"></span>
-                        &nbsp;
-                        <span class="text-secondary">@($"{e.HeatDuration:0.0}")</span>
+                        <span>Data:&nbsp;</span>
+                        <span class="text-secondary">
+                            @(e.StartDate.DayOfWeek == e.EndDate.DayOfWeek
+                                  ? $"{e.StartDate:d}"
+                                  : $"{e.StartDate:d} - {e.StartDate:d}")
+                        </span>
                     </p>
-                }
+                    <p>
+                        <span>Ora Inizio:&nbsp;</span>
+                        <span class="text-secondary">@e.StartDate.ToString("HH:mm")</span>
+                    </p>
+                    <p>
+                        <span>Ora Fine:&nbsp;</span>
+                        <span class="text-secondary">@e.StartDate.ToString("HH:mm")</span>
+
+                    </p>
+                    @if (e.LightDuration > 0)
+                    {
+                        <p>
+                            <span class="oi oi-lightbulb"></span>
+                            &nbsp;
+                            <span class="text-secondary">@($"{e.LightDuration:0.0}")</span>
+                        </p>
+                    }
+                    @if (e.HeatDuration > 0)
+                    {
+                        <p>
+                            <span class="oi oi-fire"></span>
+                            &nbsp;
+                            <span class="text-secondary">@($"{e.HeatDuration:0.0}")</span>
+                        </p>
+                    }
+                </div>
+                <div class="col">
+                    @foreach (var userEvent in e.UsersEvents)
+                    {
+                        <p class=@($"text-left alert {(userEvent.Paid ? "alert-success" : "alert-danger")}")>
+                            <span>@userEvent.User.Name&nbsp;@userEvent.User.Surname</span>
+                            <span class="text-secondary">@userEvent.Cost&nbsp;&euro;</span>
+                        </p>
+                    }
+                </div>
             </div>
-            <div class="col">
-                @foreach (var userEvent in e.UsersEvents)
-                {
-                    <p class=@($"alert {(userEvent.Paid ? "alert-success" : "alert-danger")}")>
-                        <span>@($"{userEvent.User.Name} {userEvent.User.Surname}")</span>
-                        &nbsp;-&nbsp;
-                        <span class="text-secondary">@userEvent.Cost&nbsp;&euro;</span>
-                    </p>
-                }
+            <div class="card-footer text-muted text-left d-flex">
+                <a class="btn btn-outline-dark mr-2 flex-fill" href=@($"/event/{e.Id}")>Modifica</a>
+                <a class="btn btn-outline-danger ml-2 flex-fill">Elimina</a>
             </div>
         </div>
-        <div class="card-footer text-muted text-left">
-            <a class="btn btn-outline-dark w-25" href=@($"/event/{e.Id}")>Modifica</a>
-            <a class="btn btn-outline-danger w-25">Elimina</a>
-        </div>
-    </div>
-}
-
+    }
+</div>
 <div class="row mt-2">
     <PagerView PagerService="@PagerService" TotalItems="@TotalItems"/>
 </div>

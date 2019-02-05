@@ -1,7 +1,6 @@
 ﻿namespace AppiSimo.Client.EndPoints
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -22,7 +21,6 @@
             _context = context;
             Client = client;
     
-            Console.WriteLine("resourceUri" + resourceUri);
             _resourceUri = resourceUri;
         }
 
