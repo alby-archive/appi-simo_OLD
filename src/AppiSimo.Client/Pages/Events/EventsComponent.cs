@@ -7,8 +7,10 @@ namespace AppiSimo.Client.Pages.Events
     using Shared.Pages.Searcher;
 
     public class EventsComponent : BaseDetailFilterComponent<Event>
-    {       
-        protected override IQueryable<Event> Selector(DataServiceQuery<Event> events, Searcher _) 
-            => events.Expand(e => e.Court).Expand(e => e.Heat).Expand(e => e.Light);
+    {
+        protected override IQueryable<Event> Selector(DataServiceQuery<Event> events, Searcher _) => events
+            .Expand(userEvent => userEvent.Court)
+            .Expand("UsersEvents($expand=User)")
+            .Expand("UsersEvents($expand=Event)");
     }
 }

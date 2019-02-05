@@ -14,37 +14,80 @@
 
 @foreach (var e in Entities)
 {
-    <div class="row card text-center mt-2">
-        <div class="card-header">
-            <span class="text-left">@(e.Court?.Name)</span>
-            <span class="text-right">
-
-                @if (e.HeatId != null)
-                {
-                    <span class="oi oi-fire"></span>
-                }
-
-                @if (e.LightId != null)
-                {
-                    <span class="oi oi-lightbulb"></span>
-                }
-
-            </span>
-
-            <div class="card-body text-justify">
-
-                <h5 class="card-title">Resoconto</h5>
-
-                <div class="col">
-                    <p class="card-text">Data: @e.StartDate.ToString("D")</p>
-                    <p class="card-text">Ora Inizio: @e.StartDate.ToString("HH:mm")</p>
-                    <p class="card-text">Ora Fine: @e.EndDate.ToString("HH:mm")</p>
-                </div>
+    <div class="card d-flex my-2">
+        @if (e.UsersEvents.All(ue => !ue.Paid))
+        {
+            <div class="card-header alert text-center font-weight-bold alert-danger">
+                Prenotazione Non Ancora Pagata
             </div>
-            <div class="card-footer text-muted">
-                <a class="btn btn-block btn-outline-dark" href=@($"/event/{e.Id}")>Modifica</a>
-                <a class="btn btn-block btn-outline-danger">Elimina</a>
+        }
+        else if (e.UsersEvents.All(ue => ue.Paid))
+        {
+            <div class="card-header alert text-center font-weight-bold alert-success">
+                Prenotazione Pagata
             </div>
+        }
+        else
+        {
+            <div class="card-header alert text-center font-weight-bold alert-warning">
+                Prenotazione Pagata Parzialmente
+            </div>
+        }
+
+        <div class="card-body row text-justify font-weight-bold">
+            <div class="col">
+                <p>
+                    <span>Campo:&nbsp;</span>
+                    <span class="text-secondary">@e.Court.Name</span>
+                </p>
+                <p>
+                    <span>Data:&nbsp;</span>
+                    <span class="text-secondary">
+                        @(e.StartDate.DayOfWeek == e.EndDate.DayOfWeek
+                              ? $"{e.StartDate:d}"
+                              : $"{e.StartDate:d} - {e.StartDate:d}")
+                    </span>
+                </p>
+                <p>
+                    <span>Ora Inizio:&nbsp;</span>
+                    <span class="text-secondary">@e.StartDate.ToString("HH:mm")</span>
+                </p>
+                <p>
+                    <span>Ora Fine:&nbsp;</span>
+                    <span class="text-secondary">@e.StartDate.ToString("HH:mm")</span>
+
+                </p>
+                @if (e.LightDuration > 0)
+                {
+                    <p>
+                        <span class="oi oi-lightbulb"></span>
+                        &nbsp;
+                        <span class="text-secondary">@($"{e.LightDuration:0.0}")</span>
+                    </p>
+                }
+                @if (e.HeatDuration > 0)
+                {
+                    <p>
+                        <span class="oi oi-fire"></span>
+                        &nbsp;
+                        <span class="text-secondary">@($"{e.HeatDuration:0.0}")</span>
+                    </p>
+                }
+            </div>
+            <div class="col">
+                @foreach (var userEvent in e.UsersEvents)
+                {
+                    <p class=@($"alert {(userEvent.Paid ? "alert-success" : "alert-danger")}")>
+                        <span>@($"{userEvent.User.Name} {userEvent.User.Surname}")</span>
+                        &nbsp;-&nbsp;
+                        <span class="text-secondary">@userEvent.Cost&nbsp;&euro;</span>
+                    </p>
+                }
+            </div>
+        </div>
+        <div class="card-footer text-muted text-left">
+            <a class="btn btn-outline-dark w-25" href=@($"/event/{e.Id}")>Modifica</a>
+            <a class="btn btn-outline-danger w-25">Elimina</a>
         </div>
     </div>
 }
