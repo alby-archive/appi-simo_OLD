@@ -21,6 +21,7 @@ namespace AppiSimo.Client.Middelwares
             services.AddSingleton(provider => new EndPoint<Court>(context, provider.GetRequiredService<HttpClient>(), "courts"));
             services.AddSingleton(provider => new EndPoint<Light>(context, provider.GetRequiredService<HttpClient>(), "lights"));
             services.AddSingleton(provider => new EndPoint<Heat>(context, provider.GetRequiredService<HttpClient>(), "heats"));
+            services.AddSingleton(provider => new EndPoint<UserEvent>(context, provider.GetRequiredService<HttpClient>(), "userEvent"));
         }
     }
 }

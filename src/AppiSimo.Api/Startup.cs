@@ -78,6 +78,7 @@
             builder.EntitySet<Light>("Lights");
             builder.EntitySet<Heat>("Heats");
             builder.EntitySet<Rate>("Rates");
+            builder.EntitySet<UserEvent>("UserEvent");
             
             return builder.GetEdmModel();
         }

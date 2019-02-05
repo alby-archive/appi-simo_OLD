@@ -1,0 +1,73 @@
+@page "/payments/{id}"
+
+@inherits PaymentsDetailComponent
+
+<br/>
+
+@if (!Entities.Any())
+{
+    <h2>L'utente selezionato non ha prenotazioni!</h2>
+    return;
+}
+
+<div class="row">
+    <h2>@Entities.FirstOrDefault()?.User.Name @Entities.FirstOrDefault()?.User.Surname</h2>
+</div>
+
+<div class="row">
+    <h4>Totale da corrispondere: @GetTotalNotPaid() &euro;</h4>
+</div>
+
+<div class="row">
+    <SearcherView SearcherService="@SearcherService"/>
+</div>
+
+<div class="row">
+    <div class="table-responsive">
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Importo Dovuto</th>
+                <th>Data</th>
+                <th>Ora Inizio</th>
+                <th>Ora Fine</th>
+                <th>Pagato</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var userEvent in Entities)
+            {
+                <tr>
+                    <td>@userEvent.Cost &euro;</td>
+                    <td>
+                        @(userEvent.Event.StartDate.DayOfWeek == userEvent.Event.EndDate.DayOfWeek
+                              ? userEvent.Event.StartDate.ToString("d")
+                              : $"{userEvent.Event.StartDate:d} - {userEvent.Event.StartDate:d}"
+                              )
+                    </td>
+                    <td>@userEvent.Event.StartDate.ToLocalTime().ToString("t")</td>
+                    <td>@userEvent.Event.EndDate.ToLocalTime().ToString("t")</td>
+                    <td>@(userEvent.Paid ? "Si" : "No")</td>
+                    <td>
+                        <input type="button" class="btn btn-outline-dark" onclick="@(() => GoToEventDetail(userEvent.Event.Id))" value="Dettaglio"/>
+                    </td>
+                    <td>
+                        @if (!userEvent.Paid)
+                        {
+                            <input type="button" class="btn btn-outline-dark" onclick="@(async () => await MarkAsPaid(userEvent))" value="Pagato"/>
+                        }
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <PagerView PagerService="@PagerService" TotalItems="@TotalItems"/>
+</div>

@@ -21,7 +21,8 @@
         {
             _context = context;
             Client = client;
-
+    
+            Console.WriteLine("resourceUri" + resourceUri);
             _resourceUri = resourceUri;
         }
 

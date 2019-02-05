@@ -28,4 +28,7 @@
       <LogicalName>config.json</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Payments\Payments.cshtml" />
+  </ItemGroup>
 </Project>
