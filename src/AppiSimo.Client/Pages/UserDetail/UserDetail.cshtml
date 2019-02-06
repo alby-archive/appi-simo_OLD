@@ -3,45 +3,80 @@
 
 @inherits UserDetailDetailComponent
 
-<form>
-    <div class="form-group">
-        <label for="Name" class="control-label">Nome</label>
-        <input for="Name" class="form-control" bind="@Entity.Name"/>
+<div class="row mt-4">
+    @if (Entity.Id == Guid.Empty)
+    {
+        <h2>Nuovo&nbsp;Utente</h2>
+    }
+    else
+    {
+        <h2>Modifica&nbsp;Utente</h2>
+    }
+</div>
+
+<form class="my-2">
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">Nome</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-name" placeholder="Nome" bind="@Entity.Name"/>
     </div>
-    <div class="form-group">
-        <label asp-for="Surname" class="control-label">Cognome</label>
-        <input asp-for="Surname" class="form-control" bind="@Entity.Surname"/>
-    </div>    
-    <div class="form-group">
-        <label asp-for="Address1" class="control-label">Indirizzo 1</label>
-        <input asp-for="Address1" class="form-control" bind="@Entity.CivicAddress.Address1"/>
-    </div>    
-    <div class="form-group">
-        <label asp-for="Address2" class="control-label">Indirizzo 2</label>
-        <input asp-for="Address2" class="form-control" bind="@Entity.CivicAddress.Address2"/>
-    </div>    
-    <div class="form-group">
-        <label asp-for="City" class="control-label">Citt&agrave;</label>
-        <input asp-for="City" class="form-control" bind="@Entity.CivicAddress.City"/>
-    </div>    
-    <div class="form-group">
-        <label asp-for="Zip" class="control-label">C.A.P.</label>
-        <input asp-for="Zip" class="form-control" bind="@Entity.CivicAddress.Zip"/>
-    </div>    
-    <div class="form-group">
-        <label asp-for="State" class="control-label">Stato</label>
-        <input asp-for="State" class="form-control" bind="@Entity.CivicAddress.State"/>
-    </div>     
-    <div class="form-group">
-        <label asp-for="PhoneNumber" class="control-label">Telefono</label>
-        <input asp-for="PhoneNumber" class="form-control" bind="@Entity.PhoneNumber"/>
-    </div>    
-    <div class="form-group">
-        <label asp-for="CardNumber" class="control-label">Tessera FIT</label>
-        <input asp-for="CardNumber" class="form-control" bind="@Entity.Fit.CardNumber"/>
-    </div>    
-    <div class="form-group">
-        <button type="button" class="btn btn-block btn-outline-success" onclick="@(async () => await Save())">Salva</button>
-        <button type="button" class="btn btn-block btn-outline-danger" style="display: @(Entity.Id != Guid.Empty ? "inline-block;" : "none");" onclick="@(async () => await Delete())">Cancella</button>
-    </div>   
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">Cognome</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-surname" placeholder="Cognome" bind="@Entity.Surname"/>
+    </div>
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">Data di Nascita</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-birthday" placeholder="gg/mm/aaaa" bind="@Birthday"/>
+    </div>
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">Indirizzo1</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-address1" placeholder="Indirizzo e numero, P.O. box, c/o" bind="@Entity.CivicAddress.Address1"/>
+    </div>
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">Indirizzo2</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-address2" placeholder="Palazzo, piano, interno, etc." bind="@Entity.CivicAddress.Address2"/>
+    </div>
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">Citta'</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-city" placeholder="Citt&agrave;" bind="@Entity.CivicAddress.City"/>
+    </div>
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">C.A.P.</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-zip" placeholder="C.A.P." bind="@Entity.CivicAddress.Zip"/>
+    </div>
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">Stato</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-state" placeholder="Stato" bind="@Entity.CivicAddress.State"/>
+    </div>
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">Telefono</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-phoneNumber" placeholder="Telefono, cellulare" bind="@Entity.PhoneNumber"/>
+    </div>
+    <div class="input-group my-2">
+        <div class="input-group-prepend">
+            <div class="input-group-text user-detail-label">Tessera FIT</div>
+        </div>
+        <input type="text" class="form-control" id="user-detail-cardNumber" placeholder="Tessera FIT" bind="@Entity.Fit.CardNumber"/>
+    </div>
+    <div class="form-group d-flex">
+        <button type="button" class="btn btn-outline-success mr-2 flex-fill" onclick="@(async () => await Save())">Salva</button>
+        <button type="button" class="btn btn-outline-danger ml-2 flex-fill" style="display: @(Entity.Id != Guid.Empty ? "inline-block;" : "none");" onclick="@(async () => await Delete())">Cancella</button>
+    </div>
 </form>

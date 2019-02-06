@@ -1,5 +1,7 @@
 ﻿namespace AppiSimo.Client.Pages.UserDetail
 {
+    using System;
+    using System.Globalization;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Model;
     using Microsoft.AspNetCore.Blazor.Components;
@@ -26,6 +28,19 @@
         {
             await base.Delete();
             GoToHome();
+        }
+
+        protected string Birthday
+        {
+            get => Entity.Birthday == DateTime.MinValue ? string.Empty : Entity.Birthday.ToString("d");
+            set
+            {
+                var isValid = DateTime.TryParseExact(value, "d", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var birthDate);
+                if (isValid)
+                {
+                    Entity.Birthday = birthDate;
+                }
+            }
         }
 
         void GoToHome()

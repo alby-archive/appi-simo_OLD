@@ -62,6 +62,10 @@
                 .Property(e => e.EndDate)
                 .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
             
+            modelBuilder.Entity<User>()
+                .Property(e => e.Birthday)
+                .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
+            
             modelBuilder.Entity<Fit>()
                 .Property(c => c.Id)
                 .ValueGeneratedOnAdd();

@@ -124,15 +124,19 @@ app {
 }
 
 .user-add-li:hover{
-    background-color: #b3ffb3;
+    background-color: #d4edda;
     cursor: pointer;
 }
 
 .user-remove-li:hover{
-    background-color: #ff9999;
+    background-color: #f8d7da;
     cursor: pointer;
 }
 
 .flex-fill {
     flex: 1 !important;
+}
+
+.user-detail-label{
+    width: 130px;
 }

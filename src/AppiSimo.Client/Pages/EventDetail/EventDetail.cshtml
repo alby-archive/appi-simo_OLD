@@ -3,8 +3,7 @@
 
 @inherits EventDetailComponent
 
-<form>
-
+<form class="my-4">
     <div class="form-group">
         <div class="input-group mt-3 mb-3">
             <div class="input-group-prepend">
@@ -12,12 +11,12 @@
             </div>
             <input class="form-control" bind="@Filter" placeholder="Cerca..."/>
         </div>
-        <ul class="overflow-auto list-group list-group-flush" style="max-height: 200px">
+        <ul class="overflow-auto list-group list-group-flush" style="max-height: 300px">
 
             @foreach (var userEvent in ViewModel.FilteredUserEvents.Where(userEvent => userEvent.User.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
             {
                 <li class="list-group-item user-add-li" onclick="@(() => AddUser(userEvent))">
-                    <span>@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
+                    <span class="font-weight-bold text-secondary">@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
                 </li>
             }
 
@@ -25,7 +24,7 @@
     </div>
 
     <div class="form-group">
-        <label for="startDate" class="control-label">Selected User</label>
+        <label class="control-label font-weight-bold">Utenti Selezionati</label>
         <ul class="list-group list-group-flush">
 
             @foreach (var userEvent in ViewModel.SelectedUserEvents.OrderBy(ue => ue.User.Name))
@@ -37,7 +36,7 @@
                                 <input type="checkbox" class="form-check-input" bind="@userEvent.Paid"/>
                             </div>
                             <div class="col-6" onclick="@(() => RemoveUser(userEvent))">
-                                <span>@userEvent.User.Name @userEvent.User.Surname</span>
+                                <span font-weight-bold text-secondary>@userEvent.User.Name&nbsp;@userEvent.User.Surname</span>
                             </div>
                             <div class="col-4">
                                 <div class="input-group">
@@ -59,8 +58,8 @@
     </div>
 
     <div class="form-group">
-        <label for="startDate" class="control-label">StartDate</label>
-        <input id="startDate" class="form-control" bind="@ViewModel.SelectedStartDate" placeholder="gg/mm/aaaa hh:mm"/>
+        <label for="event-detail-startdate" class="control-label font-weight-bold">Data Inizio</label>
+        <input id="event-detail-startdate" class="form-control text-secondary" bind="@ViewModel.SelectedStartDate" placeholder="gg/mm/aaaa hh:mm"/>
         <ul>
             @if (!ViewModel.IsValidStarDate)
             {
@@ -77,8 +76,8 @@
     </div>
 
     <div class="form-group">
-        <label for="endDate" class="control-label">EndDate</label>
-        <input id="endDate" class="form-control" bind="@ViewModel.SelectedEndDate" placeholder="gg/mm/aaaa hh:mm"/>
+        <label for="event-detail-enddate" class="control-label font-weight-bold">Data Fine</label>
+        <input id="event-detail-enddate" class="form-control" bind="@ViewModel.SelectedEndDate" placeholder="gg/mm/aaaa hh:mm"/>
         <ul>
             @if (!ViewModel.IsValidEndDate)
             {
@@ -95,8 +94,8 @@
     </div>
 
     <div class="form-group">
-        <label for="courtsSelect">Campo</label>
-        <select class="form-control" id="courtsSelect" bind="@ViewModel.SelectedCourt">
+        <label for="event-detail-court" class="control-label font-weight-bold">Campo</label>
+        <select class="form-control" id="event-detail-court" bind="@ViewModel.SelectedCourt">
 
             @* TODO: ISSUE https://github.com/aspnet/AspNetCore/issues/5616*@
             @foreach (var court in ViewModel.Courts.OrderBy(c => c.Name))
@@ -114,8 +113,8 @@
     </div>
 
     <div class="form-group">
-        <label for="lightsSelect">Luce</label>
-        <select class="form-control" id="lightsSelect" bind="@ViewModel.SelectedLight">
+        <label for="event-detail-light" class="control-label font-weight-bold">Luce</label>
+        <select class="form-control" id="event-detail-light" bind="@ViewModel.SelectedLight">
 
             <option value="">No Luce</option>
 
@@ -134,14 +133,14 @@
     @if (ViewModel.SelectedLight != null)
     {
         <div class="form-group">
-            <label for="lightDuration" class="control-label">Durata Luce</label>
-            <input id="lightDuration" class="form-control" bind="@ViewModel.SelectedLightDuration"/>
+            <label for="event-detail-light-duration" class="control-label font-weight-bold">Durata Luce</label>
+            <input id="event-detail-light-duration" class="form-control" bind="@ViewModel.SelectedLightDuration"/>
         </div>
     }
 
     <div class="form-group">
-        <label for="heatsSelect">Riscaldamento</label>
-        <select class="form-control" id="heatsSelect" bind="@ViewModel.SelectedHeat">
+        <label for="event-detail-heat" class="control-label font-weight-bold">Riscaldamento</label>
+        <select class="form-control" id="event-detail-heat" bind="@ViewModel.SelectedHeat">
 
             <option value="">No Riscaldamento</option>
 
@@ -160,13 +159,13 @@
     @if (ViewModel.SelectedHeat != null)
     {
         <div class="form-group">
-            <label for="heatDuration" class="control-label">Durata Riscaldamento</label>
-            <input id="heatDuration" class="form-control" bind="@ViewModel.SelectedHeatDuration"/>
+            <label for="event-detail-heat-duration" class="control-label font-weight-bold text-secondary">Durata Riscaldamento</label>
+            <input id="event-detail-heat-duration" class="form-control" bind="@ViewModel.SelectedHeatDuration"/>
         </div>
     }
 
-    <div class="form-group">
-        <button type="button" class="btn btn-block btn-outline-success" onclick="@(async () => await Save())">Salva</button>
-        <button type="button" class="btn btn-block btn-outline-danger" style="display: @(ViewModel.IsNewEntity() ? "none" : "inline-block;");" onclick="@(async () => await Delete())">Cancella</button>
+    <div class="form-group d-flex">
+        <button type="button" class="btn btn-outline-success mr-2 flex-fill" onclick="@(async () => await Save())">Salva</button>
+        <button type="button" class="btn btn-outline-danger ml-2 flex-fill" style="display: @(ViewModel.IsNewEntity() ? "none" : "inline-block;");" onclick="@(async () => await Delete())">Cancella</button>
     </div>
 </form>
