@@ -7,10 +7,12 @@
     <div class="form-group">
         <div class="input-group mt-3 mb-3">
             <div class="input-group-prepend">
-                <span class="input-group-text">Utenti</span>
+                <span class="input-group-text appisimo-prepend">Utenti</span>
             </div>
             <input class="form-control" bind="@Filter" placeholder="Cerca..."/>
         </div>
+        
+        <label class="control-label font-weight-bold">Utenti Selezionabili</label>
         <ul class="overflow-auto list-group list-group-flush" style="max-height: 300px">
 
             @foreach (var userEvent in ViewModel.FilteredUserEvents.Where(userEvent => userEvent.User.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
@@ -30,23 +32,30 @@
             @foreach (var userEvent in ViewModel.SelectedUserEvents.OrderBy(ue => ue.User.Name))
             {
                 <li class="list-group-item user-remove-li">
-                    <div class="container">
-                        <div class="row align-middle align-items-center">
-                            <div class="col-1" onclick="@(() => ViewModel.SwitchPayment(userEvent.UserId))">
-                                <input type="checkbox" class="form-check-input" bind="@userEvent.Paid"/>
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <div class="col-7 p-0" onclick="@(() => ViewModel.SwitchPayment(userEvent.UserId))">                                
+                                <span onclick="@(() => RemoveUser(userEvent))">
+                                    <span class="font-weight-bold text-secondary">@userEvent.User.Name&nbsp;@userEvent.User.Surname</span>
+                                </span>
                             </div>
-                            <div class="col-6" onclick="@(() => RemoveUser(userEvent))">
-                                <span font-weight-bold text-secondary>@userEvent.User.Name&nbsp;@userEvent.User.Surname</span>
-                            </div>
+                            
                             <div class="col-4">
                                 <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">
+                                            <input type="checkbox" bind="@userEvent.Paid"/>
+                                        </div>
+                                    </div>
+                                    
                                     <input class="form-control" bind="@userEvent.FormattedCost"/>
+                                    
                                     <div class="input-group-append">
                                         <span class="input-group-text">&euro;</span>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-1" onclick="@(() => RemoveUser(userEvent))">
+                            <div class="col-1 text-right p-0" onclick="@(() => RemoveUser(userEvent))">
                                 <span class="oi oi-minus" data-toggle="tooltip" aria-hidden="true"></span>
                             </div>
                         </div>

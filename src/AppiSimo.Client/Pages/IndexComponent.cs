@@ -6,7 +6,7 @@
     using Shared.Pages.Abstract;
     using Shared.Pages.Searcher;
 
-    public class IndexComponent : BaseDetailFilterComponent<User>
+    public class IndexComponent : BaseFilterComponent<User>
     {
         // TODO: Move Where in base component
         protected override IQueryable<User> Selector(DataServiceQuery<User> users, Searcher searcher) => users

@@ -133,10 +133,10 @@ app {
     cursor: pointer;
 }
 
-.flex-fill {
+.flex-equal {
     flex: 1 !important;
 }
 
-.user-detail-label{
+.appisimo-prepend{
     width: 130px;
 }

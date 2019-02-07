@@ -6,7 +6,7 @@ namespace AppiSimo.Client.Pages.Events
     using Shared.Pages.Abstract;
     using Shared.Pages.Searcher;
 
-    public class EventsComponent : BaseDetailFilterComponent<Event>
+    public class EventsComponent : BaseFilterComponent<Event>
     {
         protected override IQueryable<Event> Selector(DataServiceQuery<Event> events, Searcher searcher) => events
             .Expand(userEvent => userEvent.Court)

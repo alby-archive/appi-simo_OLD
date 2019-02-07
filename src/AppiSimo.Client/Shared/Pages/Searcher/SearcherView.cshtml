@@ -1,9 +1,9 @@
 @inherits SearcherComponent
 
-<div class="input-group mb-3">
+<div class="input-group">
     <div class="input-group-prepend">
-        <span class="input-group-text" id="searcher-surname">Cognome</span>
+        <div class="input-group-text appisimo-prepend" id="searcher-surname">Cognome</div>
     </div>
-    <input type="text" class="form-control" placeholder="Cognome" aria-label="Cognome" aria-describedby="searcher-surname"
+    <input type="text" class="form-control" aria-label="Cognome" aria-describedby="searcher-surname"
            onchange="@(e => OnFilterChanged(e))" />
 </div>

@@ -10,7 +10,7 @@ namespace AppiSimo.Client.Pages.PaymentsDetail
     using Shared.Pages.Abstract;
     using Shared.Pages.Searcher;
 
-    public class PaymentsDetailComponent : BaseDetailFilterComponent<UserEvent>
+    public class PaymentsComponent : BaseFilterComponent<UserEvent>
     {
         [Parameter]
         string Id { get; set; }

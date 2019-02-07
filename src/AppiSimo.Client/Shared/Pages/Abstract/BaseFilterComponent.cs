@@ -10,7 +10,7 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
     using Searcher;
     using Services;
 
-    public abstract class BaseDetailFilterComponent<TEntity> : BaseComponent<TEntity>
+    public abstract class BaseFilterComponent<TEntity> : BaseComponent<TEntity>
         where TEntity : class, IEntity, new()
     {
         [Inject]
