@@ -3,73 +3,100 @@
 
 @inherits EventDetailComponent
 
-<form class="my-4">
-    <div class="form-group">
-        <div class="input-group mt-3 mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text appisimo-prepend">Utenti</span>
-            </div>
-            <input class="form-control" bind="@Filter" placeholder="Cerca..."/>
+<div class="d-flex mt-4">
+    @if (Entity.Id == Guid.Empty)
+    {
+        <h2 class="my-0">Nuova&nbsp;Prenotazione</h2>
+    }
+    else
+    {
+        <h2 class="my-0">Modifica&nbsp;Prenotazione</h2>
+    }
+</div>
+
+<form class="mt-4">
+
+<div class="form-group alert alert-secondary">
+    <label class="control-label font-weight-bold">Utenti Selezionabili</label>
+
+    <div class="input-group mt-3 mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text appisimo-prepend">Utenti</span>
         </div>
-        
-        <label class="control-label font-weight-bold">Utenti Selezionabili</label>
-        <ul class="overflow-auto list-group list-group-flush" style="max-height: 300px">
-
-            @foreach (var userEvent in ViewModel.FilteredUserEvents.Where(userEvent => userEvent.User.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
-            {
-                <li class="list-group-item user-add-li" onclick="@(() => AddUser(userEvent))">
-                    <span class="font-weight-bold text-secondary">@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
-                </li>
-            }
-
-        </ul>
+        <input class="form-control" bind="@Filter" placeholder="Cerca..."/>
     </div>
 
-    <div class="form-group">
-        <label class="control-label font-weight-bold">Utenti Selezionati</label>
-        <ul class="list-group list-group-flush">
+    <ul class="overflow-auto list-group list-group-flush" style="max-height: 300px">
 
-            @foreach (var userEvent in ViewModel.SelectedUserEvents.OrderBy(ue => ue.User.Name))
-            {
-                <li class="list-group-item user-remove-li">
-                    <div class="container-fluid">
-                        <div class="row align-items-center">
-                            <div class="col-7 p-0" onclick="@(() => ViewModel.SwitchPayment(userEvent.UserId))">                                
-                                <span onclick="@(() => RemoveUser(userEvent))">
-                                    <span class="font-weight-bold text-secondary">@userEvent.User.Name&nbsp;@userEvent.User.Surname</span>
-                                </span>
-                            </div>
-                            
-                            <div class="col-4">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <div class="input-group-text">
-                                            <input type="checkbox" bind="@userEvent.Paid"/>
+        @foreach (var userEvent in ViewModel.FilteredUserEvents.Where(userEvent => userEvent.User.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
+        {
+            <li class="list-group-item user-add-li" onclick="@(() => AddUser(userEvent))">
+                <span class="font-weight-bold text-secondary">@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
+            </li>
+        }
+
+    </ul>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        
+        <div class="form-group mb-0">
+            <label class="control-label font-weight-bold">Utenti Selezionati</label>
+            <ul class="list-group list-group-flush">
+
+                @if (ViewModel.SelectedUserEvents.Count == 0)
+                {
+                    <li class="list-group-item">
+                        <div class="font-weight-bold text-secondary">Nessun utente selezionato</div>
+                    </li>
+                }
+
+                @foreach (var userEvent in ViewModel.SelectedUserEvents.OrderBy(ue => ue.User.Name))
+                {
+                    <li class="list-group-item user-remove-li">
+                        <div class="container-fluid">
+                            <div class="row align-items-center">
+                                <div class="col-7 p-0" onclick="@(() => ViewModel.SwitchPayment(userEvent.UserId))">
+                                    <span onclick="@(() => RemoveUser(userEvent))">
+                                        <span class="font-weight-bold text-secondary">@userEvent.User.Name&nbsp;@userEvent.User.Surname</span>
+                                    </span>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend" data-toggle="tooltip" data-placement="top" title="Spunta per marcare come pagato">
+                                            <div class="input-group-text">
+                                                <input type="checkbox" bind="@userEvent.Paid"/>
+                                            </div>
+                                        </div>
+
+                                        <input class="form-control" bind="@userEvent.FormattedCost"/>
+
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">&euro;</span>
                                         </div>
                                     </div>
-                                    
-                                    <input class="form-control" bind="@userEvent.FormattedCost"/>
-                                    
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">&euro;</span>
-                                    </div>
+                                </div>
+                                <div class="col-1 text-right p-0" onclick="@(() => RemoveUser(userEvent))">
+                                    <span class="oi oi-minus" data-toggle="tooltip" aria-hidden="true"></span>
                                 </div>
                             </div>
-                            <div class="col-1 text-right p-0" onclick="@(() => RemoveUser(userEvent))">
-                                <span class="oi oi-minus" data-toggle="tooltip" aria-hidden="true"></span>
-                            </div>
                         </div>
-                    </div>
-                </li>
-            }
+                    </li>
+                }
+                <li class="list-group-item p-0"></li>
+            </ul>
+        </div>
 
-        </ul>
-    </div>
+        <div class="input-group my-4">
+            <div class="input-group-prepend">
+                <div class="input-group-text appisimo-prepend">Data Inizio</div>
+            </div>
+            <input class="form-control text-secondary" placeholder="gg/mm/aaaa hh:mm" bind="@ViewModel.SelectedStartDate"/>
+        </div>
 
-    <div class="form-group">
-        <label for="event-detail-startdate" class="control-label font-weight-bold">Data Inizio</label>
-        <input id="event-detail-startdate" class="form-control text-secondary" bind="@ViewModel.SelectedStartDate" placeholder="gg/mm/aaaa hh:mm"/>
-        <ul>
+        <ul class="my-0">
             @if (!ViewModel.IsValidStarDate)
             {
                 <li class="text-danger">Il formato della data non &egrave; corretto</li>
@@ -82,12 +109,15 @@
                 }
             }
         </ul>
-    </div>
 
-    <div class="form-group">
-        <label for="event-detail-enddate" class="control-label font-weight-bold">Data Fine</label>
-        <input id="event-detail-enddate" class="form-control" bind="@ViewModel.SelectedEndDate" placeholder="gg/mm/aaaa hh:mm"/>
-        <ul>
+        <div class="input-group my-4">
+            <div class="input-group-prepend">
+                <div class="input-group-text appisimo-prepend">Data Fine</div>
+            </div>
+            <input class="form-control text-secondary" placeholder="gg/mm/aaaa hh:mm" bind="@ViewModel.SelectedEndDate"/>
+        </div>
+
+        <ul class="my-0">
             @if (!ViewModel.IsValidEndDate)
             {
                 <li class="text-danger">Il formato della data non &egrave; corretto</li>
@@ -100,81 +130,93 @@
                 }
             }
         </ul>
-    </div>
 
-    <div class="form-group">
-        <label for="event-detail-court" class="control-label font-weight-bold">Campo</label>
-        <select class="form-control" id="event-detail-court" bind="@ViewModel.SelectedCourt">
+        <div class="input-group my-4">
+            <div class="input-group-prepend">
+                <div class="input-group-text appisimo-prepend">Campo</div>
+            </div>
+            <select class="form-control" id="event-detail-court" bind="@ViewModel.SelectedCourt">
 
-            @* TODO: ISSUE https://github.com/aspnet/AspNetCore/issues/5616*@
-            @foreach (var court in ViewModel.Courts.OrderBy(c => c.Name))
-            {
-                if (ViewModel.SelectedCourt == court.Id.ToString())
+                @* TODO: ISSUE https://github.com/aspnet/AspNetCore/issues/5616*@
+                @foreach (var court in ViewModel.Courts.OrderBy(c => c.Name))
                 {
-                    <option selected value="@court.Id">@court.Name</option>
+                    if (ViewModel.SelectedCourt == court.Id.ToString())
+                    {
+                        <option selected value="@court.Id">@court.Name</option>
 
-                    continue;
+                        continue;
+                    }
+
+                    <option value="@court.Id">@court.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="input-group my-4">
+            <div class="input-group-prepend">
+                <div class="input-group-text appisimo-prepend">Luce</div>
+            </div>
+            <select class="form-control" id="event-detail-light" bind="@ViewModel.SelectedLight">
+
+                <option value="">No Luce</option>
+
+                @if (ViewModel.SelectedLight != null)
+                {
+                    <option selected value="@ViewModel.SelectedCourtLight.Id">@ViewModel.SelectedCourtLight.LightType</option>
+                }
+                else
+                {
+                    <option value="@ViewModel.SelectedCourtLight.Id">@ViewModel.SelectedCourtLight.LightType</option>
                 }
 
-                <option value="@court.Id">@court.Name</option>
-            }
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="event-detail-light" class="control-label font-weight-bold">Luce</label>
-        <select class="form-control" id="event-detail-light" bind="@ViewModel.SelectedLight">
-
-            <option value="">No Luce</option>
-
-            @if (ViewModel.SelectedLight != null)
-            {
-                <option selected value="@ViewModel.SelectedCourtLight.Id">@ViewModel.SelectedCourtLight.LightType</option>
-            }
-            else
-            {
-                <option value="@ViewModel.SelectedCourtLight.Id">@ViewModel.SelectedCourtLight.LightType</option>
-            }
-
-        </select>
-    </div>
-
-    @if (ViewModel.SelectedLight != null)
-    {
-        <div class="form-group">
-            <label for="event-detail-light-duration" class="control-label font-weight-bold">Durata Luce</label>
-            <input id="event-detail-light-duration" class="form-control" bind="@ViewModel.SelectedLightDuration"/>
+            </select>
         </div>
-    }
 
-    <div class="form-group">
-        <label for="event-detail-heat" class="control-label font-weight-bold">Riscaldamento</label>
-        <select class="form-control" id="event-detail-heat" bind="@ViewModel.SelectedHeat">
+        @if (ViewModel.SelectedLight != null)
+        {
+            <div class="input-group my-4">
+                <div class="input-group-prepend">
+                    <div class="input-group-text appisimo-prepend">Durata Luce</div>
+                </div>
+                <input class="form-control text-secondary" placeholder="Durata Luce" bind="@ViewModel.SelectedLightDuration"/>
+            </div>
+        }
 
-            <option value="">No Riscaldamento</option>
+        <div class="input-group my-4">
+            <div class="input-group-prepend">
+                <div class="input-group-text appisimo-prepend">Riscaldamento</div>
+            </div>
+            <select class="form-control" id="event-detail-heat" bind="@ViewModel.SelectedHeat">
 
-            @if (ViewModel.SelectedHeat != null)
-            {
-                <option selected value="@ViewModel.SelectedCourtHeat.Id">@ViewModel.SelectedCourtHeat.HeatType</option>
-            }
-            else
-            {
-                <option value="@ViewModel.SelectedCourtHeat.Id">@ViewModel.SelectedCourtHeat.HeatType</option>
-            }
+                <option value="">No Riscaldamento</option>
 
-        </select>
-    </div>
+                @if (ViewModel.SelectedHeat != null)
+                {
+                    <option selected value="@ViewModel.SelectedCourtHeat.Id">@ViewModel.SelectedCourtHeat.HeatType</option>
+                }
+                else
+                {
+                    <option value="@ViewModel.SelectedCourtHeat.Id">@ViewModel.SelectedCourtHeat.HeatType</option>
+                }
 
-    @if (ViewModel.SelectedHeat != null)
-    {
-        <div class="form-group">
-            <label for="event-detail-heat-duration" class="control-label font-weight-bold text-secondary">Durata Riscaldamento</label>
-            <input id="event-detail-heat-duration" class="form-control" bind="@ViewModel.SelectedHeatDuration"/>
+            </select>
         </div>
-    }
 
-    <div class="form-group d-flex">
-        <button type="button" class="btn btn-outline-success mr-2 flex-fill" onclick="@(async () => await Save())">Salva</button>
-        <button type="button" class="btn btn-outline-danger ml-2 flex-fill" style="display: @(ViewModel.IsNewEntity() ? "none" : "inline-block;");" onclick="@(async () => await Delete())">Cancella</button>
+        @if (ViewModel.SelectedHeat != null)
+        {
+            <div class="input-group my-4">
+                <div class="input-group-prepend">
+                    <div class="input-group-text appisimo-prepend">Durata Riscal.</div>
+                </div>
+                <input class="form-control text-secondary" placeholder="Durata Riscalamento" bind="@ViewModel.SelectedHeatDuration"/>
+            </div>
+        }
+
+        <div class="input-group d-flex">
+            <button type="button" class="btn btn-outline-success mr-2 flex-fill" onclick="@(async () => await Save())">Salva</button>
+            <button type="button" class="btn btn-outline-danger ml-2 flex-fill" style="display: @(ViewModel.IsNewEntity() ? "none" : "inline-block;");" onclick="@(async () => await Delete())">Cancella</button>
+        </div>
+
     </div>
+</div>
 </form>

@@ -4,6 +4,7 @@
     using System.Globalization;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Model;
+    using EndPoints;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
     using Microsoft.OData.Client;

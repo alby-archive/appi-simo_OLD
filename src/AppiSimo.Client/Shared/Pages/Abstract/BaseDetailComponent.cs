@@ -3,11 +3,16 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
     using System;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Abstract;
+    using EndPoints;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.OData.Client;
-
-    public abstract class BaseDetailComponent<TEntity> : BaseComponent<TEntity>
+    
+    public abstract class BaseDetailComponent<TEntity> : BaseDetailComponent<TEntity, EndPoint<TEntity>>
         where TEntity : class, IEntity, new()
+    {}
+
+    public abstract class BaseDetailComponent<TEntity, TEndpoint> : BaseComponent<TEntity, TEndpoint>
+        where TEntity : class, IEntity, new() where TEndpoint : EndPoint<TEntity>
     {
         [Parameter]
         string Id { get; set; }

@@ -4,14 +4,21 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
     using System.Linq;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Abstract;
+    using EndPoints;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.OData.Client;
     using Pager;
     using Searcher;
     using Services;
 
-    public abstract class BaseFilterComponent<TEntity> : BaseComponent<TEntity>
+    public abstract class BaseFilterComponent<TEntity> : BaseFilterComponent<TEntity, EndPoint<TEntity>>
         where TEntity : class, IEntity, new()
+    {
+    }
+
+    public abstract class BaseFilterComponent<TEntity, TEndPoint> : BaseComponent<TEntity, TEndPoint>
+        where TEntity : class, IEntity, new() 
+        where TEndPoint : EndPoint<TEntity>
     {
         [Inject]
         protected BaseRxService<Pager> PagerService { get; set; }

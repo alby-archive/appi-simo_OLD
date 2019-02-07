@@ -1,6 +1,11 @@
 namespace AppiSimo.Api.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Data;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Shared.Model;
 
     public class UsersController : EntityController<User>
@@ -9,5 +14,10 @@ namespace AppiSimo.Api.Controllers
             : base(context)
         {
         }
+
+        [HttpGet("{key}")]
+        [Route("odata/[controller]/[action]")]
+        public async Task<IActionResult> GiveMeBackMyMoney(Guid key) =>
+            Ok(await Context.Set<UserEvent>().Where(userEvent => userEvent.UserId == key && !userEvent.Paid).SumAsync(payment => payment.Cost));
     }
 }

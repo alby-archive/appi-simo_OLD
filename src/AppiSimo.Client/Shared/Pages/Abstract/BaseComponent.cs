@@ -6,11 +6,18 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
     using EndPoints;
     using Microsoft.AspNetCore.Blazor.Components;
 
-    public abstract class BaseComponent<TEntity> : BlazorComponent
+    public abstract class BaseComponent<TEntity> : BaseComponent<TEntity, EndPoint<TEntity>>
         where TEntity : class, IEntity, new()
     {
+        
+    }
+    
+    public abstract class BaseComponent<TEntity, TEndPoint> : BlazorComponent
+        where TEntity : class, IEntity, new() 
+        where TEndPoint: EndPoint<TEntity>
+    {
         [Inject]
-        protected EndPoint<TEntity> EndPoint { get; set; }
+        protected TEndPoint EndPoint { get; set; }
 
         protected async Task Save(TEntity entity)
         {

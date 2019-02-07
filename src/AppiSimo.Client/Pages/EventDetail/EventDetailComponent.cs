@@ -20,7 +20,7 @@ namespace AppiSimo.Client.Pages.EventDetail
         EndPoint<Court> CourtEndPoint { get; set; }
 
         [Inject]
-        EndPoint<User> UserEndPoint { get; set; }
+        UserEndPoint UserEndPoint { get; set; }
 
         [Inject]
         IValidator<Event> Validator { get; set; }
