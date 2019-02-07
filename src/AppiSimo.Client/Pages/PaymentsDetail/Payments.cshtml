@@ -1,39 +1,42 @@
 @page "/payments/{id}"
 
-@using AppiSimo.Shared.Model
 @inherits PaymentsComponent
 
 <br/>
 
 @if (!Entities.Any())
 {
-    <h2 class="display-4">L'utente selezionato non ha prenotazioni!</h2>
+    <div class="d-flex justify-content-center mb-2">
+        <h2 class="lead">L'utente selezionato non ha prenotazioni!</h2>
+    </div>
     return;
 }
 
-<div class="row">
-    <h2 class="display-3">@Entities.FirstOrDefault()?.User.Name @Entities.FirstOrDefault()?.User.Surname</h2>
+<div class="d-flex">
+    <h1>@Entities.FirstOrDefault()?.User.Name @Entities.FirstOrDefault()?.User.Surname</h1>
 </div>
 
-<div class="row">
-    <h4 class="display-4 text-muted">Totale da Corrispondere: @GetTotalNotPaid() &euro;</h4>
+<div class="d-flex">
+    <h3 class="text-muted">Totale da Corrispondere: @GetTotalNotPaid() &euro;</h3>
 </div>
 
-<div class="row">
+<div class="d-flex flex-wrap justify-content-between">
     @foreach (var userEvent in Entities
         .OrderByDescending(userEvent => userEvent.Paid)
         .ThenByDescending(userEvent => userEvent.Event.StartDate))
     {
-        <div class="card text-center my-2 ml-4" style="min-width: 320px">
+        <div class="card w-100 m-2" style="max-width: 400px">           
+            
             @if (!userEvent.Paid)
             {
-                <div class="card-header alert alert-success font-weight-bold">Pagato</div>
+                <div class="card-header text-center font-weight-bold alert alert-success">Pagato</div>
             }
             else
             {
-                <div class="card-header alert alert-danger font-weight-bold">Ancora da Pagare</div>
+                <div class="card-header font-weight-bold alert alert-danger ">Ancora da Pagare</div>
             }
-            <div class="card-body text-justify container-fluid font-weight-bold">
+            
+            <div class="card-body text-justify font-weight-bold">
                 <p>
                     <span>Importo:&nbsp;</span>
                     <span class="text-secondary">@userEvent.Cost&nbsp;&euro;</span>
@@ -84,6 +87,12 @@
             </div>
         </div>
     }
+    
+    @foreach (var _ in Entities)
+    {
+        <div class="w-100 m-2" style="max-width: 400px"></div>
+    }
+    
 </div>
 
 <div class="row">

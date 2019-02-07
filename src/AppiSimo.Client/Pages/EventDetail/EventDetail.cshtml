@@ -4,14 +4,7 @@
 @inherits EventDetailComponent
 
 <div class="d-flex mt-4">
-    @if (Entity.Id == Guid.Empty)
-    {
-        <h2 class="my-0">Nuova&nbsp;Prenotazione</h2>
-    }
-    else
-    {
-        <h2 class="my-0">Modifica&nbsp;Prenotazione</h2>
-    }
+    <h2 class="my-0">@(Entity.Id == Guid.Empty ? "Nuova Prenotazione" : "Modifca Prenotazione")</h2>
 </div>
 
 <form class="mt-4">
@@ -40,7 +33,7 @@
 
 <div class="card">
     <div class="card-body">
-        
+
         <div class="form-group mb-0">
             <label class="control-label font-weight-bold">Utenti Selezionati</label>
             <ul class="list-group list-group-flush">
