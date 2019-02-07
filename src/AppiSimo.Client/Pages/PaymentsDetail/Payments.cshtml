@@ -2,19 +2,17 @@
 
 @inherits PaymentsComponent
 
-<br/>
-
-@if (!Entities.Any())
-{
-    <div class="d-flex justify-content-center mb-2">
-        <h2 class="lead">L'utente selezionato non ha prenotazioni!</h2>
-    </div>
-    return;
-}
-
 <div class="d-flex">
     <h1>@Entities.FirstOrDefault()?.User.Name @Entities.FirstOrDefault()?.User.Surname</h1>
 </div>
+
+@if (!Entities.Any())
+{    
+    <div class="d-flex">
+        <h3 class="text-muted">Non ci sono prenotazioni attive per questo utente</h3>
+    </div>
+    return;
+}
 
 <div class="d-flex">
     <h3 class="text-muted">Totale da Corrispondere: @GetTotalNotPaid() &euro;</h3>

@@ -4,38 +4,44 @@
 
 <br/>
 
-<div class="row">
+<div class="d-flex my-4">
     <SearcherView SearcherService="@SearcherService"/>
 </div>
 
-<div class="row">
-    <a class="btn btn-block btn-outline-primary" href="/event">Nuovo</a>
+<div class="d-flex justify-content-center mb-2">
+    <a class="btn btn-outline-primary flex-fill" href="/user">Nuova Prenotazione</a>
 </div>
-<div class="row">
+
+<div class="d-flex flex-wrap justify-content-between">
+
     @foreach (var e in Entities)
     {
-        <div class="card d-flex my-2 ml-4">
+        <div class="card w-100 m-2" style="max-width: 400px">
+
             @if (e.UsersEvents.All(ue => !ue.Paid))
             {
-                <div class="card-header alert text-center font-weight-bold alert-danger">
-                    Prenotazione Non Ancora Pagata
+                <div class="card-header text-center font-weight-bold alert alert-danger">
+                    <h2 class="mb-0">Prenotazione Non Pagata</h2>
                 </div>
             }
             else if (e.UsersEvents.All(ue => ue.Paid))
             {
-                <div class="card-header alert text-center font-weight-bold alert-success">
-                    Prenotazione Pagata
+                <div class="card-header text-center font-weight-bold alert alert-success">
+                    <h2 class="mb-0">Prentoazione <br/> Pagata</h2>
                 </div>
             }
             else
             {
-                <div class="card-header alert text-center font-weight-bold alert-warning">
-                    Prenotazione Pagata Parzialmente
+                <div class="card-header text-center font-weight-bold alert alert-warning">
+                    <h2 class="mb-0">Prenotazione Pagata Parzialmente</h2>
                 </div>
             }
 
-            <div class="card-body row text-justify font-weight-bold">
-                <div class="col">
+            <div class="card-body font-weight-bold">
+
+                <div class="container-fluid">
+                <div class="row">
+                <div class="col-md p-2 ">
                     <p>
                         <span>Campo:&nbsp;</span>
                         <span class="text-secondary">@e.Court.Name</span>
@@ -55,7 +61,7 @@
                     <p>
                         <span>Ora Fine:&nbsp;</span>
                         <span class="text-secondary">@e.StartDate.ToString("HH:mm")</span>
-
+        
                     </p>
                     @if (e.LightDuration > 0)
                     {
@@ -74,7 +80,8 @@
                         </p>
                     }
                 </div>
-                <div class="col">
+                        
+                <div class="col-md p-2">
                     @foreach (var userEvent in e.UsersEvents)
                     {
                         <p class=@($"text-left alert {(userEvent.Paid ? "alert-success" : "alert-danger")}")>
@@ -83,13 +90,25 @@
                         </p>
                     }
                 </div>
+                </div>
+                </div>                        
+            
             </div>
-            <div class="card-footer text-muted text-left d-flex">
+                    
+            <div class="card-footer d-flex">
                 <a class="btn btn-outline-secondary mr-2 flex-fill w-50" href=@($"/event/{e.Id}")>Modifica</a>
             </div>
+
         </div>
     }
+    
+    @foreach (var _ in Entities)
+    {
+        <div class="w-100 m-2" style="max-width: 400px"></div>
+    }
+    
 </div>
-<div class="row mt-2">
+
+<div class="d-flex my-2 mb-4">
     <PagerView PagerService="@PagerService" TotalItems="@TotalItems"/>
 </div>
