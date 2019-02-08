@@ -11,11 +11,14 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
         where TEntity : class, IEntity, new()
     {}
 
-    public abstract class BaseDetailComponent<TEntity, TEndpoint> : BaseComponent<TEntity, TEndpoint>
-        where TEntity : class, IEntity, new() where TEndpoint : EndPoint<TEntity>
+    public abstract class BaseDetailComponent<TEntity, TEndPoint> : BlazorComponent
+        where TEntity : class, IEntity, new() where TEndPoint : EndPoint<TEntity>
     {
         [Parameter]
         string Id { get; set; }
+
+        [Inject]
+        TEndPoint EndPoint { get; set; }
 
         protected TEntity Entity { get; set; } = new TEntity();
 
@@ -29,8 +32,8 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
             }
         }
 
-        protected virtual Task Save() => base.Save(Entity);
+        protected virtual Task Save() => EndPoint.Save(Entity);
 
-        protected virtual Task Delete() => base.Delete(Entity.Id);
+        protected virtual Task Delete() => EndPoint.Delete(Entity.Id);
     }
 }

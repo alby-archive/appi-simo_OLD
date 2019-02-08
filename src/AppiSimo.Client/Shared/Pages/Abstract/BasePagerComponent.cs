@@ -8,15 +8,14 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.OData.Client;
     using Pager;
-    using Searcher;
     using Services;
 
-    public abstract class BaseFilterComponent<TEntity> : BaseFilterComponent<TEntity, EndPoint<TEntity>>
+    public abstract class BasePagerComponent<TEntity> : BasePagerComponent<TEntity, EndPoint<TEntity>>
         where TEntity : class, IEntity, new()
     {
     }
 
-    public abstract class BaseFilterComponent<TEntity, TEndPoint> :BlazorComponent
+    public abstract class BasePagerComponent<TEntity, TEndPoint> :BlazorComponent
         where TEntity : class, IEntity, new() 
         where TEndPoint : EndPoint<TEntity>
     {
@@ -26,24 +25,20 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
         [Inject]
         protected BaseRxService<Pager> PagerService { get; set; }
 
-        [Inject]
-        protected BaseRxService<Searcher> SearcherService { get; set; }
-
         protected IEnumerable<TEntity> Entities = new List<TEntity>();
         protected int TotalItems { get; private set; }
 
         protected override void OnInit()
         {
-            SearcherService.Subscribe(searcher => PagerService.OnNext(new Pager()));
             PagerService.Subscribe(async pager => await Call());
         }
-
-        protected abstract IQueryable<TEntity> Selector(DataServiceQuery<TEntity> entities, Searcher searcher);
+        
+        protected abstract IQueryable<TEntity> Selector(DataServiceQuery<TEntity> entities);
 
         async Task Call()
         {
-            var builder = Selector(EndPoint.Entities.IncludeTotalCount(), SearcherService.Value);
-
+            var builder = Selector(EndPoint.Entities.IncludeTotalCount());
+            
             var response = await builder
                 .Skip(PagerService.Value.CurrentPage * PagerService.Value.PageSize)
                 .Take(PagerService.Value.PageSize)
