@@ -4,10 +4,10 @@
 @inherits EventDetailComponent
 
 <div class="d-flex mt-4">
-    <h2 class="my-0">@(Entity.Id == Guid.Empty ? "Nuova Prenotazione" : "Modifca Prenotazione")</h2>
+    <h1 class="my-0">@(Entity.Id == Guid.Empty ? "Nuova Prenotazione" : "Modifca Prenotazione")</h1>
 </div>
 
-<form class="mt-4">
+<form class="mt-4 mb-5">
 
 <div class="form-group alert alert-secondary">
     <label class="control-label font-weight-bold">Utenti Selezionabili</label>
@@ -206,8 +206,8 @@
         }
 
         <div class="input-group d-flex">
-            <button type="button" class="btn btn-outline-success mr-2 flex-fill" onclick="@(async () => await Save())">Salva</button>
-            <button type="button" class="btn btn-outline-danger ml-2 flex-fill" style="display: @(ViewModel.IsNewEntity() ? "none" : "inline-block;");" onclick="@(async () => await Delete())">Cancella</button>
+            <button type="button" class="btn btn-outline-success mr-2 flex-equal" onclick="@(async () => await Save())">Salva</button>
+            <button type="button" class="btn btn-outline-danger ml-2 flex-equal" style="display: @(ViewModel.IsNewEntity() ? "none" : "inline-block;");" onclick="@(async () => await Delete())">Cancella</button>
         </div>
 
     </div>

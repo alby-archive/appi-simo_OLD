@@ -2,13 +2,13 @@
 
 @inherits PaymentsComponent
 
-<div class="d-flex">
+<div class="d-flex mt-4">
     <h1>@Entities.FirstOrDefault()?.User.Name @Entities.FirstOrDefault()?.User.Surname</h1>
 </div>
 
 @if (!Entities.Any())
 {    
-    <div class="d-flex">
+    <div class="d-flex mt-4">
         <h3 class="text-muted">Non ci sono prenotazioni attive per questo utente</h3>
     </div>
     return;
@@ -31,30 +31,35 @@
             }
             else
             {
-                <div class="card-header font-weight-bold alert alert-danger ">Ancora da Pagare</div>
+                <div class="card-header text-center font-weight-bold alert alert-danger ">Non Pagato</div>
             }
             
             <div class="card-body text-justify font-weight-bold">
+                
                 <p>
                     <span>Importo:&nbsp;</span>
                     <span class="text-secondary">@userEvent.Cost&nbsp;&euro;</span>
                 </p>
+
                 <p>
                     <span>Data:&nbsp;</span>
                     <span class="text-secondary">
-                        @(userEvent.Event.StartDate.DayOfWeek == userEvent.Event.EndDate.DayOfWeek 
-                              ? $"{userEvent.Event.StartDate:d}" 
+                        @(userEvent.Event.StartDate.DayOfWeek == userEvent.Event.EndDate.DayOfWeek
+                              ? $"{userEvent.Event.StartDate:d}"
                               : $"{userEvent.Event.StartDate:d} - {userEvent.Event.StartDate:d}")
                     </span>
                 </p>
+
                 <p>
                     <span>Data Inizio:&nbsp;</span>
                     <span class="text-secondary">@userEvent.Event.StartDate.ToLocalTime().ToString("t")</span>
                 </p>
+
                 <p>
                     <span>Data Fine:&nbsp;</span>
                     <span class="text-secondary">@userEvent.Event.EndDate.ToLocalTime().ToString("t")</span>
                 </p>
+
                 @if (userEvent.Event.LightDuration > 0)
                 {
                     <p>
@@ -63,6 +68,7 @@
                         <span class="text-secondary">@($"{userEvent.Event.LightDuration:0.0}")</span>
                     </p>
                 }
+
                 @if (userEvent.Event.HeatDuration > 0)
                 {
                     <p>
@@ -71,17 +77,11 @@
                         <span class="text-secondary">@($"{userEvent.Event.HeatDuration:0.0}")</span>
                     </p>
                 }
+
             </div>
             <div class="card-footer text-white d-flex">
-                <a class="btn btn-outline-info mr-2 flex-fill" href=@($"/event/{userEvent.EventId}")>Dettaglio</a>
-                @if (userEvent.Paid)
-                {
-                    <input type="button" class="btn btn-outline-success ml-2 flex-fill" onclick="@(async () => await MarkAsPaid(userEvent))" value="Paga"/>
-                }
-                else
-                {
-                    <input type="button" class="btn btn-outline-danger ml-2 flex-fill" onclick="@(async () => await MarkAsPaid(userEvent))" value="Annulla"/>
-                }
+                <a class="btn btn-outline-info flex-equal mr-2" href=@($"/event/{userEvent.EventId}")>Dettaglio</a>
+                <input type="button" class="btn btn-outline-success flex-equal ml-2" onclick="@(async () => await MarkAsPaid(userEvent))" value=@(userEvent.Paid ? "Paga" : "Annulla")/>
             </div>
         </div>
     }
