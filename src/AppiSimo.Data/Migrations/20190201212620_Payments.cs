@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace AppiSimo.Api.Migrations
+﻿namespace AppiSimo.Data.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class Payments : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -1,27 +1,27 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace AppiSimo.Api.Migrations
+﻿namespace AppiSimo.Data.Migrations
 {
-    public partial class Court_Light : Migration
+    using System;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
+    public partial class Court_Heat : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<Guid>(
-                name: "LightId",
+                name: "HeatId",
                 table: "Courts",
                 nullable: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Courts_LightId",
+                name: "IX_Courts_HeatId",
                 table: "Courts",
-                column: "LightId");
+                column: "HeatId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Courts_Lights_LightId",
+                name: "FK_Courts_Heats_HeatId",
                 table: "Courts",
-                column: "LightId",
-                principalTable: "Lights",
+                column: "HeatId",
+                principalTable: "Heats",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -29,15 +29,15 @@ namespace AppiSimo.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Courts_Lights_LightId",
+                name: "FK_Courts_Heats_HeatId",
                 table: "Courts");
 
             migrationBuilder.DropIndex(
-                name: "IX_Courts_LightId",
+                name: "IX_Courts_HeatId",
                 table: "Courts");
 
             migrationBuilder.DropColumn(
-                name: "LightId",
+                name: "HeatId",
                 table: "Courts");
         }
     }

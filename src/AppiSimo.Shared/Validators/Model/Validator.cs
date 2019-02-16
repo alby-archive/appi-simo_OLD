@@ -1,9 +1,8 @@
-namespace AppiSimo.Shared.Validators
+namespace AppiSimo.Shared.Validators.Model
 {
     using System.Collections.Generic;
     using System.Linq;
     using Abstract;
-    using Model;
 
     public class Validator<T> : IValidator<T>
     {

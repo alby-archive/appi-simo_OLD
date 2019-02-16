@@ -3,6 +3,7 @@ namespace AppiSimo.Shared.Validators
     using System.Collections.Generic;
     using Abstract;
     using Event;
+    using Model;
 
     public static class ValidatorProxy
     {

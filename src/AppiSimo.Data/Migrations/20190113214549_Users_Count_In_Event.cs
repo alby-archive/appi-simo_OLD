@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace AppiSimo.Api.Migrations
+﻿namespace AppiSimo.Data.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class Users_Count_In_Event : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

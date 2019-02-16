@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace AppiSimo.Api.Migrations
+﻿namespace AppiSimo.Data.Migrations
 {
+    using System;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class User_Birthday : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
