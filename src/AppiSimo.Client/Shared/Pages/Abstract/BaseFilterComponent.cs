@@ -1,5 +1,6 @@
 namespace AppiSimo.Client.Shared.Pages.Abstract
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -16,13 +17,13 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
     {
     }
 
-    public abstract class BaseFilterComponent<TEntity, TEndPoint> :BlazorComponent
-        where TEntity : class, IEntity, new() 
+    public abstract class BaseFilterComponent<TEntity, TEndPoint> : BlazorComponent, IDisposable
+        where TEntity : class, IEntity, new()
         where TEndPoint : EndPoint<TEntity>
     {
         [Inject]
         protected TEndPoint EndPoint { get; set; }
-        
+
         [Inject]
         protected BaseRxService<Pager> PagerService { get; set; }
 
@@ -53,6 +54,12 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
             TotalItems = response.Count;
 
             StateHasChanged();
+        }
+
+        public void Dispose()
+        {
+            SearcherService.Dispose();
+            PagerService.Dispose();
         }
     }
 }

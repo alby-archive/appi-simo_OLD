@@ -3,10 +3,12 @@ namespace AppiSimo.Client.Shared.Services
     using System;
     using System.Reactive.Subjects;
 
-    public abstract class BaseRxService<T>
+    public abstract class BaseRxService<T> : IDisposable
         where T : new()
     {
         readonly BehaviorSubject<T> _subject = new BehaviorSubject<T>(new T());
+
+        IDisposable _subscription;
 
         public T Value => _subject.Value;
 
@@ -17,12 +19,17 @@ namespace AppiSimo.Client.Shared.Services
 
         public void Subscribe(Action<T> onNext)
         {
-            _subject.Subscribe(onNext);
+           _subscription = _subject.Subscribe(onNext);
         }
 
         public void OnNext(T pager)
         {
             _subject.OnNext(pager);
+        }
+
+        public void Dispose()
+        {
+            _subscription.Dispose();
         }
     }
 }
