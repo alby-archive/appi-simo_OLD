@@ -9,6 +9,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.1.1.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppiSimo.Client\AppiSimo.Client.csproj" />
     <ProjectReference Include="..\AppiSimo.Data\AppiSimo.Data.csproj" />
   </ItemGroup>
 </Project>

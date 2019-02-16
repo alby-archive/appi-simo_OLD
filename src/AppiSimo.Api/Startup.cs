@@ -64,6 +64,8 @@
                     b.MapODataServiceRoute("odata", routePrefix: "odata", model: GetEdmModel());
                 });
             }
+
+            app.UseBlazor<Client.Startup>();
         }
 
         static IEdmModel GetEdmModel()
