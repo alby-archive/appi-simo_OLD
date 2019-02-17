@@ -25,7 +25,7 @@
                 <div class="col-md p-2">
                     <p>
                         <div>Data di Nascita:&nbsp;</div>
-                        <div class="text-secondary">@user.Birthday.ToString("d")</div>
+                        <div class="text-secondary">@($"{user.Birthday:d}")</div>
                     </p>
                     <p>
                         <div>@(user.CivicAddress.Address2 == null ? "Indirizzo" : "Indirizzo1"):&nbsp;</div>

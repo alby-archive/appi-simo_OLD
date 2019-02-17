@@ -1,10 +1,8 @@
 ﻿namespace AppiSimo.Client.Pages.UserDetail
 {
     using System;
-    using System.Globalization;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Model;
-    using EndPoints;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
     using Microsoft.OData.Client;
@@ -33,10 +31,10 @@
 
         protected string Birthday
         {
-            get => Entity.Birthday == DateTime.MinValue ? string.Empty : Entity.Birthday.ToString("d");
+            get => Entity.Birthday == DateTime.MinValue ? string.Empty : $"{Entity.Birthday:d}";
             set
             {
-                var isValid = DateTime.TryParseExact(value, "d", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var birthDate);
+                var isValid = DateTime.TryParse(value, out var birthDate);
                 if (isValid)
                 {
                     Entity.Birthday = birthDate;

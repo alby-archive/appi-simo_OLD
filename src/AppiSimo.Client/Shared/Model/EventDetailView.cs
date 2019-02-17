@@ -60,7 +60,7 @@ namespace AppiSimo.Client.Shared.Model
 
         public string SelectedStartDate
         {
-            get => Event.StartDate == DateTime.MinValue ? string.Empty : Event.StartDate.ToLocalTime().ToString("g");
+            get => Event.StartDate == DateTime.MinValue ? string.Empty : $"{Event.StartDate:g}";
             set
             {
                 IsValidStarDate = DateTime.TryParse(value, out var datetime);
@@ -73,7 +73,7 @@ namespace AppiSimo.Client.Shared.Model
 
         public string SelectedEndDate
         {
-            get => Event.EndDate == DateTime.MinValue ? string.Empty : Event.EndDate.ToLocalTime().ToString("g");
+            get => Event.EndDate == DateTime.MinValue ? string.Empty : $"{Event.EndDate:g}";
             set
             {
                 IsValidEndDate = DateTime.TryParse(value, out var datetime);

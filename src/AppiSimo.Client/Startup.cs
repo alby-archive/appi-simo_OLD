@@ -1,6 +1,7 @@
 namespace AppiSimo.Client
 {
     using System;
+    using System.Globalization;
     using System.IO;
     using System.Net.Http;
     using System.Reflection;
@@ -33,6 +34,7 @@ namespace AppiSimo.Client
 
         public void Configure(IBlazorApplicationBuilder app)
         {
+            SetCulture();
             app.AddComponent<App>("app");
         }
 
@@ -44,6 +46,11 @@ namespace AppiSimo.Client
             {
                 return Json.Deserialize<Configuration>(reader.ReadToEnd());
             }
+        }
+
+        static void SetCulture()
+        {
+            CultureInfo.CurrentCulture = new CultureInfo("it-IT");
         }
     }
 }

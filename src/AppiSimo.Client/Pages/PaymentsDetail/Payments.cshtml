@@ -7,7 +7,7 @@
 </div>
 
 @if (!Entities.Any())
-{    
+{
     <div class="d-flex mt-4">
         <h3 class="text-muted">Non ci sono prenotazioni attive per questo utente</h3>
     </div>
@@ -23,8 +23,8 @@
         .OrderByDescending(userEvent => userEvent.Paid)
         .ThenByDescending(userEvent => userEvent.Event.StartDate))
     {
-        <div class="card w-100 m-2" style="max-width: 400px">           
-            
+        <div class="card w-100 m-2" style="max-width: 400px">
+
             @if (!userEvent.Paid)
             {
                 <div class="card-header text-center font-weight-bold alert alert-success">Pagato</div>
@@ -33,9 +33,9 @@
             {
                 <div class="card-header text-center font-weight-bold alert alert-danger ">Non Pagato</div>
             }
-            
+
             <div class="card-body text-justify font-weight-bold">
-                
+
                 <p>
                     <span>Importo:&nbsp;</span>
                     <span class="text-secondary">@userEvent.Cost&nbsp;&euro;</span>
@@ -52,12 +52,12 @@
 
                 <p>
                     <span>Data Inizio:&nbsp;</span>
-                    <span class="text-secondary">@userEvent.Event.StartDate.ToLocalTime().ToString("t")</span>
+                    <span class="text-secondary">@($"{userEvent.Event.StartDate.ToLocalTime():t}")</span>
                 </p>
 
                 <p>
                     <span>Data Fine:&nbsp;</span>
-                    <span class="text-secondary">@userEvent.Event.EndDate.ToLocalTime().ToString("t")</span>
+                    <span class="text-secondary">@($"{userEvent.Event.EndDate.ToLocalTime():t}")</span>
                 </p>
 
                 @if (userEvent.Event.LightDuration > 0)
@@ -85,12 +85,12 @@
             </div>
         </div>
     }
-    
+
     @foreach (var _ in Entities)
     {
         <div class="w-100 m-2" style="max-width: 400px"></div>
     }
-    
+
 </div>
 
 <div class="row">
