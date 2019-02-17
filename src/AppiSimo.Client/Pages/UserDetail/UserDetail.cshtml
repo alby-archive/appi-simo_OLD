@@ -1,6 +1,7 @@
 @page "/user"
 @page "/user/{Id}"
 
+@using System.Web
 @inherits UserDetailDetailComponent
 
 <div class="d-flex mt-4">
@@ -49,9 +50,9 @@
 
             <div class="input-group my-4">
                 <div class="input-group-prepend">
-                    <div class="input-group-text appisimo-prepend">Citta'</div>
+                    <div class="input-group-text appisimo-prepend">Citt&agrave;</div>
                 </div>
-                <input type="text" class="form-control" id="user-detail-city" placeholder="Citt&agrave;" bind="@Entity.CivicAddress.City"/>
+                <input type="text" class="form-control" id="user-detail-city" placeholder="@HttpUtility.HtmlDecode("Citt&agrave;")" bind="@Entity.CivicAddress.City"/>
             </div>
 
             <div class="input-group my-4">
