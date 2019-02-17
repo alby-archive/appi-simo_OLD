@@ -25,7 +25,7 @@
     {
         <div class="card w-100 m-2" style="max-width: 400px">
 
-            @if (!userEvent.Paid)
+            @if (userEvent.Paid)
             {
                 <div class="card-header text-center font-weight-bold alert alert-success">Pagato</div>
             }
