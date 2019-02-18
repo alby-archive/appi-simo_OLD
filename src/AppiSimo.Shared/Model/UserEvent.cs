@@ -2,6 +2,7 @@ namespace AppiSimo.Shared.Model
 {
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Newtonsoft.Json;
 
     [Table("UserEvent")]
     public class UserEvent : Entity
@@ -14,7 +15,7 @@ namespace AppiSimo.Shared.Model
         public bool Paid { get; set; }
         
         // TODO: evaluate if leave this property 
-        [NotMapped]
+        [NotMapped, JsonIgnore]
         public string FormattedCost
         {
             get => Cost.ToString("0.00");

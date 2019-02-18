@@ -9,8 +9,8 @@ namespace AppiSimo.Client.Middelwares
     {
         public static void AddRxServices(this IServiceCollection services)
         {
-            services.AddScoped<BaseRxService<Pager>, PagerService>();
-            services.AddScoped<BaseRxService<Searcher>, SearcherService>();
+            services.AddTransient<BaseRxService<Pager>, PagerService>();
+            services.AddTransient<BaseRxService<Searcher>, SearcherService>();
         }
     }
 }
