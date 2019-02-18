@@ -32,7 +32,7 @@
             });
 
             services.AddOData();
-            
+
             services.AddCors();
 
             services.AddMvc()
@@ -46,7 +46,7 @@
             // Shows UseCors with CorsPolicyBuilder.
             app.UseCors(builder =>
                 builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -56,14 +56,20 @@
                 app.UseHsts();
             }
 
+            app.UseMvc(b =>
             {
-                app.UseMvc(b =>
+                b.Select().Expand().Filter().OrderBy().MaxTop(maxTopValue: 100).Count();
+                b.EnableDependencyInjection();
+                b.MapODataServiceRoute("odata", "api", GetEdmModel());
+            });
+
+            app.Map("/api", api =>
+            {
+                api.UseMvc(b =>
                 {
-                    b.Select().Expand().Filter().OrderBy().MaxTop(maxTopValue: 100).Count();
-                    b.EnableDependencyInjection();
-                    b.MapODataServiceRoute("odata", routePrefix: "odata", model: GetEdmModel());
+                    b.MapRoute("default", "{controller}/{action}");
                 });
-            }
+            });
 
             app.UseBlazor<Client.Startup>();
         }
@@ -74,14 +80,14 @@
 
             builder.EnableLowerCamelCase();
 
-            builder.EntitySet<User>("Users");            
+            builder.EntitySet<User>("Users");
             builder.EntitySet<Event>("Events");
             builder.EntitySet<Court>("Courts");
             builder.EntitySet<Light>("Lights");
             builder.EntitySet<Heat>("Heats");
             builder.EntitySet<Rate>("Rates");
             builder.EntitySet<UserEvent>("UserEvent");
-            
+
             return builder.GetEdmModel();
         }
     }

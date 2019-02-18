@@ -14,7 +14,7 @@ namespace AppiSimo.Client.EndPoints
         {
         }
 
-        public async Task<decimal> GiveMeBackMyMoney(Guid key) => 
-            await Client.GetJsonAsync<decimal>($"/odata/{ResourceUri}/GiveMeBackMyMoney?key={key}");
+        public async Task<decimal> GiveMeBackMyMoney(Guid key) =>
+            await Client.GetJsonAsync<decimal>($"{ResourceUri}/GiveMeBackMyMoney?key={key}");
     }
 }

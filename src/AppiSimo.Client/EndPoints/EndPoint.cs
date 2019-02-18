@@ -20,29 +20,27 @@
         {
             _context = context;
             Client = client;
-    
+
             ResourceUri = resourceUri;
         }
 
         public DataServiceQuery<TEntity> Entities => _context.CreateQuery<TEntity>(ResourceUri);
 
-        public async Task<TEntity> Entity(Guid id, Func<DataServiceQuery<TEntity>, IQueryable<TEntity>> selector) => 
+        public async Task<TEntity> Entity(Guid id, Func<DataServiceQuery<TEntity>, IQueryable<TEntity>> selector) =>
             (await selector(Entities).Where(u => u.Id == id).ToListAsync(Client)).Value.FirstOrDefault();
-        
-        // TODO: move odata uri from string builder.
 
         public async Task Save(TEntity entity)
         {
             if (entity.Id == Guid.Empty)
             {
-                await Client.SendJsonAsync<TEntity>(HttpMethod.Post, $"/odata/{ResourceUri}/Post", entity);
+                await Client.SendJsonAsync<TEntity>(HttpMethod.Post, $"{ResourceUri}/Post", entity);
             }
             else
             {
-                await Client.SendJsonAsync<TEntity>(HttpMethod.Put, $"/odata/{ResourceUri}/Put", entity);
+                await Client.SendJsonAsync<TEntity>(HttpMethod.Put, $"{ResourceUri}/Put", entity);
             }
         }
 
-        public async Task Delete(Guid id) => await Client.DeleteAsync($"/odata/{ResourceUri}/Delete/{id}");
+        public async Task Delete(Guid id) => await Client.DeleteAsync($"{ResourceUri}/Delete/{id}");
     }
 }

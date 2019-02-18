@@ -16,7 +16,6 @@ namespace AppiSimo.Api.Controllers
         }
 
         [HttpGet("{key}")]
-        [Route("odata/[controller]/[action]")]
         public async Task<IActionResult> GiveMeBackMyMoney(Guid key) =>
             Ok(await Context.Set<UserEvent>().Where(userEvent => userEvent.UserId == key && !userEvent.Paid).SumAsync(payment => payment.Cost));
     }

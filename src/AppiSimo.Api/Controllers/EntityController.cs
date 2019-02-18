@@ -18,14 +18,9 @@
         }
 
         [EnableQuery]
-        [HttpGet]
         public virtual IActionResult Get() => Ok(Context.Set<TEntity>());
 
-        [HttpGet("{key}")]
-        public virtual async Task<IActionResult> Get(Guid key) => Ok(await Context.Set<TEntity>().FindAsync(key));
-
-        [HttpPost]   
-        [Route("odata/[controller]/[action]")]
+        [HttpPost]
         public virtual async Task<IActionResult> Post([FromBody] TEntity entity)
         {
             var result = await Context.Set<TEntity>().AddAsync(entity);
@@ -35,7 +30,6 @@
         }
 
         [HttpPut]
-        [Route("odata/[controller]/[action]")]
         public virtual async Task<IActionResult> Put([FromBody] TEntity entity)
         {
             var result = Context.Set<TEntity>().Update(entity);
@@ -45,7 +39,6 @@
         }
 
         [HttpDelete]
-        [Route("odata/[controller]/[action]/{key}")]
         public async Task<IActionResult> Delete(Guid key)
         {
             var entity = new TEntity
