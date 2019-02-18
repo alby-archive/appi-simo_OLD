@@ -2,10 +2,10 @@ version: '3'
 
 services:
     appi_simo:
-        image: postgres:10.2
+        image: postgres:11.1
         environment:
-            - POSTGRES_USER=SamuraiTeam
-            - POSTGRES_PASSWORD=SamuraiTeam
+            - POSTGRES_USER=CowboysTeam
+            - POSTGRES_PASSWORD=CowboysTeam
             - POSTGRES_DB=KingRoger_DEV
         ports:
             - 5432:5432
