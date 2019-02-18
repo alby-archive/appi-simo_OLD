@@ -21,7 +21,7 @@
 
     <ul class="overflow-auto list-group list-group-flush" style="max-height: 300px">
 
-        @foreach (var userEvent in ViewModel.FilteredUserEvents.Where(userEvent => userEvent.User.Name.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
+        @foreach (var userEvent in ViewModel.FilteredUserEvents.Where(userEvent => userEvent.User.Surname.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
         {
             <li class="list-group-item user-add-li" onclick="@(() => AddUser(userEvent))">
                 <span class="font-weight-bold text-secondary">@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
