@@ -80,8 +80,10 @@
 
             </div>
             <div class="card-footer text-white d-flex">
-                <a class="btn btn-outline-info flex-equal mr-2" href=@($"/event/{userEvent.EventId}")>Dettaglio</a>
-                <input type="button" class="btn btn-outline-success flex-equal ml-2" onclick="@(async () => await MarkAsPaid(userEvent))" value=@(userEvent.Paid ? "Paga" : "Annulla")/>
+                <a class="btn btn-outline-secondary flex-equal mr-2" href=@($"/event/{userEvent.EventId}")>Modifica</a>
+                <input type="button"
+                       class=@($"btn {(userEvent.Paid ? "btn-outline-danger" : "btn-outline-success")} flex-equal ml-2")
+                       onclick="@(async () => await MarkAsPaid(userEvent))" value=@(userEvent.Paid ? "Annulla" : "Paga")/>
             </div>
         </div>
     }

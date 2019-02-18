@@ -31,7 +31,7 @@ namespace AppiSimo.Client.Pages.PaymentsDetail
 
         protected decimal GetTotalNotPaid()
         {
-            var eventsNotPaid = Entities.Where(userEvent => userEvent.Paid);
+            var eventsNotPaid = Entities.Where(userEvent => !userEvent.Paid);
             return eventsNotPaid.Sum(userEvent => userEvent.Cost);
         }
     }
