@@ -20,7 +20,7 @@
 
 <div class="d-flex flex-wrap justify-content-between">
     @foreach (var userEvent in Entities
-        .OrderByDescending(userEvent => userEvent.Paid)
+        .OrderByDescending(userEvent => !userEvent.Paid)
         .ThenByDescending(userEvent => userEvent.Event.StartDate))
     {
         <div class="card w-100 m-2" style="max-width: 400px">
