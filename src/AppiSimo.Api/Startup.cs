@@ -1,5 +1,6 @@
 ﻿namespace AppiSimo.Api
 {
+    using System;
     using Data;
     using Microsoft.AspNet.OData.Builder;
     using Microsoft.AspNet.OData.Extensions;
@@ -25,10 +26,15 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var heroku = Heroku.TryParseConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"));
+            var local = Configuration.GetConnectionString("KingRoger_DEV_Database");
+
+            var connectionString = heroku ?? local;
+
             services.AddDbContext<KingRogerContext>(options =>
             {
                 options.EnableSensitiveDataLogging();
-                options.UseNpgsql(Configuration.GetConnectionString("KingRoger_DEV_Database"));
+                options.UseNpgsql(connectionString);
             });
 
             services.AddOData();
