@@ -102,6 +102,8 @@ namespace AppiSimo.Client.Shared.Model
                 {
                     Event.LightId = Guid.Parse(value);
                 }
+                
+                SetLightAndHeatDuration();
             }
         }
 
@@ -130,6 +132,8 @@ namespace AppiSimo.Client.Shared.Model
                 {
                     Event.HeatId = Guid.Parse(value);
                 }
+                
+                SetLightAndHeatDuration();
             }
         }
 
@@ -145,21 +149,22 @@ namespace AppiSimo.Client.Shared.Model
 
         double GetDuration()
         {
-            double duration = 0;
-
             if (!IsValidEndDate || !IsValidEndDate)
             {
-                return duration;
+                return 0;
             }
 
-            duration = (Event.EndDate - Event.StartDate).TotalMinutes > 0 ? (Event.EndDate - Event.StartDate).TotalMinutes : 0;
+            var totalHours = (Event.EndDate - Event.StartDate).TotalHours;
 
-            return duration;
+            return totalHours > 0 ? totalHours : 0;
         }
 
         void SetLightAndHeatDuration()
         {
-            Event.LightDuration = Event.HeatDuration = GetDuration() / 60;
+            var duration = GetDuration();
+
+            Event.LightDuration = Event.LightId == null ? 0 : duration;
+            Event.HeatDuration = Event.HeatId == null ? 0 : duration;
         }
     }
 }
