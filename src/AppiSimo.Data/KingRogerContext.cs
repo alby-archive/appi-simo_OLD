@@ -61,11 +61,21 @@
             modelBuilder.Entity<Event>()
                 .Property(e => e.EndDate)
                 .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-            
+
+            modelBuilder.Entity<User>()
+                .HasOne(e => e.Fit)
+                .WithOne(e => e.User)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasOne(e => e.CivicAddress)
+                .WithOne(e => e.User)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<User>()
                 .Property(e => e.Birthday)
                 .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-            
+
             modelBuilder.Entity<Fit>()
                 .Property(c => c.Id)
                 .ValueGeneratedOnAdd();
