@@ -26,15 +26,10 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var heroku = Heroku.TryParseConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"));
-            var local = Configuration.GetConnectionString("KingRoger_DEV_Database");
-
-            var connectionString = heroku ?? local;
-
             services.AddDbContext<KingRogerContext>(options =>
             {
                 options.EnableSensitiveDataLogging();
-                options.UseNpgsql(connectionString);
+                options.UseNpgsql(GetConnectionString());
             });
 
             services.AddOData();
@@ -80,6 +75,11 @@
             app.UseBlazor<Client.Startup>();
         }
 
+        
+        string GetConnectionString()
+            => Heroku.TryParseConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"))
+               ?? Configuration.GetConnectionString("KingRoger_DEV_Database");
+        
         static IEdmModel GetEdmModel()
         {
             var builder = new ODataConventionModelBuilder();

@@ -2,28 +2,30 @@ namespace AppiSimo.Client.Middelwares
 {
     using System;
     using System.Net.Http;
+    using AppiSimo.Shared.Abstract;
     using AppiSimo.Shared.Model;
     using EndPoints;
-    using Environment;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.OData.Client;
 
     public static class EndPointMiddleWare
     {
-        public static void AddEndPoints(this IServiceCollection services, Configuration config)
-        {
-            var baseUri = new Uri(config.Api);
-            
-            var context = new DataServiceContext(baseUri);
+        public static void AddEndPoints(this IServiceCollection services)
+        {            
+            services.AddSingleton(sp => new DataServiceContext(sp.GetRequiredService<Configuration>().Api));
 
-            services.AddSingleton(provider => new EndPoint<Event>(context, provider.GetRequiredService<HttpClient>(), "events"));
-            services.AddSingleton(provider => new EndPoint<Court>(context, provider.GetRequiredService<HttpClient>(), "courts"));
-            services.AddSingleton(provider => new EndPoint<Light>(context, provider.GetRequiredService<HttpClient>(), "lights"));
-            services.AddSingleton(provider => new EndPoint<Heat>(context, provider.GetRequiredService<HttpClient>(), "heats"));
-            services.AddSingleton(provider => new EndPoint<UserEvent>(context, provider.GetRequiredService<HttpClient>(), "userEvent"));
-            services.AddSingleton(provider => new EndPoint<User>(context, provider.GetRequiredService<HttpClient>(), "users"));
-            services.AddSingleton(provider => new UserEndPoint(context, provider.GetRequiredService<HttpClient>(), "users"));
+            services.AddSingleton(provider => CreateEndPoint<Event>(provider, "events"));
+            services.AddSingleton(provider => CreateEndPoint<Court>(provider, "courts"));
+            services.AddSingleton(provider => CreateEndPoint<Light>(provider, "lights"));
+            services.AddSingleton(provider => CreateEndPoint<Heat>(provider, "heats"));
+            services.AddSingleton(provider => CreateEndPoint<UserEvent>(provider, "userEvent"));
+            services.AddSingleton(provider => CreateEndPoint<User>(provider, "users"));
             
+            services.AddSingleton(provider => new UserEndPoint(provider.GetRequiredService<DataServiceContext>(), provider.GetRequiredService<HttpClient>(), "users"));
         }
+
+        static EndPoint<T> CreateEndPoint<T>(IServiceProvider provider, string name)
+            where T : class, IEntity, new() 
+            => new EndPoint<T>(provider.GetRequiredService<DataServiceContext>(), provider.GetRequiredService<HttpClient>(), name);
     }
 }
