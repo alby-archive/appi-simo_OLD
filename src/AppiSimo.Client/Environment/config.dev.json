@@ -1,0 +1,10 @@
+{
+  "ApiUrl" : "http://localhost:5002/api/",
+  "AuthConfig": {
+    "ClientId" : "6dnnim0um8cej2tftip03t7i54",
+    "UserPoolId" : "eu-central-1_uNTgblh6V",
+    "Scopes" : [],
+    "RedirectUri" : "redirectUri",
+    "PostLogoutRedirectUri" : "postLogoutRedirectUri"
+  }
+}

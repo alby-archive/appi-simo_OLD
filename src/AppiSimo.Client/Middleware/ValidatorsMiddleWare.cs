@@ -1,11 +1,11 @@
-namespace AppiSimo.Client.Middelwares
+namespace AppiSimo.Client.Middleware
 {
     using AppiSimo.Shared.Validators;
     using Microsoft.Extensions.DependencyInjection;
 
-    public static class ValidatorsMiddelWare
+    public static class ValidatorsMiddleWare
     {
-        public static void AddValidatorModdleWare(this IServiceCollection services)
+        public static void AddValidatorMiddleWare(this IServiceCollection services)
         {
             services.AddSingleton(provider => ValidatorProxy.EventsValidator);
         }

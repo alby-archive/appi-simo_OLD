@@ -1,10 +1,11 @@
-namespace AppiSimo.Client.Middelwares
+namespace AppiSimo.Client.Middleware
 {
     using System;
     using System.Net.Http;
     using AppiSimo.Shared.Abstract;
     using AppiSimo.Shared.Model;
     using EndPoints;
+    using Environment;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.OData.Client;
 
@@ -12,7 +13,11 @@ namespace AppiSimo.Client.Middelwares
     {
         public static void AddEndPoints(this IServiceCollection services)
         {            
-            services.AddSingleton(sp => new DataServiceContext(sp.GetRequiredService<Configuration>().Api));
+            services.AddSingleton(provider =>
+            {
+                var api = new Uri(provider.GetRequiredService<Configuration>().ApiUrl);
+                return new DataServiceContext(api);
+            });
 
             services.AddSingleton(provider => CreateEndPoint<Event>(provider, "events"));
             services.AddSingleton(provider => CreateEndPoint<Court>(provider, "courts"));
