@@ -1,9 +1,16 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@inherits NavMenuComponent
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">AppiSimo</a>
     <button class="navbar-toggler" onclick="@ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
 </div>
+
+@if (AuthService.User.Value != null)
+{
+    <span class="text-white">Benvenuto @AuthService.User.Value.Username</span>
+}
 
 <div class=@(_collapseNavMenu ? "collapse" : null) onclick="@ToggleNavMenu">
     <ul class="nav flex-column">
@@ -17,11 +24,22 @@
                 <span class="oi oi-book" aria-hidden="true"></span>Prenotazioni
             </NavLink>
         </li>
+    @if (AuthService.User.Value == null)
+    {
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="/login">
                 <span class="oi oi-person" aria-hidden="true"></span>Login
             </NavLink>
         </li>
+    }
+    else
+    {
+        <li class="nav-item px-3">
+            <a class="nav-link" onclick="@(() => SignOut())">
+                <span class="oi oi-person" aria-hidden="true"></span>Logout
+            </a>
+        </li>
+    }
     </ul>
 </div>
 

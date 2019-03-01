@@ -1,5 +1,6 @@
 namespace AppiSimo.Client.Pages.Auth.NewPassword
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Blazor.Components;
     using Shared.Model;
@@ -7,14 +8,22 @@ namespace AppiSimo.Client.Pages.Auth.NewPassword
 
     public class NewPasswordComponent : BlazorComponent
     {
+        [Parameter]
+        string Username { get; set; }
+
+        protected string OldPassword { get; set; }
+        
+        protected string NewPassword { get; set; }
+        
         [Inject]
         AuthService AuthService { get; set; }
-        
-        protected Password Password { get; set; } = new Password();
-        
+
         protected async Task Change()
         {
-            await AuthService.ChangePassword(Password);            
+            await AuthService.ChangePassword(Username, OldPassword, NewPassword);
+            await AuthService.SignIn(Username, NewPassword);
+            
+            Console.WriteLine("TOKEN: " + AuthService.User.Value.Token.Value);
         }
     }
 }

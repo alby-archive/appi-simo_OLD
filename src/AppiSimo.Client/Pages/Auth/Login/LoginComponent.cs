@@ -4,7 +4,6 @@ namespace AppiSimo.Client.Pages.Auth.Login
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
-    using Shared.Model;
     using Shared.Services;
 
     public class LoginComponent : BlazorComponent
@@ -14,20 +13,38 @@ namespace AppiSimo.Client.Pages.Auth.Login
         
         [Inject]
         IUriHelper UriHelper { get; set; }
+
+        protected string Username { get; set; }
+
+        protected string Password { get; set; }
         
-        protected AuthUser AuthUser { get; set; } = new AuthUser();
+        protected string Error { get; set; }
 
         protected async Task SignIn()
         {
-            Console.WriteLine($"HEI");
+            Error = string.Empty;
             
-            var token = await AuthService.SignIn(AuthUser);
-
-            Console.WriteLine($"TOKEN: {token}");
-            
-            if (token == "newPasswordRequired")
+            try
             {
-                UriHelper.NavigateTo("new-password");
+                await AuthService.SignIn(Username, Password);
+                UriHelper.NavigateTo($"/");
+            }
+            catch (SigninException ex)
+            {
+                switch (ex.Type)
+                {
+                    case SigninErrorType.PasswordChangeRequired:
+                        UriHelper.NavigateTo($"new-password/{Username}");
+                        break;
+                    case SigninErrorType.NotAuthorized:
+                        Error = "Username o password non corretta.";
+                        break;
+                    case SigninErrorType.Exception:
+                        Error = "Si e' verificato un errore durante il login.";
+                        break;
+                    default:
+                        throw;
+                }
             }
         }
     }

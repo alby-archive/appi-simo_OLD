@@ -4,46 +4,91 @@
     
     self.authentication.signIn = (username, password, config) => {
 
-        const authenticationData = {
+        const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
             Username: username,
             Password: password
-        };
-        
-        const poolData = {
-            UserPoolId: config.userPoolId,
-            ClientId: config.clientId
-        };
-        
-        const userData = {
-            Username: username,
-            Pool: new AmazonCognitoIdentity.CognitoUserPool(poolData)
-        };
+        });
 
-        const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
-
-        const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-        
-        let accessToken;
+        const cognitoUser = getCognitoUser(username, config.userPoolId, config.clientId);
         
         return new Promise((resolve, reject) => {
             cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess: function (result) {
-                    accessToken = result.getAccessToken().getJwtToken();
-                    resolve(accessToken);
+                    const token = result.getAccessToken().getJwtToken();
+                    resolve({
+                        value:{
+                           value: token                            
+                        }
+                    });
                 },
-
-                onFailure: function(err) {
-                    reject(err);
+                onFailure: function(error) {
+                    resolve({
+                        error: {
+                            type: error.code === 'NotAuthorizedException' ? 2 : 0,
+                            message: error.message
+                        }
+                    });
                 },
-                mfaRequired: function(codeDeliveryDetails) {
-                    var verificationCode = prompt('Please input verification code' ,'');
-                    cognitoUser.sendMFACode(verificationCode, this);
-                },
-                newPasswordRequired: function (err) {
-                    resolve("newPasswordRequired");
+                newPasswordRequired: function (userAttributes, requiredAttributes) {
+                    resolve({
+                        error: {
+                            type: 1,
+                            message: "New password required."
+                        }
+                    });                    
                 }
             });
         });
     };
+    
+    self.authentication.signOut = (username, config) => {
+        const cognitoUser = getCognitoUser(username, config.userPoolId, config.clientId);
+        cognitoUser.signOut();
+    };
+
+    self.authentication.completeNewPasswordChallenge = (username, oldPassword, newPassword, config) => {
+
+        const cognitoUser = getCognitoUser(username, config.userPoolId, config.clientId);        
+        
+        return new Promise((resolve, reject) => {
+            function completeNewPasswordChallenge(){
+                return cognitoUser.completeNewPasswordChallenge(newPassword, {"name": name}, {
+                    onSuccess: result => {
+                        resolve();
+                    },
+                    onFailure: err => {
+                        reject(err);
+                    }
+                });
+            }
+
+            const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+                Username: username,
+                Password: oldPassword
+            });
+            
+            cognitoUser.authenticateUser(authenticationDetails, {
+                onSuccess: function (result) {
+                    completeNewPasswordChallenge();
+                },
+                newPasswordRequired: function (userAttributes, requiredAttributes) {
+                    completeNewPasswordChallenge();
+                },
+                onFailure: function(error) {
+                    reject(error);
+                }
+            });
+            
+            
+        });
+    };
+    
+    const getCognitoUser = (username, userPoolId, clientId) => new AmazonCognitoIdentity.CognitoUser({
+        Username: username,
+        Pool: new AmazonCognitoIdentity.CognitoUserPool({
+            UserPoolId: userPoolId,
+            ClientId: clientId
+        })
+    });
 
 })(window.interop || (window.interop = {}));
