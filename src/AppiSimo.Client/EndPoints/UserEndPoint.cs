@@ -6,11 +6,12 @@ namespace AppiSimo.Client.EndPoints
     using AppiSimo.Shared.Model;
     using Microsoft.AspNetCore.Blazor;
     using Microsoft.OData.Client;
+    using Shared.Services;
 
     public class UserEndPoint : EndPoint<User>
     {
-        public UserEndPoint(DataServiceContext context, HttpClient client, string resourceUri)
-            : base(context, client, resourceUri)
+        public UserEndPoint(DataServiceContext context, HttpClient client, AuthService authService, string resourceUri)
+            : base(context, client, authService, resourceUri)
         {
         }
 

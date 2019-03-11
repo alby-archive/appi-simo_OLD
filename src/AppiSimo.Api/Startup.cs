@@ -1,9 +1,12 @@
 ﻿namespace AppiSimo.Api
 {
     using System;
+    using System.IdentityModel.Tokens.Jwt;
     using Data;
     using Microsoft.AspNet.OData.Builder;
     using Microsoft.AspNet.OData.Extensions;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
@@ -35,7 +38,12 @@
             services.AddOData();
 
             services.AddCors();
+            
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => Configuration.GetSection("Authentication").Bind(options));
+            
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(option => option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
@@ -56,6 +64,8 @@
             {
                 app.UseHsts();
             }
+
+            app.UseAuthentication();
 
             app.UseMvc(b =>
             {

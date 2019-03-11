@@ -2,18 +2,16 @@ namespace AppiSimo.Client.Shared.Services
 {
     using System;
     using System.Reactive.Subjects;
-    using System.Runtime.Serialization;
     using System.Threading.Tasks;
     using Environment;
     using Microsoft.JSInterop;
     using Model;
-    using Newtonsoft.Json;
 
     public class AuthService
     {
-        public BehaviorSubject<AuthUser> User { get; } = new BehaviorSubject<AuthUser>(null);
+        public BehaviorSubject<AuthUser> User { get; } = new BehaviorSubject<AuthUser>(value: null);
         readonly AuthConfig _config;
-        
+
         public AuthService(AuthConfig config)
         {
             _config = config;
@@ -37,31 +35,26 @@ namespace AppiSimo.Client.Shared.Services
 
             NextUser(new AuthUser(username, result.Value));
         }
-        
+
         public void SignOut()
         {
             if (User.Value == null)
             {
                 return;
             }
-            
+
             Js.Invoke<Result<Token>>("interop.authentication.signOut", User.Value.Username, _config);
 
             NextUser(authUser: null);
         }
 
-        public Task ChangePassword(string username, string oldPassword, string newPassword)
-        {
-            return Js.InvokeAsync<Task>("interop.authentication.completeNewPasswordChallenge", username, oldPassword, newPassword, _config);
-        }
-        
+        public Task ChangePassword(string username, string oldPassword, string newPassword) => Js.InvokeAsync<Task>("interop.authentication.completeNewPasswordChallenge", username, oldPassword, newPassword, _config);
+
         class SigninError
         {
             public SigninErrorType Type { get; private set; }
             public string Message { get; private set; }
         }
-
-    
 
         class Result<T>
         {
@@ -69,14 +62,14 @@ namespace AppiSimo.Client.Shared.Services
             public SigninError Error { get; private set; }
         }
     }
-    
+
     public enum SigninErrorType
     {
         Exception,
         PasswordChangeRequired,
         NotAuthorized
     }
-    
+
     class SigninException : Exception
     {
         public SigninException(string message, SigninErrorType type)
@@ -85,6 +78,6 @@ namespace AppiSimo.Client.Shared.Services
             Type = type;
         }
 
-        public SigninErrorType Type { get; private set; }
+        public SigninErrorType Type { get; }
     }
 }

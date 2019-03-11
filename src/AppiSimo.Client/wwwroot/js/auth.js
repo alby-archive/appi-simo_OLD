@@ -4,16 +4,11 @@
     
     self.authentication.signIn = (username, password, config) => {
 
-        const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-            Username: username,
-            Password: password
-        });
-
         const cognitoUser = getCognitoUser(username, config.userPoolId, config.clientId);
         
-        return new Promise((resolve, reject) => {
-            cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: function (result) {
+        return new Promise((resolve, _) => {
+            cognitoUser.authenticateUser(getAuthenticationDetails(username, password), {
+                onSuccess: (result) => {
                     const token = result.getAccessToken().getJwtToken();
                     resolve({
                         value:{
@@ -21,7 +16,7 @@
                         }
                     });
                 },
-                onFailure: function(error) {
+                onFailure: (error) => {
                     resolve({
                         error: {
                             type: error.code === 'NotAuthorizedException' ? 2 : 0,
@@ -29,7 +24,7 @@
                         }
                     });
                 },
-                newPasswordRequired: function (userAttributes, requiredAttributes) {
+                newPasswordRequired: () => {
                     resolve({
                         error: {
                             type: 1,
@@ -51,35 +46,29 @@
         const cognitoUser = getCognitoUser(username, config.userPoolId, config.clientId);        
         
         return new Promise((resolve, reject) => {
-            function completeNewPasswordChallenge(){
+            
+            const completeNewPasswordChallenge = () => {
                 return cognitoUser.completeNewPasswordChallenge(newPassword, {"name": name}, {
-                    onSuccess: result => {
+                    onSuccess: () => {
                         resolve();
                     },
                     onFailure: err => {
                         reject(err);
                     }
                 });
-            }
-
-            const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-                Username: username,
-                Password: oldPassword
-            });
+            };
             
-            cognitoUser.authenticateUser(authenticationDetails, {
-                onSuccess: function (result) {
+            cognitoUser.authenticateUser(getAuthenticationDetails(username, oldPassword), {
+                onSuccess: () => {
                     completeNewPasswordChallenge();
                 },
-                newPasswordRequired: function (userAttributes, requiredAttributes) {
+                newPasswordRequired: () => {
                     completeNewPasswordChallenge();
                 },
-                onFailure: function(error) {
+                onFailure: (error) => {
                     reject(error);
                 }
-            });
-            
-            
+            });            
         });
     };
     
@@ -91,4 +80,9 @@
         })
     });
 
+    const getAuthenticationDetails = (username, password) => new AmazonCognitoIdentity.AuthenticationDetails({
+        Username: username,
+        Password: password
+    });
+    
 })(window.interop || (window.interop = {}));
