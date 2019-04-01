@@ -141,3 +141,7 @@ app {
 .appisimo-prepend{
     width: 130px;
 }
+
+.current-user-badge-link {
+    cursor: Pointer
+}

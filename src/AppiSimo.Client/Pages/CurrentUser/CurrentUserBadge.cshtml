@@ -1,0 +1,20 @@
+@inherits CurrentUserBadgeComponent
+
+<div class="d-flex current-user-badge-link">
+
+    @if (AuthService.User.Value == null)
+    {
+        <div onclick="@(() => SignIn())">
+            <span class="oi oi-person mr-2"></span>
+            <span>Login</span>
+        </div>
+    }
+    else
+    {
+        <div onclick="@(() => GoToProfile())">
+            <span class="oi oi-person mr-2"></span>
+            <span class="mr-2">@AuthService.User.Value.Username</span>
+        </div>
+        <span onclick="@(() => SignOut())" aria-hidden="true">Logout</span>
+    }
+</div>

@@ -4,9 +4,11 @@
     using System.Threading.Tasks;
     using Data;
     using Microsoft.AspNet.OData;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Shared.Abstract;
 
+    [Authorize]
     public abstract class EntityController<TEntity> : ODataController
         where TEntity : class, IEntity, new()
     {
@@ -16,7 +18,7 @@
         {
             Context = context;
         }
-
+        
         [EnableQuery]
         public virtual IActionResult Get() => Ok(Context.Set<TEntity>());
 

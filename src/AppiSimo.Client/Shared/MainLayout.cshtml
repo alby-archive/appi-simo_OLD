@@ -1,11 +1,13 @@
-@inherits Microsoft.AspNetCore.Blazor.Layouts.BlazorLayoutComponent
+@inherits BlazorLayoutComponent
 
 <div class="sidebar">
-    <NavMenu />
+    <navmenu/>
 </div>
 
 <div class="main">
-    <div class="top-row px-4"></div>
+    <div class="top-row px-4">
+        <currentuserbadge/>
+    </div>
 
     <div class="container-fluid">
         @Body
