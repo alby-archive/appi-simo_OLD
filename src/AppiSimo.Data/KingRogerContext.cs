@@ -68,7 +68,7 @@
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>()
-                .HasOne(e => e.CivicAddress)
+                .HasOne(e => e.Address)
                 .WithOne(e => e.User)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -80,7 +80,7 @@
                 .Property(c => c.Id)
                 .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<CivicAddress>()
+            modelBuilder.Entity<Address>()
                 .Property(h => h.Id)
                 .ValueGeneratedOnAdd();
         }

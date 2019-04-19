@@ -28,23 +28,16 @@
                         <div class="text-secondary">@($"{user.Birthday:d}")</div>
                     </p>
                     <p>
-                        <div>@(user.CivicAddress.Address2 == null ? "Indirizzo" : "Indirizzo1"):&nbsp;</div>
-                        <div class="text-secondary">@user.CivicAddress.Address1</div>
+                        <div>Indirizzo: </div>
+                        <div class="text-secondary">@user.Address.Street</div>
                     </p>
-                    @if (user.CivicAddress.Address2 != null)
-                    {
-                        <p>
-                            <div>Indirizzo2:&nbsp;</div>
-                            <div class="text-secondary">@user.CivicAddress.Address2</div>
-                        </p>
-                    }
                     <p>
                         <div>Citt&agrave;:&nbsp;</div>
-                        <div class="text-secondary">@user.CivicAddress.City</div>
+                        <div class="text-secondary">@user.Address.City</div>
                     </p>
                     <p>
                         <div>Cap:&nbsp;</div>
-                        <div class="text-secondary">@user.CivicAddress.Zip</div>
+                        <div class="text-secondary">@user.Address.Zip</div>
                     </p>
                 </div>
                 
@@ -52,6 +45,10 @@
                     <p>
                         <div>Telefono:&nbsp;</div>
                         <div class="text-secondary">@user.PhoneNumber</div>
+                    </p>
+                    <p>
+                        <div>E-Mail:&nbsp;</div>
+                        <div class="text-secondary">@user.Email</div>
                     </p>
                     <p>
                         <div>Tessera FIT:&nbsp;</div>

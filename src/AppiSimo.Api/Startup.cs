@@ -1,110 +1,53 @@
 ﻿namespace AppiSimo.Api
 {
     using System;
-    using System.IdentityModel.Tokens.Jwt;
-    using Data;
-    using Microsoft.AspNet.OData.Builder;
-    using Microsoft.AspNet.OData.Extensions;
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Autofac;
+    using Autofac.Extensions.DependencyInjection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.OData.Edm;
-    using Newtonsoft.Json;
-    using Shared.Model;
+    using Starting;
 
     public class Startup
     {
         IConfiguration Configuration { get; }
+        ContainerBuilder Builder { get; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Builder = new ContainerBuilder();
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<KingRogerContext>(options =>
-            {
-                options.EnableSensitiveDataLogging();
-                options.UseNpgsql(GetConnectionString());
-            });
+            var connection = Heroku.TryParseConnectionString(System.Environment.GetEnvironmentVariable("DATABASE_URL"))
+                             ?? Configuration.GetConnectionString("KingRoger_ConnectionString");
 
-            services.AddOData();
+            var awsConfig = Configuration.GetSection("AWS");
+            var authConfig = Configuration.GetSection("Authentication");
 
-            services.AddCors();
+            services.AddDefaultInjector();
+            services.AddConfiguration(awsConfig);
+            services.AddKingRoger(connection);
+            services.AddAuthentication(authConfig);
             
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            Builder.RegisterModule(new RepositoryHandlerModule());
+            Builder.Populate(services);
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => Configuration.GetSection("Authentication").Bind(options));
-            
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(option => option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            var container = Builder.Build();
+
+            return new AutofacServiceProvider(container);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            // Shows UseCors with CorsPolicyBuilder.
-            app.UseCors(builder =>
-                builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
-
+            app.UseDeveloperEnvironment(env);
+            app.UseRoutesMap();
             app.UseAuthentication();
 
-            app.UseMvc(b =>
-            {
-                b.Select().Expand().Filter().OrderBy().MaxTop(maxTopValue: 100).Count();
-                b.EnableDependencyInjection();
-                b.MapODataServiceRoute("odata", "api", GetEdmModel());
-            });
-
-            app.Map("/api", api =>
-            {
-                api.UseMvc(b =>
-                {
-                    b.MapRoute("default", "{controller}/{action}");
-                });
-            });
-
             app.UseBlazor<Client.Startup>();
-        }
-
-        
-        string GetConnectionString()
-            => Heroku.TryParseConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"))
-               ?? Configuration.GetConnectionString("KingRoger_DEV_Database");
-        
-        static IEdmModel GetEdmModel()
-        {
-            var builder = new ODataConventionModelBuilder();
-
-            builder.EnableLowerCamelCase();
-
-            builder.EntitySet<User>("Users");
-            builder.EntitySet<Event>("Events");
-            builder.EntitySet<Court>("Courts");
-            builder.EntitySet<Light>("Lights");
-            builder.EntitySet<Heat>("Heats");
-            builder.EntitySet<Rate>("Rates");
-            builder.EntitySet<UserEvent>("UserEvent");
-
-            return builder.GetEdmModel();
         }
     }
 }

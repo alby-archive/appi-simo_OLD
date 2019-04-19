@@ -41,7 +41,7 @@
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(Guid key)
+        public virtual async Task<IActionResult> Delete(Guid key)
         {
             var entity = new TEntity
             {

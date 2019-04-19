@@ -1,4 +1,4 @@
-namespace AppiSimo.Client.Pages.CurrentUser
+namespace AppiSimo.Client.Pages.CurrentUserBadge
 {
     using System;
     using System.Threading.Tasks;

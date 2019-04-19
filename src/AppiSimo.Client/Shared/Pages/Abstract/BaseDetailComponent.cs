@@ -18,7 +18,7 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
         string Id { get; set; }
 
         [Inject]
-        TEndPoint EndPoint { get; set; }
+        protected TEndPoint EndPoint { get; set; }
 
         protected TEntity Entity { get; set; } = new TEntity();
 

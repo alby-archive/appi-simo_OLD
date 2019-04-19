@@ -15,6 +15,15 @@ namespace AppiSimo.Client.EndPoints
         {
         }
 
+        public async Task Enable(Guid key) =>
+            await Client.PostAsync($"{ResourceUri}/Enable?key={key}", content: null);
+        
+        public async Task Disable(Guid key) =>
+            await Client.PostAsync($"{ResourceUri}/Disable?key={key}", content: null);
+        
+        public async Task ResetPassword(Guid key) =>
+            await Client.PostAsync($"{ResourceUri}/ResetPassword?key={key}", content: null);
+        
         public async Task<decimal> GiveMeBackMyMoney(Guid key) =>
             await Client.GetJsonAsync<decimal>($"{ResourceUri}/GiveMeBackMyMoney?key={key}");
     }
