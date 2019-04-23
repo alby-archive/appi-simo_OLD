@@ -5,7 +5,7 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
-    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.3.100.5" />
+    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.3.101.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Server" Version="0.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.1.0" />

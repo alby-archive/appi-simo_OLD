@@ -1,4 +1,4 @@
-namespace AppiSimo.Api.Environment
+namespace AppiSimo.Shared.Environment
 {
     public class IdentityAccessManagementSettings
     {

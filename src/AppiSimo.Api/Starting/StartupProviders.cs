@@ -1,9 +1,7 @@
 namespace AppiSimo.Api.Starting
 {
     using System.IdentityModel.Tokens.Jwt;
-    using Client.Environment;
     using Data;
-    using Environment;
     using Microsoft.AspNet.OData.Extensions;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Mvc;
@@ -11,6 +9,7 @@ namespace AppiSimo.Api.Starting
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
+    using Shared.Environment;
 
     public static class StartupProviders
     {

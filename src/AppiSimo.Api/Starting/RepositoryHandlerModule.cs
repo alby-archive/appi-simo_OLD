@@ -4,8 +4,8 @@ namespace AppiSimo.Api.Starting
     using Areas.Authentication.Abstract;
     using Areas.Authentication.Providers;
     using Autofac;
-    using Environment;
     using Microsoft.Extensions.Options;
+    using Shared.Environment;
 
     public class RepositoryHandlerModule : Module
     {
