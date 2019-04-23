@@ -16,13 +16,12 @@ namespace AppiSimo.Api.Areas.Authentication.Providers
         readonly AmazonWebServicesConfig _settings;
         readonly AmazonCognitoIdentityProviderClient _provider;
 
-        public CognitoUserProvider(IOptionsMonitor<AmazonWebServicesConfig> settings)
+        public CognitoUserProvider(
+            IOptionsMonitor<AmazonWebServicesConfig> settings, 
+            AmazonCognitoIdentityProviderClient provider)
         {
             _settings = settings.CurrentValue;
-            _provider = new AmazonCognitoIdentityProviderClient(
-                _settings.IdentityAccessManagementSettings.AccessKeyId,
-                _settings.IdentityAccessManagementSettings.SecretAccessKey,
-                _settings.CognitoSettings.RegionEndpoint);
+            _provider = provider;
         }
 
         public async Task CreateAsync(User user)
