@@ -7,6 +7,7 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Shared.Environment;
     using Starting;
 
     public class Startup
@@ -22,18 +23,16 @@
 
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            var connection = Heroku.TryParseConnectionString(System.Environment.GetEnvironmentVariable("DATABASE_URL"))
-                             ?? Configuration.GetConnectionString("KingRoger_ConnectionString");
-
-            var awsConfig = Configuration.GetSection("AWS");
-            var authConfig = Configuration.GetSection("Authentication");
+            var connection = GetConnectionString();
+            var configuration = GetConfiguration(); 
 
             services.AddDefaultInjector();
-            services.AddConfiguration(awsConfig);
             services.AddKingRoger(connection);
-            services.AddAuthentication(authConfig);
             
-            Builder.RegisterModule(new RepositoryHandlerModule());
+            services.AddAuthentication(configuration.Authority);
+
+            Builder.RegisterModule(new ConfigurationHandlerModule(configuration));
+            Builder.RegisterModule(new HandlerModule());
             Builder.Populate(services);
 
             var container = Builder.Build();
@@ -48,6 +47,30 @@
             app.UseAuthentication();
 
             app.UseBlazor<Client.Startup>();
+        }
+
+        string GetConnectionString() =>
+            Heroku.TryParseConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"))
+            ?? Configuration.GetConnectionString("KingRoger_ConnectionString");
+        
+        Configuration GetConfiguration()
+        {
+            var configuration = Configuration.GetSection("Configuration").Get<Configuration>();
+
+            var authority = Heroku.TryParseAuthority(Environment.GetEnvironmentVariable("Authority"));
+            var identityAccessManagement = Heroku.TryParseIdentityAccessManagement(Environment.GetEnvironmentVariable("IAM"));
+
+            if (authority != null)
+            {
+                configuration.Authority = authority;
+            }
+
+            if (identityAccessManagement != null)
+            {
+                configuration.Cognito.IdentityAccessManagement = identityAccessManagement;
+            }
+
+            return configuration;
         }
     }
 }

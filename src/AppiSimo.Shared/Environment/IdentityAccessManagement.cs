@@ -1,6 +1,6 @@
 namespace AppiSimo.Shared.Environment
 {
-    public class IdentityAccessManagementSettings
+    public class IdentityAccessManagement
     {
         public string AccessKeyId { get; set; }
         public string SecretAccessKey { get; set; }
