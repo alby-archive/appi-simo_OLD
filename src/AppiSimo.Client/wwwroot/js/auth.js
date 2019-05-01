@@ -1,88 +1,67 @@
 (function(self) {
 
     self.authentication = {};
-    
-    self.authentication.signIn = (username, password, config) => {
 
-        const cognitoUser = getCognitoUser(username, config.userPoolId, config.clientId);
+    const _manager = (() => {
+        const config = {
+            authority: 'https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_jUNe13QJ4',
+            client_id: 'ld3qolihulq7pg0meehtfv20e',
+
+            automaticSilentRenew: true,
+            redirect_uri: 'https://localhost:5003/signed-in',
+            post_logout_redirect_uri: '/',
+            response_type: 'token',
+            scope: 'openid',
+            filterProtocolClaims: true,
+            loadUserInfo: true,
+            prompt: 'login',
+            userStore: new Oidc.WebStorageStateStore({ store: localStorage})
+        };
+
+        return new Oidc.UserManager(config);
+    })();
+
+    const buildResponse = (user, error) => {
+        const response = user 
+            ? {
+                    value: user
+            }
+            : {
+                    error: error
+            }; 
         
-        return new Promise((resolve, _) => {
-            cognitoUser.authenticateUser(getAuthenticationDetails(username, password), {
-                onSuccess: (result) => {
-                    const token = result.getAccessToken().getJwtToken();
-                    resolve({
-                        value:{
-                           value: token                            
-                        }
-                    });
-                },
-                onFailure: (error) => {
-                    resolve({
-                        error: {
-                            type: error.code === 'NotAuthorizedException' ? 2 : 0,
-                            message: error.message
-                        }
-                    });
-                },
-                newPasswordRequired: () => {
-                    resolve({
-                        error: {
-                            type: 1,
-                            message: "New password required."
-                        }
-                    });                    
-                }
-            });
+        return response;
+    };
+    
+    self.authentication.tryLoadUser = async () => {
+        
+        const user = await _manager.getUser();
+
+        return buildResponse(user, "User Not Found")
+    };
+    
+    self.authentication.signIn = async () => {
+
+        await _manager.clearStaleState();
+
+        // HACK: fixes aws non standard response_type
+        const r = await _manager.createSigninRequest();
+        (Reflect.getPrototypeOf(r).constructor).isOidc = () => true;
+
+        await _manager.signinRedirect({
+            state: window.location.href,
         });
     };
-    
-    self.authentication.signOut = (username, config) => {
-        const cognitoUser = getCognitoUser(username, config.userPoolId, config.clientId);
-        cognitoUser.signOut();
-    };
 
-    self.authentication.completeNewPasswordChallenge = (username, oldPassword, newPassword, config) => {
+    self.authentication.signedIn = async () => {
 
-        const cognitoUser = getCognitoUser(username, config.userPoolId, config.clientId);        
-        
-        return new Promise((resolve, reject) => {
-            
-            const completeNewPasswordChallenge = () => {
-                return cognitoUser.completeNewPasswordChallenge(newPassword, {"name": name}, {
-                    onSuccess: () => {
-                        resolve();
-                    },
-                    onFailure: err => {
-                        reject(err);
-                    }
-                });
-            };
-            
-            cognitoUser.authenticateUser(getAuthenticationDetails(username, oldPassword), {
-                onSuccess: () => {
-                    completeNewPasswordChallenge();
-                },
-                newPasswordRequired: () => {
-                    completeNewPasswordChallenge();
-                },
-                onFailure: (error) => {
-                    reject(error);
-                }
-            });            
-        });
+        await _manager.clearStaleState();
+
+        const user = await _manager.signinRedirectCallback();
+
+        return buildResponse(user, "An Error Occured")
     };
     
-    const getCognitoUser = (username, userPoolId, clientId) => new AmazonCognitoIdentity.CognitoUser({
-        Username: username,
-        Pool: new AmazonCognitoIdentity.CognitoUserPool({
-            UserPoolId: userPoolId,
-            ClientId: clientId
-        })
-    });
+    self.authentication.signOut = () => _manager.signoutRedirect();
 
-    const getAuthenticationDetails = (username, password) => new AmazonCognitoIdentity.AuthenticationDetails({
-        Username: username,
-        Password: password
-    });
-    
 })(window.interop || (window.interop = {}));
