@@ -12,6 +12,7 @@ namespace AppiSimo.Client.Shared.Services
 
         public BehaviorSubject<Profile> Profile { get; } = new BehaviorSubject<Profile>(value: null);
         public Profile CurrentProfile => Profile.Value;
+        public bool IsLogged => CurrentProfile != null;
         
         readonly AuthConfig _config;
         

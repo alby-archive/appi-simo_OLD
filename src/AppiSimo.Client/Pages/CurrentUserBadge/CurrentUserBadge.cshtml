@@ -2,11 +2,11 @@
 
 <div class="d-flex current-user-badge-link">
 
-    @if (IsUserLogged())
+    @if (ViewModel.IsLogged())
     {
-        <div>
+        <div onclick="@(() => GoToDetail())">
             <span class="oi oi-person mr-2"></span>
-            <span class="mr-2">@CurrentUser</span>
+            <span class="mr-2">@ViewModel.CurrentUser</span>
         </div>
         <span onclick="@(() => SignOut())" aria-hidden="true">Logout</span>
     }

@@ -8,6 +8,8 @@ namespace AppiSimo.Client
     using Microsoft.AspNetCore.Blazor.Builder;
     using Microsoft.Extensions.DependencyInjection;
     using Middleware;
+    using Pages.CurrentUserBadge;
+    using Shared.Services;
 
     public class Startup
     {
@@ -20,7 +22,9 @@ namespace AppiSimo.Client
                 var client = handler != null ? new HttpClient(handler) : new HttpClient();
                 client.BaseAddress = new Uri(provider.GetRequiredService<Configuration>().ApiUrl);
                 return client;
-            });     
+            });
+
+            services.AddSingleton(builder => new CurrentUserBadgeViewModel(builder.GetService<AuthService>()));
             
             services.AddConfiguration();
             services.AddEndPoints();

@@ -3,28 +3,41 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
     using System;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Blazor.Components;
+    using Microsoft.AspNetCore.Blazor.Services;
     using Shared.Services;
 
-    public class CurrentUserBadgeComponent : BlazorComponent
+    public class CurrentUserBadgeComponent : BlazorComponent, IDisposable
     {
+        IDisposable _subscription;
+        
         [Inject]
-        protected AuthService Service { get; set; }
-
-        protected string CurrentUser = "Login1"; 
+        AuthService Service { get; set; }
+        
+        [Inject]
+        IUriHelper UriHelper { get; set; }
+        
+        [Inject]
+        protected CurrentUserBadgeViewModel ViewModel { get; set; }
 
         protected override void OnInit()
         {
-            Service.Profile.Subscribe(user =>
-            {
-                CurrentUser = user?.username ?? "Login2";
-                StateHasChanged();
-            });
+            _subscription =
+                Service.Profile.Subscribe(profile =>
+                {
+                    ViewModel.CurrentUser = profile?.username ?? "User";
+                    StateHasChanged();
+                });
         }
 
         protected async Task SignIn() => await Service.SignIn();
 
         protected void SignOut() => Service.SignOut();
 
-        protected bool IsUserLogged() => Service.CurrentProfile != null;
+        protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Service.CurrentProfile.sub}");
+
+        public void Dispose()
+        {
+            _subscription.Dispose();
+        }
     }
 }
