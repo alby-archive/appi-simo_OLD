@@ -10,8 +10,8 @@ namespace AppiSimo.Client.EndPoints
 
     public class UserEndPoint : EndPoint<User>
     {
-        public UserEndPoint(DataServiceContext context, HttpClient client, AuthService authService, string resourceUri)
-            : base(context, client, authService, resourceUri)
+        public UserEndPoint(DataServiceContext context, HttpClient client, AuthService auth, string resourceUri)
+            : base(context, client, auth, resourceUri)
         {
         }
 

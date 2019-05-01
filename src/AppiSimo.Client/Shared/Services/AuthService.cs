@@ -10,9 +10,9 @@ namespace AppiSimo.Client.Shared.Services
     { 
         static IJSInProcessRuntime Js => (IJSInProcessRuntime) JSRuntime.Current;
 
-        public BehaviorSubject<Profile> Profile { get; } = new BehaviorSubject<Profile>(value: null);
-        public Profile CurrentProfile => Profile.Value;
-        public bool IsLogged => CurrentProfile != null;
+        public BehaviorSubject<RootObject> User { get; } = new BehaviorSubject<RootObject>(value: null);
+        public RootObject CurrentUser => User.Value;
+        public bool IsLogged => CurrentUser != null;
         
         readonly AuthConfig _config;
         
@@ -41,7 +41,7 @@ namespace AppiSimo.Client.Shared.Services
                 throw new Exception(response.Error);
             }
 
-            Profile.OnNext(response.Value.profile);
+            User.OnNext(response.Value);
         }
     }
     

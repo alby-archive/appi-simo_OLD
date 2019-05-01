@@ -22,18 +22,23 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
         protected override void OnInit()
         {
             _subscription =
-                Service.Profile.Subscribe(profile =>
+                Service.User.Subscribe(user =>
                 {
-                    ViewModel.CurrentUser = profile?.username ?? "User";
+                    ViewModel.CurrentUser = user?.profile.username ?? "User";
                     StateHasChanged();
                 });
         }
 
         protected async Task SignIn() => await Service.SignIn();
 
-        protected void SignOut() => Service.SignOut();
+        protected void SignOut()
+        {
+            Service.SignOut();
+            
+            StateHasChanged();
+        }
 
-        protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Service.CurrentProfile.sub}");
+        protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Service.CurrentUser.profile.sub}");
 
         public void Dispose()
         {
