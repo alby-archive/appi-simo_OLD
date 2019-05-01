@@ -19,16 +19,17 @@ namespace AppiSimo.Client.Middleware
                 var api = new Uri(provider.GetRequiredService<Configuration>().ApiUrl);
                 var context = new DataServiceContext(api);
                 var authService = provider.GetRequiredService<AuthService>();
-                
-                context.BuildingRequest += (_, args) =>
-                {
-                    var user = authService.User.Value;
-                    if (user != null)
-                    {
-                        args.Headers.Add("Authorization", $"Bearer {user.Token.Value}");
-                    }
-                };
-                
+
+//                TODO: add Authentication in odata's request headers
+//                context.BuildingRequest += (_, args) =>
+//                {
+//                    var user = authService.User.Value;
+//                    if (user != null)
+//                    {
+//                        args.Headers.Add("Authorization", $"Bearer {user.Token.Value}");
+//                    }
+//                };
+//                
                 return context;
             });
 

@@ -2,19 +2,19 @@
 
 <div class="d-flex current-user-badge-link">
 
-    @if (AuthService.User.Value == null)
+    @if (IsUserLogged())
     {
-        <div onclick="@(() => SignIn())">
+        <div>
             <span class="oi oi-person mr-2"></span>
-            <span>Login</span>
+            <span class="mr-2">@CurrentUser</span>
         </div>
+        <span onclick="@(() => SignOut())" aria-hidden="true">Logout</span>
     }
     else
     {
-        <div onclick="@(() => GoToProfile())">
+        <div onclick="@(async () => await SignIn())">
             <span class="oi oi-person mr-2"></span>
-            <span class="mr-2">@AuthService.User.Value.Username</span>
+            <span>Login</span>
         </div>
-        <span onclick="@(() => SignOut())" aria-hidden="true">Logout</span>
     }
 </div>

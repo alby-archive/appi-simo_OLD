@@ -30,7 +30,7 @@ namespace AppiSimo.Client.Shared.Model
             Event = new Event();
         }
 
-        public EventDetailView(Event @event, IEnumerable<User> users, IEnumerable<Court> courts, IValidator<Event> validator)
+        public EventDetailView(Event @event, IEnumerable<AppiSimo.Shared.Model.User> users, IEnumerable<Court> courts, IValidator<Event> validator)
         {
             Event = @event;
 

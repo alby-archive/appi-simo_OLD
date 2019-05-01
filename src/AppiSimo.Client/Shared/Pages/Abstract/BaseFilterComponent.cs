@@ -48,7 +48,7 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
             var response = await builder
                 .Skip(PagerService.Value.CurrentPage * PagerService.Value.PageSize)
                 .Take(PagerService.Value.PageSize)
-                .ToListAsync(EndPoint.Client);
+                .ToListAsync(EndPoint._client);
 
             Entities = response.Value;
             TotalItems = response.Count;

@@ -3,27 +3,28 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
     using System;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Blazor.Components;
-    using Microsoft.AspNetCore.Blazor.Services;
     using Shared.Services;
 
     public class CurrentUserBadgeComponent : BlazorComponent
     {
         [Inject]
-        protected AuthService AuthService { get; set; }
+        protected AuthService Service { get; set; }
 
-        [Inject]
-        protected IUriHelper UriHelper { get; set; }
+        protected string CurrentUser = "Login1"; 
 
-        protected override Task OnInitAsync()
+        protected override void OnInit()
         {
-            AuthService.User.Subscribe(_ => StateHasChanged());
-            return Task.CompletedTask;
+            Service.Profile.Subscribe(user =>
+            {
+                CurrentUser = user?.username ?? "Login2";
+                StateHasChanged();
+            });
         }
 
-        protected void SignOut() => AuthService.SignOut();
+        protected async Task SignIn() => await Service.SignIn();
 
-        protected void SignIn() => UriHelper.NavigateTo("login");
+        protected void SignOut() => Service.SignOut();
 
-        protected void GoToProfile() => UriHelper.NavigateTo("user");
+        protected bool IsUserLogged() => Service.CurrentProfile != null;
     }
 }

@@ -5,79 +5,69 @@ namespace AppiSimo.Client.Shared.Services
     using System.Threading.Tasks;
     using Environment;
     using Microsoft.JSInterop;
-    using Model;
 
     public class AuthService
-    {
-        public BehaviorSubject<AuthUser> User { get; } = new BehaviorSubject<AuthUser>(value: null);
-        readonly AuthConfig _config;
+    { 
+        static IJSInProcessRuntime Js => (IJSInProcessRuntime) JSRuntime.Current;
 
+        public BehaviorSubject<Profile> Profile { get; } = new BehaviorSubject<Profile>(value: null);
+        public Profile CurrentProfile => Profile.Value;
+        
+        readonly AuthConfig _config;
+        
         public AuthService(AuthConfig config)
         {
             _config = config;
         }
 
-        void NextUser(AuthUser authUser)
-        {
-            User.OnNext(authUser);
-        }
+        public async Task TryLoadUser() => SetSubject(await Js.InvokeAsync<Result<RootObject>>("interop.authentication.tryLoadUser"));
 
-        static IJSInProcessRuntime Js => (IJSInProcessRuntime) JSRuntime.Current;
-
-        public async Task SignIn(string username, string password)
-        {
-            var result = await Js.InvokeAsync<Result<Token>>("interop.authentication.signIn", username, password, _config);
-
-            if (result.Error != null)
-            {
-                throw new SigninException(result.Error.Message, result.Error.Type);
-            }
-
-            NextUser(new AuthUser(username, result.Value));
-        }
+        public async Task SignIn() => SetSubject(await Js.InvokeAsync<Result<RootObject>>("interop.authentication.signIn"));
+        
+        public async Task SignedIn() => SetSubject(await Js.InvokeAsync<Result<RootObject>>("interop.authentication.signedIn"));
 
         public void SignOut()
         {
-            if (User.Value == null)
+            Js.Invoke<Result<RootObject>>("interop.authentication.signOut");
+            
+            SetSubject(response: null);
+        }
+
+        void SetSubject(Result<RootObject> response)
+        {
+            if (response == null || !response.IsValid)
             {
-                return;
+                throw new Exception(response.Error);
             }
 
-            Js.Invoke<Result<Token>>("interop.authentication.signOut", User.Value.Username, _config);
-
-            NextUser(authUser: null);
-        }
-
-        public Task ChangePassword(string username, string oldPassword, string newPassword) => Js.InvokeAsync<Task>("interop.authentication.completeNewPasswordChallenge", username, oldPassword, newPassword, _config);
-
-        class SigninError
-        {
-            public SigninErrorType Type { get; private set; }
-            public string Message { get; private set; }
-        }
-
-        class Result<T>
-        {
-            public T Value { get; private set; }
-            public SigninError Error { get; private set; }
+            Profile.OnNext(response.Value.profile);
         }
     }
-
-    public enum SigninErrorType
+    
+    public class Profile
     {
-        Exception,
-        PasswordChangeRequired,
-        NotAuthorized
+        public string sub { get; set; }
+        public string email_verified { get; set; }
+        public string token_use { get; set; }
+        public int auth_time { get; set; }
+        public string email { get; set; }
+        public string username { get; set; }
     }
 
-    class SigninException : Exception
+    public class RootObject
     {
-        public SigninException(string message, SigninErrorType type)
-            : base(message)
-        {
-            Type = type;
-        }
-
-        public SigninErrorType Type { get; }
+        public string id_token { get; set; }
+        public string access_token { get; set; }
+        public string token_type { get; set; }
+        public Profile profile { get; set; }
+        public int expires_at { get; set; }
+        public string state { get; set; }
+    }
+        
+    public class Result<T>
+    {
+        public T Value { get; set; }
+        public string Error { get; set; }
+        public bool IsValid => Error == null;
     }
 }
