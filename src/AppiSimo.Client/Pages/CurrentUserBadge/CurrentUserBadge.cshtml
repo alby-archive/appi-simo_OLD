@@ -2,7 +2,7 @@
 
 <div class="d-flex current-user-badge-link">
 
-    @if (ViewModel.IsLogged())
+    @if (ViewModel.IsLogged)
     {
         <div onclick="@(() => GoToDetail())">
             <span class="oi oi-person mr-2"></span>

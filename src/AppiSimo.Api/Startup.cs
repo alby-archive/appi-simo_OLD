@@ -43,8 +43,8 @@
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseDeveloperEnvironment(env);
-            app.UseRoutesMap();
             app.UseAuthentication();
+            app.UseRoutesMap();
 
             app.UseBlazor<Client.Startup>();
         }

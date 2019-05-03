@@ -21,24 +21,15 @@
         return new Oidc.UserManager(config);
     })();
 
-    const buildResponse = (user, error) => {
-        const response = user 
-            ? {
-                    value: user
-            }
-            : {
-                    error: error
-            }; 
-        
-        return response;
-    };
+    const buildResponse = (user, error) => user
+        ? {
+            value: user
+        }
+        : {
+            error: error
+        };
     
-    self.authentication.tryLoadUser = async () => {
-        
-        const user = await _manager.getUser();
-
-        return buildResponse(user, "User Not Found")
-    };
+    self.authentication.tryLoadUser = async () => buildResponse(await _manager.getUser());
     
     self.authentication.signIn = async () => {
 
@@ -54,9 +45,6 @@
     };
 
     self.authentication.signedIn = async () => {
-
-        await _manager.clearStaleState();
-
         const user = await _manager.signinRedirectCallback();
 
         return buildResponse(user, "An Error Occured")

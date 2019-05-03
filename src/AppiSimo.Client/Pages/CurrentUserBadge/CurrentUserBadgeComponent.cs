@@ -21,10 +21,15 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
 
         protected override void OnInit()
         {
+            ViewModel.IsLogged = Service.CurrentUser != null;
+            ViewModel.CurrentUser = Service?.CurrentUser?.profile?.username ?? "User";
+
             _subscription =
                 Service.User.Subscribe(user =>
                 {
                     ViewModel.CurrentUser = user?.profile.username ?? "User";
+                    ViewModel.IsLogged = user != null;
+
                     StateHasChanged();
                 });
         }

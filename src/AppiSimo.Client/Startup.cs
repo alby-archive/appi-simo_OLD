@@ -3,6 +3,7 @@ namespace AppiSimo.Client
     using System;
     using System.Globalization;
     using System.Net.Http;
+    using System.Net.Http.Headers;
     using Environment;
     using Microsoft.AspNetCore.Blazor.Browser.Http;
     using Microsoft.AspNetCore.Blazor.Builder;
@@ -14,23 +15,29 @@ namespace AppiSimo.Client
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
-        {        
+        {
             services.AddSingleton<HttpMessageHandler, BrowserHttpMessageHandler>();
+            services.AddAuthServices();
             
-            services.AddSingleton(provider => {
+            services.AddSingleton(provider =>
+            {
                 var handler = provider.GetService<HttpMessageHandler>();
+                var auth = provider.GetService<AuthService>();
+
                 var client = handler != null ? new HttpClient(handler) : new HttpClient();
+                
                 client.BaseAddress = new Uri(provider.GetRequiredService<Configuration>().ApiUrl);
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $"{auth?.CurrentUser?.id_token ?? string.Empty}");
+                
                 return client;
             });
 
-            services.AddSingleton(builder => new CurrentUserBadgeViewModel(builder.GetService<AuthService>()));
-            
+            services.AddSingleton<CurrentUserBadgeViewModel>();
+
             services.AddConfiguration();
             services.AddEndPoints();
             services.AddValidatorMiddleWare();
             services.AddRxServices();
-            services.AddAuthServices();
         }
 
         public void Configure(IBlazorApplicationBuilder app)

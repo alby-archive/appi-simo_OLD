@@ -37,11 +37,19 @@ namespace AppiSimo.Api.Starting
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(_ => new JwtBearerOptions
+                .AddJwtBearer(options =>
                 {
-                    Audience = authority.Audiences,
-                    Authority = authority.EndPoint
+                    options.Authority = "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_jUNe13QJ4";
+                    options.Audience = "ld3qolihulq7pg0meehtfv20e";
                 });
+
+//            services.AddAuthorization(options =>
+//            {
+//                options.AddPolicy("Default", builder =>
+//                {
+//                    builder.RequireAuthenticatedUser();
+//                });
+//            });
         }
     }
 }
