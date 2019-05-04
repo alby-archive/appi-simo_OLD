@@ -1,4 +1,4 @@
-namespace AppiSimo.Shared.Environment
+namespace AppiSimo.Client.Environment
 {
     using Newtonsoft.Json;
 
@@ -37,8 +37,8 @@ namespace AppiSimo.Shared.Environment
         [JsonProperty(PropertyName = "metadata")]
         public Metadata Metadata { get; set; }
 
-        // valorize by auth.js
-        [JsonProperty(PropertyName = "userStore")]
+        // valorize by auth.js. Hero only for visibility
+        [JsonIgnore]
         public string UserStore { get; set; }
     }
 }

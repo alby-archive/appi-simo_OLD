@@ -1,4 +1,4 @@
-namespace AppiSimo.Shared.Environment
+namespace AppiSimo.Client.Environment
 {
     using System.Collections.Generic;
     using Newtonsoft.Json;

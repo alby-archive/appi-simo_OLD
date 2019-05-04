@@ -4,27 +4,27 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
-    using Shared.Services;
+    using Shared.Services.Abstract;
 
     public class CurrentUserBadgeComponent : BlazorComponent, IDisposable
     {
         IDisposable _subscription;
-        
+
         [Inject]
-        AuthService Service { get; set; }
-        
+        IAuthService Auth { get; set; }
+
         [Inject]
         IUriHelper UriHelper { get; set; }
-        
+
         protected CurrentUserBadgeViewModel ViewModel { get; } = new CurrentUserBadgeViewModel();
 
         protected override void OnInit()
         {
-            ViewModel.IsLogged = Service.CurrentUser != null;
-            ViewModel.CurrentUser = Service?.CurrentUser?.Profile?.Username?? "User";
+            ViewModel.IsLogged = Auth.CurrentUser != null;
+            ViewModel.CurrentUser = Auth?.CurrentUser?.Profile?.Username ?? "User";
 
             _subscription =
-                Service.User.Subscribe(user =>
+                Auth.User.Subscribe(user =>
                 {
                     ViewModel.CurrentUser = user?.Profile.Username ?? "User";
                     ViewModel.IsLogged = user != null;
@@ -33,16 +33,16 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
                 });
         }
 
-        protected async Task SignIn() => await Service.SignIn();
+        protected async Task SignIn() => await Auth.SignIn();
 
         protected void SignOut()
         {
-            Service.SignOut();
-            
+            Auth.SignOut();
+
             StateHasChanged();
         }
 
-        protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Service.CurrentUser.Profile.Sub}");
+        protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Auth.CurrentUser.Profile.Sub}");
 
         public void Dispose()
         {

@@ -8,13 +8,13 @@
     using Microsoft.OData.Client;
     using Shared.Pages.Abstract;
     using Shared.Pages.Searcher;
-    using Shared.Services;
+    using Shared.Services.Abstract;
 
     public class IndexComponent : BaseFilterComponent<User, UserEndPoint>
     {
         [Inject]
-        AuthService Auth { get; set; }
-        
+        IAuthService Auth { get; set; }
+
         protected override Task OnInitAsync() => Auth.TryLoadUser();
 
         // TODO: Move Where in base component

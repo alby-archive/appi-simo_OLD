@@ -3,7 +3,7 @@ namespace AppiSimo.Client.Shared.Services
     using System.Reactive.Subjects;
     using System.Threading.Tasks;
     using Abstract;
-    using AppiSimo.Shared.Environment;
+    using Environment;
     using Microsoft.JSInterop;
     using Model;
     using Newtonsoft.Json;

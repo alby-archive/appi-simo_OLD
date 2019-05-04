@@ -1,10 +1,11 @@
 namespace AppiSimo.Client.Middleware
 {
-    using AppiSimo.Shared.Environment;
+    using Environment;
     using Microsoft.Extensions.DependencyInjection;
     using Shared.Pages.Pager;
     using Shared.Pages.Searcher;
     using Shared.Services;
+    using Shared.Services.Abstract;
 
     public static class ServiceMiddleWare
     {
@@ -16,7 +17,7 @@ namespace AppiSimo.Client.Middleware
 
         public static void AddAuthServices(this IServiceCollection services, CognitoClient client)
         {
-            services.AddSingleton(_ => new AuthService(client));
+            services.AddSingleton<IAuthService>(_ => new AuthService(client));
         }
     }
 }

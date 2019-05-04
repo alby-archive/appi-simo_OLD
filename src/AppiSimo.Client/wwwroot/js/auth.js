@@ -22,8 +22,6 @@
     self.authentication.tryLoadUser = async config => invokeAsync(config, async manager => await manager.getUser());
     
     self.authentication.signIn = async config => {
-     
-        console.log(`Cognito Config: ${JSON.stringify(config)}`);
         
         const manager = buildManager(config);
         
