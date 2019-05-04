@@ -1,5 +1,6 @@
 namespace AppiSimo.Client.Middleware
 {
+    using AppiSimo.Shared.Environment;
     using Microsoft.Extensions.DependencyInjection;
     using Shared.Pages.Pager;
     using Shared.Pages.Searcher;
@@ -13,9 +14,9 @@ namespace AppiSimo.Client.Middleware
             services.AddTransient<BaseRxService<Searcher>, SearcherService>();
         }
 
-        public static void AddAuthServices(this IServiceCollection services)
+        public static void AddAuthServices(this IServiceCollection services, CognitoClient client)
         {
-            services.AddSingleton<AuthService>();
+            services.AddSingleton(_ => new AuthService(client));
         }
     }
 }

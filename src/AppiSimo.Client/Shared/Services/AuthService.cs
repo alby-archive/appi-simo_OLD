@@ -1,68 +1,53 @@
 namespace AppiSimo.Client.Shared.Services
 {
-    using System;
     using System.Reactive.Subjects;
     using System.Threading.Tasks;
-    using Environment;
+    using Abstract;
+    using AppiSimo.Shared.Environment;
     using Microsoft.JSInterop;
+    using Model;
+    using Newtonsoft.Json;
 
-    public class AuthService
+    public class AuthService : IAuthService
     {
         static IJSInProcessRuntime Js => (IJSInProcessRuntime) JSRuntime.Current;
 
         public BehaviorSubject<RootObject> User { get; } = new BehaviorSubject<RootObject>(value: null);
         public RootObject CurrentUser => User.Value;
 
-        readonly AuthConfig _config;
+        readonly CognitoClient _config;
 
-        public AuthService(AuthConfig config)
+        public AuthService(CognitoClient config)
         {
             _config = config;
         }
 
-        public async Task TryLoadUser() => SetSubject(await Js.InvokeAsync<Result<RootObject>>("interop.authentication.tryLoadUser"));
+        public async Task TryLoadUser() =>
+            SetSubject(await Js.InvokeAsync<string>(
+                "interop.authentication.tryLoadUser",
+                JsonConvert.SerializeObject(_config)
+            ));
 
-        public async Task SignIn() => await Js.InvokeAsync<Result<RootObject>>("interop.authentication.signIn");
+        public async Task SignIn() =>
+            // TODO: Invoke<void>
+            await Js.InvokeAsync<Task>(
+                "interop.authentication.signIn",
+                JsonConvert.SerializeObject(_config)
+            );
 
-        public async Task SignedIn() => SetSubject(await Js.InvokeAsync<Result<RootObject>>("interop.authentication.signedIn"));
+        public async Task SignedIn() =>
+            SetSubject(await Js.InvokeAsync<string>(
+                "interop.authentication.signedIn",
+                JsonConvert.SerializeObject(_config)
+            ));
 
-        public void SignOut() => Js.Invoke<Result<RootObject>>("interop.authentication.signOut");
+        public void SignOut() =>
+            // TODO: Invoke<void>
+            Js.Invoke<object>(
+                "interop.authentication.signOut",
+                JsonConvert.SerializeObject(_config)
+            );
 
-        void SetSubject(Result<RootObject> response)
-        {
-            if (!response.IsValid)
-            {
-                throw new Exception(response.Error);
-            }
-
-            User.OnNext(response.Value);
-        }
-    }
-
-    public class Profile
-    {
-        public string sub { get; set; }
-        public string email_verified { get; set; }
-        public string token_use { get; set; }
-        public int auth_time { get; set; }
-        public string email { get; set; }
-        public string username { get; set; }
-    }
-
-    public class RootObject
-    {
-        public string id_token { get; set; }
-        public string access_token { get; set; }
-        public string token_type { get; set; }
-        public Profile profile { get; set; }
-        public int expires_at { get; set; }
-        public string state { get; set; }
-    }
-
-    public class Result<T>
-    {
-        public T Value { get; set; }
-        public string Error { get; set; }
-        public bool IsValid => Error == null;
+        void SetSubject(string response) => User.OnNext(JsonConvert.DeserializeObject<RootObject>(response));
     }
 }

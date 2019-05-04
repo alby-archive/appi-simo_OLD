@@ -16,18 +16,17 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
         [Inject]
         IUriHelper UriHelper { get; set; }
         
-        [Inject]
-        protected CurrentUserBadgeViewModel ViewModel { get; set; }
+        protected CurrentUserBadgeViewModel ViewModel { get; } = new CurrentUserBadgeViewModel();
 
         protected override void OnInit()
         {
             ViewModel.IsLogged = Service.CurrentUser != null;
-            ViewModel.CurrentUser = Service?.CurrentUser?.profile?.username ?? "User";
+            ViewModel.CurrentUser = Service?.CurrentUser?.Profile?.Username?? "User";
 
             _subscription =
                 Service.User.Subscribe(user =>
                 {
-                    ViewModel.CurrentUser = user?.profile.username ?? "User";
+                    ViewModel.CurrentUser = user?.Profile.Username ?? "User";
                     ViewModel.IsLogged = user != null;
 
                     StateHasChanged();
@@ -43,7 +42,7 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
             StateHasChanged();
         }
 
-        protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Service.CurrentUser.profile.sub}");
+        protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Service.CurrentUser.Profile.Sub}");
 
         public void Dispose()
         {

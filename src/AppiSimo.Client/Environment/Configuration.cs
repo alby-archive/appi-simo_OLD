@@ -1,13 +1,10 @@
 namespace AppiSimo.Client.Environment
 {
+    using AppiSimo.Shared.Environment;
+
     public class Configuration
     {
         public string ApiUrl { get; set; }
-        public AuthConfig AuthConfig { get; set; }
-
-        public static string GetSection(string aws)
-        {
-            throw new System.NotImplementedException();
-        }
+        public CognitoClient CognitoClient { get; set; }
     }
 }
