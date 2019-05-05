@@ -7,6 +7,7 @@ namespace AppiSimo.Api.Controllers
     using Data;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Shared.Environment;
     using Shared.Model;
 
     public class UsersController : EntityController<User>
@@ -21,15 +22,18 @@ namespace AppiSimo.Api.Controllers
 
         public override async Task<IActionResult> Post(User user)
         {
-            user.Enabled = true;
+            user.Enabled = false;
 
-            try
+            if (!Env.IsDebug)
             {
-                await _provider.CreateAsync(user);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
+                try
+                {
+                    await _provider.CreateAsync(user);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
             }
 
             await base.Post(user);
@@ -39,16 +43,21 @@ namespace AppiSimo.Api.Controllers
 
         public override async Task<IActionResult> Put(User user)
         {
-            try
+            if (!Env.IsDebug)
             {
-                await _provider.AdminUpdateUserAttributesAsync(user);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
+                try
+                {
+                    await _provider.AdminUpdateUserAttributesAsync(user);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
             }
 
-            return await base.Put(user);
+            await base.Put(user);
+
+            return Ok(user);
         }
 
         public override Task<IActionResult> Delete(Guid key) => throw new NotSupportedException();
@@ -59,11 +68,14 @@ namespace AppiSimo.Api.Controllers
             var user = await Context.Users.FindAsync(key);
             user.Enabled = true;
 
+            if (!Env.IsDebug)
+            {
+                await _provider.EnableUserAsync(user.Username);
+            }
+
             Context.Users.Update(user);
 
             await Context.SaveChangesAsync();
-
-            await _provider.EnableUserAsync(user.Username);
 
             return Ok(user);
         }
@@ -74,11 +86,14 @@ namespace AppiSimo.Api.Controllers
             var user = await Context.Users.FindAsync(key);
             user.Enabled = false;
 
+            if (!Env.IsDebug)
+            {
+                await _provider.DisableUserAsync(user.Username);
+            }
+
             Context.Users.Update(user);
 
             await Context.SaveChangesAsync();
-
-            await _provider.DisableUserAsync(user.Username);
 
             return Ok(user);
         }
@@ -86,6 +101,11 @@ namespace AppiSimo.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(Guid key)
         {
+            if (Env.IsDebug)
+            {
+                return Ok();
+            }
+
             var user = await Context.Users.FindAsync(key);
 
             await _provider.AdminResetUserPassword(user.Username);
