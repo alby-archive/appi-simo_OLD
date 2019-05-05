@@ -14,15 +14,18 @@ namespace AppiSimo.Api.Starting
         {
             _config = config;
         }
-        
+
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<CognitoUserProvider>().As<IUserProvider>();
-
             builder.Register(b => new AmazonCognitoIdentityProviderClient(
                 _config.IdentityAccessManagement.AccessKeyId,
                 _config.IdentityAccessManagement.SecretAccessKey,
                 _config.RegionEndpoint));
+
+            builder.Register(provider => new CognitoUserProvider(
+                _config.UserPool.Id,
+                provider.Resolve<AmazonCognitoIdentityProviderClient>())
+            ).As<IUserProvider>();
         }
     }
 }

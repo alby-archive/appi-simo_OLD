@@ -14,7 +14,7 @@ namespace AppiSimo.Client.EndPoints
         {
         }
 
-        public async Task Enable(Guid key) =>
+        public async Task Enable(Guid key) => 
             await _client.PostAsync($"{_uri}/Enable?key={key}", content: null);
 
         public async Task Disable(Guid key) =>

@@ -19,7 +19,7 @@ namespace AppiSimo.Client
 
             services.AddServices(configuration.CognitoClient);
             
-            services.AddCustomHttpClient(apiUrl);
+            services.AddHttpClient(apiUrl);
             services.AddEndPoints(apiUrl);
             services.AddValidators();
         }

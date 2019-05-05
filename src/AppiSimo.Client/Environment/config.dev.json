@@ -1,5 +1,5 @@
 {
-  "ApiUrl" : "http://localhost:5002/api/",
+  "ApiUrl" : "https://localhost:5003/api/",
   "CognitoClient": {
     "authority": "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_jUNe13QJ4",
     "client_id": "ld3qolihulq7pg0meehtfv20e",

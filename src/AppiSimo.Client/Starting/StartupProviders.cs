@@ -18,11 +18,10 @@ namespace AppiSimo.Client.Starting
 
     public static class StartupProviders
     {
-        public static void AddCustomHttpClient(this IServiceCollection services, Uri baseUrl)
+        public static void AddHttpClient(this IServiceCollection services, Uri baseUrl)
         {
             services.AddSingleton<HttpMessageHandler, BrowserHttpMessageHandler>();
 
-            Console.WriteLine("Breakpoint 33");
             services.AddSingleton(provider =>
             {
                 var handler = provider.GetService<HttpMessageHandler>();
@@ -31,7 +30,7 @@ namespace AppiSimo.Client.Starting
                 var auth = provider.GetService<IAuthService>();
 
                 client.BaseAddress = baseUrl;
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $"{auth?.CurrentUser?.IdToken ?? string.Empty}");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $"{auth?.CurrentUser?.IdToken ?? "NULL"}");
 
                 return client;
             });
