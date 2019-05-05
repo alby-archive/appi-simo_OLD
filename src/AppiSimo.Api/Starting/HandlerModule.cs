@@ -8,19 +8,21 @@ namespace AppiSimo.Api.Starting
 
     public class HandlerModule : Module
     {
+        readonly Cognito _config;
+
+        public HandlerModule(Cognito config)
+        {
+            _config = config;
+        }
+        
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<CognitoUserProvider>().As<IUserProvider>();
 
-            builder.Register(b =>
-            {
-                var cognito = b.Resolve<Cognito>();
-
-                return new AmazonCognitoIdentityProviderClient(
-                    cognito.IdentityAccessManagement.AccessKeyId,
-                    cognito.IdentityAccessManagement.SecretAccessKey,
-                    cognito.RegionEndpoint);
-            });
+            builder.Register(b => new AmazonCognitoIdentityProviderClient(
+                _config.IdentityAccessManagement.AccessKeyId,
+                _config.IdentityAccessManagement.SecretAccessKey,
+                _config.RegionEndpoint));
         }
     }
 }

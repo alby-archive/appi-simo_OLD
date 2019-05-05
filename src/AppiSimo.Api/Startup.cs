@@ -25,12 +25,11 @@
         {
             var connection = GetConnectionString();
             var configuration = GetConfiguration();
-
-            services.AddDefaultInjector(configuration.Authority);
+            
             services.AddKingRoger(connection);
 
-            Builder.RegisterModule(new ConfigurationHandlerModule(configuration));
-            Builder.RegisterModule(new HandlerModule());
+            services.AddDefault(configuration.Authority);
+            Builder.RegisterModule(new HandlerModule(configuration.Cognito));
             Builder.Populate(services);
 
             var container = Builder.Build();

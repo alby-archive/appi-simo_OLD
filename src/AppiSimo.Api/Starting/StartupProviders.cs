@@ -12,7 +12,7 @@ namespace AppiSimo.Api.Starting
 
     public static class StartupProviders
     {
-        public static void AddDefaultInjector(this IServiceCollection services, Authority authority)
+        public static void AddDefault(this IServiceCollection services, Authority authority)
         {
             services.AddOptions();
             services.AddOData();
