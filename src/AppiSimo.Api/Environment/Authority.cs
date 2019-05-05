@@ -1,4 +1,4 @@
-namespace AppiSimo.Shared.Environment
+namespace AppiSimo.Api.Environment
 {
     public class Authority
     {

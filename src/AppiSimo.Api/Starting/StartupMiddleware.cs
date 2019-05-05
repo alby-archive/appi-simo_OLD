@@ -24,7 +24,7 @@ namespace AppiSimo.Api.Starting
         public static void UseRoutesMap(this IApplicationBuilder app)
         {
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
-            
+
             app.UseMvc(b =>
             {
                 b.Select().Expand().Filter().OrderBy().MaxTop(maxTopValue: 100).Count();
@@ -40,7 +40,7 @@ namespace AppiSimo.Api.Starting
                 });
             });
         }
-        
+
         static IEdmModel GetEdmModel()
         {
             var builder = new ODataConventionModelBuilder();

@@ -1,7 +1,7 @@
 namespace AppiSimo.Api
 {
     using System;
-    using Shared.Environment;
+    using Environment;
 
     public static class Heroku
     {
@@ -22,19 +22,6 @@ namespace AppiSimo.Api
             return connectionString.Length != 2
                 ? null
                 : $"Host={url.Host}; Port={url.Port}; Username={connectionString[0]}; Password={connectionString[1]}; Database={url.LocalPath.Substring(startIndex: 1)}; Pooling=true;";
-        }
-
-        public static Authority TryParseAuthority(string value)
-        {
-            var authority = value?.Split(separator: ';');
-
-            return authority?.Length != 2
-                ? null
-                : new Authority
-                {
-                    EndPoint = authority[0],
-                    Audience = authority[1]
-                };
         }
 
         public static IdentityAccessManagement TryParseIdentityAccessManagement(string value)

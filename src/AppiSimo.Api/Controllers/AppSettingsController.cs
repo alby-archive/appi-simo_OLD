@@ -1,8 +1,8 @@
 namespace AppiSimo.Api.Controllers
 {
+    using Environment;
     using Microsoft.AspNetCore.Mvc;
-    using Shared.Environment;
-    
+
     public class AppSettingsController : Controller
     {
         readonly Cognito _configuration;
@@ -12,9 +12,6 @@ namespace AppiSimo.Api.Controllers
             _configuration = configuration;
         }
 
-        public string Index()
-        {
-            return $"Region: {_configuration.Region}; UserPoolId: {_configuration.UserPool.Id}";
-        }
+        public string Index() => $"Region: {_configuration.Region}; UserPoolId: {_configuration.UserPool.Id}";
     }
 }

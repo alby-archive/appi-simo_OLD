@@ -5,26 +5,28 @@ namespace AppiSimo.Api.Controllers
     using System.Threading.Tasks;
     using Areas.Authentication.Abstract;
     using Data;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-    using Shared.Environment;
     using Shared.Model;
 
     public class UsersController : EntityController<User>
     {
         readonly IUserProvider _provider;
+        readonly IHostingEnvironment _env;
 
-        public UsersController(KingRogerContext context, IUserProvider provider)
+        public UsersController(KingRogerContext context, IUserProvider provider, IHostingEnvironment env)
             : base(context)
         {
             _provider = provider;
+            _env = env;
         }
 
         public override async Task<IActionResult> Post(User user)
         {
             user.Enabled = false;
 
-            if (!Env.IsDebug)
+            if (!_env.IsDevelopment())
             {
                 try
                 {
@@ -43,7 +45,7 @@ namespace AppiSimo.Api.Controllers
 
         public override async Task<IActionResult> Put(User user)
         {
-            if (!Env.IsDebug)
+            if (!_env.IsDevelopment())
             {
                 try
                 {
@@ -68,7 +70,7 @@ namespace AppiSimo.Api.Controllers
             var user = await Context.Users.FindAsync(key);
             user.Enabled = true;
 
-            if (!Env.IsDebug)
+            if (!_env.IsDevelopment())
             {
                 await _provider.EnableUserAsync(user.Username);
             }
@@ -86,7 +88,7 @@ namespace AppiSimo.Api.Controllers
             var user = await Context.Users.FindAsync(key);
             user.Enabled = false;
 
-            if (!Env.IsDebug)
+            if (!_env.IsDevelopment())
             {
                 await _provider.DisableUserAsync(user.Username);
             }
@@ -101,7 +103,7 @@ namespace AppiSimo.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(Guid key)
         {
-            if (Env.IsDebug)
+            if (_env.IsDevelopment())
             {
                 return Ok();
             }

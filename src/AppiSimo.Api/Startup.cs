@@ -3,11 +3,11 @@
     using System;
     using Autofac;
     using Autofac.Extensions.DependencyInjection;
+    using Environment;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Shared.Environment;
     using Starting;
 
     public class Startup
@@ -48,21 +48,15 @@
         }
 
         string GetConnectionString() =>
-            Heroku.TryParseConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"))
+            Heroku.TryParseConnectionString(System.Environment.GetEnvironmentVariable("DATABASE_URL"))
             ?? Configuration.GetConnectionString("KingRoger_ConnectionString");
 
         Configuration GetConfiguration()
         {
             var configuration = Configuration.GetSection("Configuration").Get<Configuration>();
 
-            var authority = Heroku.TryParseAuthority(Environment.GetEnvironmentVariable("Authority"));
-            var identityAccessManagement = Heroku.TryParseIdentityAccessManagement(Environment.GetEnvironmentVariable("IAM"));
-
-            if (authority != null)
-            {
-                configuration.Authority = authority;
-            }
-
+            var identityAccessManagement = Heroku.TryParseIdentityAccessManagement(System.Environment.GetEnvironmentVariable("IAM"));
+            
             if (identityAccessManagement != null)
             {
                 configuration.Cognito.IdentityAccessManagement = identityAccessManagement;

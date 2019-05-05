@@ -3,8 +3,8 @@ namespace AppiSimo.Api.Starting
     using Amazon.CognitoIdentityProvider;
     using Areas.Authentication.Abstract;
     using Autofac;
+    using Environment;
     using Providers;
-    using Shared.Environment;
 
     public class HandlerModule : Module
     {

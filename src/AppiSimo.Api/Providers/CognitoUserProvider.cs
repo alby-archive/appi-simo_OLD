@@ -7,7 +7,7 @@ namespace AppiSimo.Api.Providers
     using Amazon.CognitoIdentityProvider;
     using Amazon.CognitoIdentityProvider.Model;
     using Areas.Authentication.Abstract;
-    using Shared.Environment;
+    using Environment;
     using Shared.Model;
 
     public class CognitoUserProvider : IUserProvider, IDisposable

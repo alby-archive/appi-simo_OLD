@@ -1,7 +1,7 @@
 namespace AppiSimo.Api.Starting
 {
     using Autofac;
-    using Shared.Environment;
+    using Environment;
 
     public class ConfigurationHandlerModule : Module
     {
