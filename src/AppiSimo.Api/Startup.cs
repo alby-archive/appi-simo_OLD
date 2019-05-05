@@ -24,12 +24,10 @@
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             var connection = GetConnectionString();
-            var configuration = GetConfiguration(); 
+            var configuration = GetConfiguration();
 
-            services.AddDefaultInjector();
+            services.AddDefaultInjector(configuration.Authority);
             services.AddKingRoger(connection);
-            
-            services.AddAuthentication(configuration.Authority);
 
             Builder.RegisterModule(new ConfigurationHandlerModule(configuration));
             Builder.RegisterModule(new HandlerModule());
@@ -52,7 +50,7 @@
         string GetConnectionString() =>
             Heroku.TryParseConnectionString(Environment.GetEnvironmentVariable("DATABASE_URL"))
             ?? Configuration.GetConnectionString("KingRoger_ConnectionString");
-        
+
         Configuration GetConfiguration()
         {
             var configuration = Configuration.GetSection("Configuration").Get<Configuration>();

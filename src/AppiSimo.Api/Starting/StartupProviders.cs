@@ -12,12 +12,14 @@ namespace AppiSimo.Api.Starting
 
     public static class StartupProviders
     {
-        public static void AddDefaultInjector(this IServiceCollection services)
+        public static void AddDefaultInjector(this IServiceCollection services, Authority authority)
         {
             services.AddOptions();
             services.AddOData();
             services.AddCors();
-            
+
+            services.AddAuthentication(authority);
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(option => option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
@@ -32,16 +34,15 @@ namespace AppiSimo.Api.Starting
             });
         }
 
-        public static void AddAuthentication(this IServiceCollection services, Authority authority)
+        static void AddAuthentication(this IServiceCollection services, Authority authority)
         {
-            //TODO: move in AddDefaultInjector
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    options.Authority = "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_jUNe13QJ4";
-                    options.Audience = "ld3qolihulq7pg0meehtfv20e";
+                    options.Authority = authority.EndPoint;
+                    options.Audience = authority.Audience;
                 });
         }
     }

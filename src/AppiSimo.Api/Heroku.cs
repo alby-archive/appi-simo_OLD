@@ -33,7 +33,7 @@ namespace AppiSimo.Api
                 : new Authority
                 {
                     EndPoint = authority[0],
-                    Audiences = authority[1]
+                    Audience = authority[1]
                 };
         }
 
