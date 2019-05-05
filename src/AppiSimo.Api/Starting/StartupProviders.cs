@@ -17,7 +17,7 @@ namespace AppiSimo.Api.Starting
             services.AddOptions();
             services.AddOData();
             services.AddCors();
-
+            
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddJsonOptions(option => option.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
@@ -34,6 +34,7 @@ namespace AppiSimo.Api.Starting
 
         public static void AddAuthentication(this IServiceCollection services, Authority authority)
         {
+            //TODO: move in AddDefaultInjector
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -42,14 +43,6 @@ namespace AppiSimo.Api.Starting
                     options.Authority = "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_jUNe13QJ4";
                     options.Audience = "ld3qolihulq7pg0meehtfv20e";
                 });
-
-//            services.AddAuthorization(options =>
-//            {
-//                options.AddPolicy("Default", builder =>
-//                {
-//                    builder.RequireAuthenticatedUser();
-//                });
-//            });
         }
     }
 }

@@ -14,17 +14,16 @@
         public readonly HttpClient _client;
 
         readonly DataServiceContext _context;
-        protected readonly string _resourceUri;
+        protected readonly string _uri;
 
-        public EndPoint(DataServiceContext context, HttpClient client, string resourceUri)
+        public EndPoint(DataServiceContext context, HttpClient client, string uri)
         {
             _context = context;
             _client = client;
-
-            _resourceUri = resourceUri;
+            _uri = uri;
         }
 
-        public DataServiceQuery<TEntity> Entities => _context.CreateQuery<TEntity>(_resourceUri);
+        public DataServiceQuery<TEntity> Entities => _context.CreateQuery<TEntity>(_uri);
 
         public async Task<TEntity> Entity(Guid id, Func<DataServiceQuery<TEntity>, IQueryable<TEntity>> selector) =>
             (await selector(Entities).Where(u => u.Id == id).ToListAsync(_client)).Value.FirstOrDefault();
@@ -33,15 +32,15 @@
         {
             if (entity.Id == Guid.Empty)
             {
-                await _client.SendJsonAsync<TEntity>(HttpMethod.Post, $"{_resourceUri}/Post", entity);
+                await _client.SendJsonAsync<TEntity>(HttpMethod.Post, $"{_uri}/Post", entity);
             }
             else
             {
-                await _client.SendJsonAsync<TEntity>(HttpMethod.Put, $"{_resourceUri}/Put", entity);
+                await _client.SendJsonAsync<TEntity>(HttpMethod.Put, $"{_uri}/Put", entity);
             }
         }
 
         public async Task Delete(Guid id) =>
-            await _client.DeleteAsync($"{_resourceUri}/Delete/{id}");
+            await _client.DeleteAsync($"{_uri}/Delete/{id}");
     }
 }

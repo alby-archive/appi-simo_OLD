@@ -37,7 +37,7 @@ namespace AppiSimo.Client.Environment
         [JsonProperty(PropertyName = "metadata")]
         public Metadata Metadata { get; set; }
 
-        // valorize by auth.js. Hero only for visibility
+        // valorize by auth.js. Here only for visibility.
         [JsonIgnore]
         public string UserStore { get; set; }
     }

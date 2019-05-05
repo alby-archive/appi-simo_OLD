@@ -3,42 +3,25 @@ namespace AppiSimo.Client
     using System;
     using System.Globalization;
     using System.IO;
-    using System.Net.Http;
-    using System.Net.Http.Headers;
     using System.Reflection;
     using Environment;
-    using Microsoft.AspNetCore.Blazor.Browser.Http;
     using Microsoft.AspNetCore.Blazor.Builder;
     using Microsoft.Extensions.DependencyInjection;
-    using Middleware;
     using Newtonsoft.Json;
-    using Shared.Services;
+    using Starting;
 
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
         {
             var configuration = GetConfiguration();
+            var apiUrl = new Uri(configuration.ApiUrl);
 
-            services.AddSingleton<HttpMessageHandler, BrowserHttpMessageHandler>();
-            services.AddAuthServices(configuration.CognitoClient);
-
-            services.AddSingleton(provider =>
-            {
-                var handler = provider.GetService<HttpMessageHandler>();
-                var auth = provider.GetService<AuthService>();
-
-                var client = handler != null ? new HttpClient(handler) : new HttpClient();
-
-                client.BaseAddress = new Uri(configuration.ApiUrl);
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $"{auth?.CurrentUser?.IdToken ?? string.Empty}");
-
-                return client;
-            });
-
-            services.AddEndPoints(configuration.ApiUrl);
-            services.AddValidatorMiddleWare();
-            services.AddRxServices();
+            services.AddServices(configuration.CognitoClient);
+            
+            services.AddCustomHttpClient(apiUrl);
+            services.AddEndPoints(apiUrl);
+            services.AddValidators();
         }
 
         public void Configure(IBlazorApplicationBuilder app)
