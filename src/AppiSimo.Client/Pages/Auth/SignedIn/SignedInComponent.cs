@@ -1,6 +1,7 @@
 namespace AppiSimo.Client.Pages.Auth.SignedIn
 {
     using System.Threading.Tasks;
+    using Factories.Abstract;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
     using Shared.Services.Abstract;
@@ -8,14 +9,14 @@ namespace AppiSimo.Client.Pages.Auth.SignedIn
     public class SignedInComponent : BlazorComponent
     {
         [Inject]
-        IAuthService Auth { get; set; }
+        IAsyncFactory<IAuthService> AuthFactory { get; set; }
 
         [Inject]
         IUriHelper UriHelper { get; set; }
 
         protected override async Task OnInitAsync()
         {
-            await Auth.SignedIn();
+            await (await AuthFactory.CreateAsync()).SignedIn();
 
             UriHelper.NavigateTo("/");
         }

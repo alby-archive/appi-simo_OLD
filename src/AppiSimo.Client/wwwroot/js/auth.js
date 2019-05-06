@@ -38,6 +38,8 @@
 
     self.authentication.signedIn = async config => invokeAsync(config, async manager => await manager.signinRedirectCallback());
     
+    self.authentication.clearSignedInHistory = () => history.replaceState({}, "AppiSimo", "/");
+    
     self.authentication.signOut = config => buildManager(config).signoutRedirect();
 
 })(window.interop || (window.interop = {}));

@@ -35,19 +35,24 @@ namespace AppiSimo.Client.Shared.Services
                 JsonConvert.SerializeObject(_config)
             );
 
-        public async Task SignedIn() =>
+        public async Task SignedIn()
+        {
             SetSubject(await Js.InvokeAsync<string>(
                 "interop.authentication.signedIn",
                 JsonConvert.SerializeObject(_config)
             ));
 
+            ClearSignedInHistory();
+        }
+
         public void SignOut() =>
-            // TODO: Invoke<void>
             Js.Invoke<object>(
                 "interop.authentication.signOut",
                 JsonConvert.SerializeObject(_config)
             );
-
+        
         void SetSubject(string response) => User.OnNext(JsonConvert.DeserializeObject<RootObject>(response));
+        
+        static void ClearSignedInHistory() => Js.Invoke<object>("interop.authentication.clearSignedInHistory");
     }
 }

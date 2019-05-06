@@ -2,12 +2,13 @@ namespace AppiSimo.Client.Starting
 {
     using System;
     using System.Net.Http;
-    using System.Net.Http.Headers;
     using AppiSimo.Shared.Abstract;
     using AppiSimo.Shared.Model;
     using AppiSimo.Shared.Validators;
     using EndPoints;
     using Environment;
+    using Factories;
+    using Factories.Abstract;
     using Microsoft.AspNetCore.Blazor.Browser.Http;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.OData.Client;
@@ -18,22 +19,15 @@ namespace AppiSimo.Client.Starting
 
     public static class StartupProviders
     {
-        public static void AddHttpClient(this IServiceCollection services, Uri baseUrl)
+        public static void AddHttpClientFactory(this IServiceCollection services, Uri baseAddress)
         {
             services.AddSingleton<HttpMessageHandler, BrowserHttpMessageHandler>();
 
-            services.AddSingleton(provider =>
-            {
-                var handler = provider.GetService<HttpMessageHandler>();
-                var client = handler != null ? new HttpClient(handler) : new HttpClient();
-
-                var auth = provider.GetService<IAuthService>();
-
-                client.BaseAddress = baseUrl;
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", $"{auth?.CurrentUser?.IdToken ?? "NULL"}");
-
-                return client;
-            });
+            services.AddSingleton<IAsyncFactory<HttpClient>>(provider => new HttpClientAsyncFactory(
+                provider.GetService<IAsyncFactory<IAuthService>>(),
+                provider.GetService<HttpMessageHandler>(),
+                baseAddress
+            ));
         }
 
         public static void AddEndPoints(this IServiceCollection services, Uri baseUrl)
@@ -51,9 +45,9 @@ namespace AppiSimo.Client.Starting
             services.AddSingleton(provider =>
             {
                 var context = provider.GetService<DataServiceContext>();
-                var client = provider.GetService<HttpClient>();
+                var factory = provider.GetService<IAsyncFactory<HttpClient>>();
 
-                return new UserEndPoint(context, client, "users");
+                return new UserEndPoint(context, factory, "users");
             });
         }
 
@@ -61,7 +55,7 @@ namespace AppiSimo.Client.Starting
             where T : class, IEntity, new()
         {
             var context = provider.GetService<DataServiceContext>();
-            var client = provider.GetService<HttpClient>();
+            var client = provider.GetService<IAsyncFactory<HttpClient>>();
 
             return new EndPoint<T>(context, client, endPointName);
         }
@@ -73,7 +67,7 @@ namespace AppiSimo.Client.Starting
 
         public static void AddServices(this IServiceCollection services, CognitoClient config)
         {
-            services.AddSingleton<IAuthService>(_ => new AuthService(config));
+            services.AddSingleton<IAsyncFactory<IAuthService>>(_ => new AuthServiceAsyncFactory(config));
 
             services.AddTransient<BaseRxService<Pager>, PagerService>();
             services.AddTransient<BaseRxService<Searcher>, SearcherService>();

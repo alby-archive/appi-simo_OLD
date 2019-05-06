@@ -2,6 +2,7 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
 {
     using System;
     using System.Threading.Tasks;
+    using Factories.Abstract;
     using Microsoft.AspNetCore.Blazor.Components;
     using Microsoft.AspNetCore.Blazor.Services;
     using Shared.Services.Abstract;
@@ -11,15 +12,19 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
         IDisposable _subscription;
 
         [Inject]
-        IAuthService Auth { get; set; }
+        IAsyncFactory<IAuthService> AuthFactory { get; set; }
 
         [Inject]
         IUriHelper UriHelper { get; set; }
 
+        IAuthService Auth { get; set; }
+
         protected CurrentUserBadgeViewModel ViewModel { get; } = new CurrentUserBadgeViewModel();
 
-        protected override void OnInit()
+        protected override async Task OnInitAsync()
         {
+            Auth = await AuthFactory.CreateAsync();
+
             ViewModel.IsLogged = Auth.CurrentUser != null;
             ViewModel.CurrentUser = Auth?.CurrentUser?.Profile?.Username ?? "User";
 
@@ -35,12 +40,7 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
 
         protected async Task SignIn() => await Auth.SignIn();
 
-        protected void SignOut()
-        {
-            Auth.SignOut();
-
-            StateHasChanged();
-        }
+        protected void SignOut() => Auth.SignOut();
 
         protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Auth.CurrentUser.Profile.Sub}");
 

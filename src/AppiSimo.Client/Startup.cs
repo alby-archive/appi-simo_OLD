@@ -15,12 +15,12 @@ namespace AppiSimo.Client
         public void ConfigureServices(IServiceCollection services)
         {
             var configuration = GetConfiguration();
-            var apiUrl = new Uri(configuration.ApiUrl);
+            var baseAddress = new Uri(configuration.ApiUrl);
 
             services.AddServices(configuration.CognitoClient);
-            
-            services.AddHttpClient(apiUrl);
-            services.AddEndPoints(apiUrl);
+
+            services.AddHttpClientFactory(baseAddress);
+            services.AddEndPoints(baseAddress);
             services.AddValidators();
         }
 
