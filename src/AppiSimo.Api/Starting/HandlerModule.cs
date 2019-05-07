@@ -20,7 +20,7 @@ namespace AppiSimo.Api.Starting
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.Register(_ => _config);
+            builder.RegisterInstance(_config);
 
             builder.Register(b => new AmazonCognitoIdentityProviderClient(
                 _config.IdentityAccessManagement.AccessKeyId,

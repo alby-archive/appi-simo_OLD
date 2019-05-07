@@ -19,21 +19,17 @@ namespace AppiSimo.Client.Starting
 
     public static class StartupProviders
     {
-        public static void AddHttpClientFactory(this IServiceCollection services, Uri baseAddress)
+        public static void AddHttpClientFactory(this IServiceCollection services)
         {
             services.AddSingleton<HttpMessageHandler, BrowserHttpMessageHandler>();
 
-            services.AddSingleton<IAsyncFactory<HttpClient>>(provider => new HttpClientAsyncFactory(
-                provider.GetService<IAsyncFactory<IAuthService>>(),
-                provider.GetService<HttpMessageHandler>(),
-                baseAddress
-            ));
+            services.AddSingleton<IAsyncFactory<HttpClient>, HttpClientAsyncFactory>();
         }
 
-        public static void AddEndPoints(this IServiceCollection services, Uri baseUrl)
+        public static void AddEndPoints(this IServiceCollection services)
         {
             // ODataEndPoint
-            services.AddSingleton(provider => new DataServiceContext(baseUrl));
+            services.AddSingleton(provider => new DataServiceContext(provider.GetRequiredService<Api>().Url));
 
             // ApiEndPoints
             services.AddSingleton(provider => CreateEndPoint<Event>(provider, "events"));
@@ -65,9 +61,9 @@ namespace AppiSimo.Client.Starting
             builder.AddSingleton(_ => ValidatorProxy.EventsValidator);
         }
 
-        public static void AddServices(this IServiceCollection services, CognitoClient config)
+        public static void AddServices(this IServiceCollection services)
         {
-            services.AddSingleton<IAsyncFactory<IAuthService>>(_ => new AuthServiceAsyncFactory(config));
+            services.AddSingleton<IAsyncFactory<IAuthService>, AuthServiceAsyncFactory>();
 
             services.AddTransient<BaseRxService<Pager>, PagerService>();
             services.AddTransient<BaseRxService<Searcher>, SearcherService>();
