@@ -26,16 +26,13 @@ namespace AppiSimo.Api.Controllers
         {
             user.Enabled = false;
 
-            if (!_env.IsDevelopment())
+            try
             {
-                try
-                {
-                    await _provider.CreateAsync(user);
-                }
-                catch (Exception e)
-                {
-                    return BadRequest(e.Message);
-                }
+                await _provider.CreateAsync(user);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
 
             await base.Post(user);
@@ -45,16 +42,13 @@ namespace AppiSimo.Api.Controllers
 
         public override async Task<IActionResult> Put(User user)
         {
-            if (!_env.IsDevelopment())
+            try
             {
-                try
-                {
-                    await _provider.AdminUpdateUserAttributesAsync(user);
-                }
-                catch (Exception e)
-                {
-                    return BadRequest(e.Message);
-                }
+                await _provider.AdminUpdateUserAttributesAsync(user);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
 
             await base.Put(user);
@@ -70,13 +64,16 @@ namespace AppiSimo.Api.Controllers
             var user = await Context.Users.FindAsync(key);
             user.Enabled = true;
 
-            if (!_env.IsDevelopment())
+            try
             {
                 await _provider.EnableUserAsync(user.Username);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
 
             Context.Users.Update(user);
-
             await Context.SaveChangesAsync();
 
             return Ok(user);
@@ -88,13 +85,16 @@ namespace AppiSimo.Api.Controllers
             var user = await Context.Users.FindAsync(key);
             user.Enabled = false;
 
-            if (!_env.IsDevelopment())
+            try
             {
                 await _provider.DisableUserAsync(user.Username);
             }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
 
             Context.Users.Update(user);
-
             await Context.SaveChangesAsync();
 
             return Ok(user);
@@ -103,14 +103,17 @@ namespace AppiSimo.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(Guid key)
         {
-            if (_env.IsDevelopment())
-            {
-                return Ok();
-            }
-
             var user = await Context.Users.FindAsync(key);
 
-            await _provider.AdminResetUserPassword(user.Username);
+            try
+            {
+                await _provider.AdminResetUserPassword(user.Username);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+            
             return Ok();
         }
 

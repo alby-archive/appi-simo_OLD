@@ -12,12 +12,14 @@
 
     public class Startup
     {
+        IHostingEnvironment Env { get; }
         IConfiguration Configuration { get; }
         ContainerBuilder Builder { get; }
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
             Builder = new ContainerBuilder();
         }
 
@@ -25,11 +27,11 @@
         {
             var connection = GetConnectionString();
             var configuration = GetConfiguration();
-            
+
             services.AddKingRoger(connection);
 
             services.AddDefault(configuration.Authority);
-            Builder.RegisterModule(new HandlerModule(configuration.Cognito));
+            Builder.RegisterModule(new HandlerModule(configuration.Cognito, Env));
             Builder.Populate(services);
 
             var container = Builder.Build();
@@ -37,9 +39,9 @@
             return new AutofacServiceProvider(container);
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            app.UseDeveloperEnvironment(env);
+            app.UseDeveloperEnvironment(Env);
             app.UseAuthentication();
             app.UseRoutesMap();
 
@@ -55,7 +57,7 @@
             var configuration = Configuration.GetSection("Configuration").Get<Configuration>();
 
             var identityAccessManagement = Heroku.TryParseIdentityAccessManagement(System.Environment.GetEnvironmentVariable("IAM"));
-            
+
             if (identityAccessManagement != null)
             {
                 configuration.Cognito.IdentityAccessManagement = identityAccessManagement;

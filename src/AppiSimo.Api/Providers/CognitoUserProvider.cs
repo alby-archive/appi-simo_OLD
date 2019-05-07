@@ -7,18 +7,19 @@ namespace AppiSimo.Api.Providers
     using Amazon.CognitoIdentityProvider;
     using Amazon.CognitoIdentityProvider.Model;
     using Areas.Authentication.Abstract;
+    using Environment;
     using Shared.Model;
 
     public class CognitoUserProvider : IUserProvider, IDisposable
     {
-        readonly string _userPoolId;
+        readonly Cognito _cognito;
         readonly AmazonCognitoIdentityProviderClient _provider;
 
         public CognitoUserProvider(
-            string userPoolId,
+            Cognito cognito,
             AmazonCognitoIdentityProviderClient provider)
         {
-            _userPoolId = userPoolId;
+            _cognito = cognito;
             _provider = provider;
         }
 
@@ -44,7 +45,7 @@ namespace AppiSimo.Api.Providers
         {
             var request = new AdminUpdateUserAttributesRequest
             {
-                UserPoolId = _userPoolId,
+                UserPoolId = _cognito.UserPool.Id,
                 Username = user.Username,
                 UserAttributes = GetUserAttributes(user)
             };
@@ -64,7 +65,7 @@ namespace AppiSimo.Api.Providers
             var request = new AdminDisableUserRequest
             {
                 Username = username,
-                UserPoolId = _userPoolId
+                UserPoolId = _cognito.UserPool.Id
             };
 
             await _provider.AdminDisableUserAsync(request);
@@ -74,7 +75,7 @@ namespace AppiSimo.Api.Providers
         {
             var request = new AdminEnableUserRequest
             {
-                UserPoolId = _userPoolId,
+                UserPoolId = _cognito.UserPool.Id,
                 Username = username
             };
 
@@ -85,7 +86,7 @@ namespace AppiSimo.Api.Providers
         {
             var request = new AdminResetUserPasswordRequest
             {
-                UserPoolId = _userPoolId,
+                UserPoolId = _cognito.UserPool.Id,
                 Username = username
             };
 
@@ -94,7 +95,7 @@ namespace AppiSimo.Api.Providers
 
         AdminCreateUserRequest CreateUser(User user) => new AdminCreateUserRequest
         {
-            UserPoolId = _userPoolId,
+            UserPoolId = _cognito.UserPool.Id,
             Username = user.Username,
             TemporaryPassword = $"RSC-{Guid.NewGuid()}",
             MessageAction = MessageActionType.SUPPRESS,
