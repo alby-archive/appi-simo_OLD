@@ -21,10 +21,10 @@
 
     <ul class="overflow-auto list-group list-group-flush" style="max-height: 300px">
 
-        @foreach (var userEvent in ViewModel.FilteredUserEvents.Where(userEvent => userEvent.User.Surname.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Name))
+        @foreach (var userEvent in ViewModel.FilteredUserEvents.Where(userEvent => userEvent.User.Profile.GivenName.ToUpper().Contains(Filter.Trim().ToUpper())).OrderBy(u => u.User.Profile.FamilyName))
         {
             <li class="list-group-item user-add-li" onclick="@(() => AddUser(userEvent))">
-                <span class="font-weight-bold text-secondary">@userEvent.User.Name @userEvent.User.Surname</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
+                <span class="font-weight-bold text-secondary">@userEvent.User.Profile.GivenName @userEvent.User.Profile.FamilyName</span><span class="oi oi-plus float-right" data-toggle="tooltip" aria-hidden="true"></span>
             </li>
         }
 
@@ -45,14 +45,14 @@
                     </li>
                 }
 
-                @foreach (var userEvent in ViewModel.SelectedUserEvents.OrderBy(ue => ue.User.Name))
+                @foreach (var userEvent in ViewModel.SelectedUserEvents.OrderBy(ue => ue.User.Profile.GivenName))
                 {
                     <li class="list-group-item user-remove-li">
                         <div class="container-fluid">
                             <div class="row align-items-center">
                                 <div class="col-7 p-0" onclick="@(() => ViewModel.SwitchPayment(userEvent.UserId))">
                                     <span onclick="@(() => RemoveUser(userEvent))">
-                                        <span class="font-weight-bold text-secondary">@userEvent.User.Name&nbsp;@userEvent.User.Surname</span>
+                                        <span class="font-weight-bold text-secondary">@userEvent.User.Profile.GivenName&nbsp;@userEvent.User.Profile.GivenName</span>
                                     </span>
                                 </div>
 

@@ -5,7 +5,6 @@ namespace AppiSimo.Api.Controllers
     using System.Threading.Tasks;
     using Areas.Authentication.Abstract;
     using Data;
-    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Shared.Model;
@@ -13,13 +12,11 @@ namespace AppiSimo.Api.Controllers
     public class UsersController : EntityController<User>
     {
         readonly IUserProvider _provider;
-        readonly IHostingEnvironment _env;
 
-        public UsersController(KingRogerContext context, IUserProvider provider, IHostingEnvironment env)
+        public UsersController(KingRogerContext context, IUserProvider provider)
             : base(context)
         {
             _provider = provider;
-            _env = env;
         }
 
         public override async Task<IActionResult> Post(User user)
@@ -66,7 +63,7 @@ namespace AppiSimo.Api.Controllers
 
             try
             {
-                await _provider.EnableUserAsync(user.Username);
+                await _provider.EnableUserAsync(user.Profile.Sub);
             }
             catch (Exception e)
             {
@@ -87,7 +84,7 @@ namespace AppiSimo.Api.Controllers
 
             try
             {
-                await _provider.DisableUserAsync(user.Username);
+                await _provider.DisableUserAsync(user.Profile.Sub);
             }
             catch (Exception e)
             {
@@ -107,13 +104,13 @@ namespace AppiSimo.Api.Controllers
 
             try
             {
-                await _provider.AdminResetUserPassword(user.Username);
+                await _provider.AdminResetUserPassword(user.Profile.Sub);
             }
             catch (Exception e)
             {
                 return BadRequest(e);
             }
-            
+
             return Ok();
         }
 

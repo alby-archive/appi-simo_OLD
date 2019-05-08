@@ -67,21 +67,8 @@
                 .WithOne(e => e.User)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<User>()
-                .HasOne(e => e.Address)
-                .WithOne(e => e.User)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<User>()
-                .Property(e => e.Birthday)
-                .HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
-
             modelBuilder.Entity<Fit>()
                 .Property(c => c.Id)
-                .ValueGeneratedOnAdd();
-
-            modelBuilder.Entity<Address>()
-                .Property(h => h.Id)
                 .ValueGeneratedOnAdd();
         }
     }

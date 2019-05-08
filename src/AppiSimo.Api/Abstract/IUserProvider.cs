@@ -1,5 +1,6 @@
 namespace AppiSimo.Api.Areas.Authentication.Abstract
 {
+    using System;
     using System.Threading.Tasks;
     using Shared.Model;
 
@@ -7,9 +8,9 @@ namespace AppiSimo.Api.Areas.Authentication.Abstract
     {
         Task CreateAsync(User user);
         Task AdminUpdateUserAttributesAsync(User user);
-        Task DisableUserAsync(string username);
-        Task EnableUserAsync(string username);
+        Task DisableUserAsync(Guid sub);
+        Task EnableUserAsync(Guid sub);
 
-        Task AdminResetUserPassword (string username);
+        Task AdminResetUserPassword (Guid sub);
     }
 }

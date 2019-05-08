@@ -12,7 +12,7 @@ namespace AppiSimo.Client.Pages.Events
             .Expand(userEvent => userEvent.Court)
             .Expand("UsersEvents($expand=User)")
             .Expand("UsersEvents($expand=Event)")
-            .Where(@event => @event.UsersEvents.Any(userEvent => userEvent.User.Surname.ToUpper().Contains(searcher.Filter.ToUpper())))
+            .Where(@event => @event.UsersEvents.Any(userEvent => userEvent.User.Profile.FamilyName.ToUpper().Contains(searcher.Filter.ToUpper())))
             .OrderByDescending(userEvent => userEvent.StartDate);
     }
 }

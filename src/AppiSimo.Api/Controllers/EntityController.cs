@@ -8,7 +8,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Shared.Abstract;
 
-    [Authorize]
+//    [Authorize]
     public abstract class EntityController<TEntity> : ODataController
         where TEntity : class, IEntity, new()
     {

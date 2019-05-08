@@ -16,7 +16,7 @@
         <div class="card w-100 m-2" style="max-width: 400px">
 
             <div class="card-header text-center font-weight-bold">
-                <h2 class="mb-0">@user.Name&nbsp;@user.Surname</h2>
+                <h2 class="mb-0">@user.Profile.GivenName&nbsp;@user.Profile.FamilyName</h2>
             </div>
 
             <div class="card-body font-weight-bold">
@@ -25,30 +25,22 @@
                 <div class="col-md p-2">
                     <p>
                         <div>Data di Nascita:&nbsp;</div>
-                        <div class="text-secondary">@($"{user.Birthday:d}")</div>
+                        <div class="text-secondary">@($"{user.Profile.Birthdate:d}")</div>
                     </p>
                     <p>
                         <div>Indirizzo: </div>
-                        <div class="text-secondary">@user.Address.Street</div>
-                    </p>
-                    <p>
-                        <div>Citt&agrave;:&nbsp;</div>
-                        <div class="text-secondary">@user.Address.City</div>
-                    </p>
-                    <p>
-                        <div>Cap:&nbsp;</div>
-                        <div class="text-secondary">@user.Address.Zip</div>
+                        <div class="text-secondary">@user.Profile.Address</div>
                     </p>
                 </div>
                 
                 <div class="col-md p-2">
                     <p>
                         <div>Telefono:&nbsp;</div>
-                        <div class="text-secondary">@user.PhoneNumber</div>
+                        <div class="text-secondary">@user.Profile.PhoneNumber</div>
                     </p>
                     <p>
                         <div>E-Mail:&nbsp;</div>
-                        <div class="text-secondary">@user.Email</div>
+                        <div class="text-secondary">@user.Profile.Email</div>
                     </p>
                     <p>
                         <div>Tessera FIT:&nbsp;</div>

@@ -13,10 +13,17 @@
     {
         [Inject]
         IUriHelper UriHelper { get; set; }
+        
+        protected UserDetailViewModel ViewModel { get; set; } = new UserDetailViewModel();
 
         protected override DataServiceQuery<User> Selector(DataServiceQuery<User> user) => user
-            .Expand(u => u.Address)
             .Expand(u => u.Fit);
+
+        protected override async Task OnInitAsync()
+        {
+            await base.OnInitAsync();
+            ViewModel = new UserDetailViewModel(Entity);
+        }
 
         protected override async Task Save()
         {
@@ -44,19 +51,6 @@
         protected async Task PasswordReset()
         {
             await EndPoint.ResetPassword(Entity.Id);
-        }
-
-        protected string Birthday
-        {
-            get => Entity.Birthday == DateTime.MinValue ? string.Empty : $"{Entity.Birthday:d}";
-            set
-            {
-                var isValid = DateTime.TryParse(value, out var birthDate);
-                if (isValid)
-                {
-                    Entity.Birthday = birthDate;
-                }
-            }
         }
 
         void GoToHome()

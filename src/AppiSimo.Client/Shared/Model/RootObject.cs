@@ -1,5 +1,6 @@
 namespace AppiSimo.Client.Shared.Model
 {
+    using AppiSimo.Shared.Model;
     using Newtonsoft.Json;
 
     public class RootObject
@@ -8,6 +9,6 @@ namespace AppiSimo.Client.Shared.Model
         public string IdToken { get; set; }
 
         [JsonProperty(PropertyName = "profile")]
-        public Profile Profile { get; set; }
+        public MandatoryProfile MandatoryProfile { get; set; }
     }
 }

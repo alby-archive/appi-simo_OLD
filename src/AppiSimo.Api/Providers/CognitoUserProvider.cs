@@ -38,7 +38,7 @@ namespace AppiSimo.Api.Providers
                 Console.WriteLine($"Exception: {e.Message}");
             }
 
-            user.Sub = Guid.Parse(result.User.Attributes.FirstOrDefault(a => a.Name == "sub").Value);
+            user.Profile.Sub = Guid.Parse(result.User.Attributes.FirstOrDefault(a => a.Name == "sub").Value);
         }
 
         public async Task AdminUpdateUserAttributesAsync(User user)
@@ -46,7 +46,7 @@ namespace AppiSimo.Api.Providers
             var request = new AdminUpdateUserAttributesRequest
             {
                 UserPoolId = _cognito.UserPool.Id,
-                Username = user.Username,
+                Username = $"{user.Profile.Sub}",
                 UserAttributes = GetUserAttributes(user)
             };
 
@@ -60,34 +60,34 @@ namespace AppiSimo.Api.Providers
             }
         }
 
-        public async Task DisableUserAsync(string username)
+        public async Task DisableUserAsync(Guid username)
         {
             var request = new AdminDisableUserRequest
             {
-                Username = username,
+                Username = $"{username}",
                 UserPoolId = _cognito.UserPool.Id
             };
 
             await _provider.AdminDisableUserAsync(request);
         }
 
-        public async Task EnableUserAsync(string username)
+        public async Task EnableUserAsync(Guid username)
         {
             var request = new AdminEnableUserRequest
             {
-                UserPoolId = _cognito.UserPool.Id,
-                Username = username
+                Username = $"{username}",
+                UserPoolId = _cognito.UserPool.Id
             };
 
             await _provider.AdminEnableUserAsync(request);
         }
 
-        public async Task AdminResetUserPassword(string username)
+        public async Task AdminResetUserPassword(Guid username)
         {
             var request = new AdminResetUserPasswordRequest
             {
-                UserPoolId = _cognito.UserPool.Id,
-                Username = username
+                Username = $"{username}",
+                UserPoolId = _cognito.UserPool.Id
             };
 
             await _provider.AdminResetUserPasswordAsync(request);
@@ -96,7 +96,7 @@ namespace AppiSimo.Api.Providers
         AdminCreateUserRequest CreateUser(User user) => new AdminCreateUserRequest
         {
             UserPoolId = _cognito.UserPool.Id,
-            Username = user.Username,
+            Username = user.Profile.Email,
             TemporaryPassword = $"RSC-{Guid.NewGuid()}",
             MessageAction = MessageActionType.SUPPRESS,
             UserAttributes = GetUserAttributes(user)
@@ -107,42 +107,32 @@ namespace AppiSimo.Api.Providers
             {
                 new AttributeType
                 {
-                    Value = user.Surname,
+                    Value = user.Profile.FamilyName,
                     Name = "family_name"
                 },
                 new AttributeType
                 {
-                    Value = user.Name,
+                    Value = user.Profile.GivenName,
                     Name = "given_name"
                 },
                 new AttributeType
                 {
-                    Value = $"{user.Birthday:d}",
+                    Value = $"{user.Profile.Birthdate:d}",
                     Name = "birthdate"
                 },
                 new AttributeType
                 {
-                    Value = user.Address.ToString(),
+                    Value = user.Profile.Address,
                     Name = "address"
                 },
                 new AttributeType
                 {
-                    Value = user.Email,
+                    Value = user.Profile.Email,
                     Name = "email"
                 },
                 new AttributeType
                 {
-                    Value = user.Email != null ? "true" : "false",
-                    Name = "email_verified"
-                },
-                new AttributeType
-                {
-                    Value = user.PhoneNumber,
-                    Name = "phone_number"
-                },
-                new AttributeType
-                {
-                    Value = user.PhoneNumber != null ? "true" : "false",
+                    Value = user.Profile.Email != null ? "true" : "false",
                     Name = "email_verified"
                 }
             };

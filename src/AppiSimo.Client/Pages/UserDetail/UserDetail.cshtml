@@ -1,10 +1,10 @@
 @page "/user"
 @page "/user/{Id}"
-@using System.Web
+@using AppiSimo.Shared.Model
 @inherits UserDetailDetailComponent
 
 <div class="d-flex mt-4">
-    <h1 class="my-0">@(Entity.Id == Guid.Empty ? "Nuovo Utente" : "Modifica Utente")</h1>
+    <h1 class="my-0">@(ViewModel.User.Id == Guid.Empty ? "Nuovo Utente" : "Modifica Utente")</h1>
 </div>
 
 <form class="mt-4 mb-5">
@@ -16,70 +16,59 @@
                 <div class="input-group-prepend">
                     <div class="input-group-text appisimo-prepend">Nome</div>
                 </div>
-                <input type="text" class="form-control" id="user-detail-name" placeholder="Nome" bind="@Entity.Name"/>
+                <input type="text" class="form-control" id="user-detail-name" placeholder="Nome" bind="@ViewModel.GivenName"/>
             </div>
 
             <div class="input-group my-4">
                 <div class="input-group-prepend">
                     <div class="input-group-text appisimo-prepend">Cognome</div>
                 </div>
-                <input type="text" class="form-control" id="user-detail-surname" placeholder="Cognome" bind="@Entity.Surname"/>
+                <input type="text" class="form-control" id="user-detail-surname" placeholder="Cognome" bind="@ViewModel.FamilyName"/>
+            </div>
+
+            <div class="input-group my-4">
+                <div class="input-group-prepend">
+                    <div class="input-group-text appisimo-prepend">Sesso</div>
+                </div>
+                <select class="form-control" bind="@ViewModel.Gender">
+                    <option value="@Genders.Female">Donna</option>
+                    <option value="@Genders.Male">Uomo</option>
+                </select>
             </div>
 
             <div class="input-group my-4">
                 <div class="input-group-prepend">
                     <div class="input-group-text appisimo-prepend">Data di Nascita</div>
                 </div>
-                <input type="text" class="form-control" id="user-detail-birthday" placeholder="gg/mm/aaaa" bind="@Birthday"/>
+                <input type="text" class="form-control" id="user-detail-birthday" placeholder="gg/mm/aaaa" bind="@ViewModel.Birthdate"/>
             </div>
-
+            
             <div class="input-group my-4">
                 <div class="input-group-prepend">
                     <div class="input-group-text appisimo-prepend">Indirizzo</div>
                 </div>
-                <input type="text" class="form-control" id="user-detail-address1" placeholder="Indirizzo e numero, piano, interno, etc." bind="@Entity.Address.Street"/>
-            </div>
-
-            <div class="input-group my-4">
-                <div class="input-group-prepend">
-                    <div class="input-group-text appisimo-prepend">C.A.P.</div>
-                </div>
-                <input type="text" class="form-control" id="user-detail-zip" placeholder="C.A.P." bind="@Entity.Address.Zip"/>
-            </div>
-
-            <div class="input-group my-4">
-                <div class="input-group-prepend">
-                    <div class="input-group-text appisimo-prepend">Citt&agrave</div>
-                </div>
-                <input type="text" class="form-control" id="user-detail-city" placeholder="@HttpUtility.HtmlDecode("Citt&agrave;")" bind="@Entity.Address.City"/>
+                <input type="text" class="form-control" id="user-detail-address" placeholder="Inteno 4 Piano 2, Via Tennis 1, 33050 Cervignano (UD), Italia" bind="@ViewModel.Address"/>
             </div>
 
             <div class="input-group my-4">
                 <div class="input-group-prepend">
                     <div class="input-group-text appisimo-prepend">E-Mail</div>
                 </div>
-                <input type="text" class="form-control" id="user-detail-email" placeholder="E-Mail" bind="@Entity.Email"/>
+                <input type="text" class="form-control" id="user-detail-email" placeholder="riverATriversportingclub.tennis" bind="@ViewModel.Email"/>
             </div>
 
             <div class="input-group my-4">
                 <div class="input-group-prepend">
                     <div class="input-group-text appisimo-prepend">Telefono</div>
                 </div>
-                <input type="text" class="form-control" id="user-detail-phoneNumber" placeholder="Telefono, cellulare" bind="@Entity.PhoneNumber"/>
+                <input type="text" class="form-control" id="user-detail-phoneNumber" placeholder="+391234567890" bind="@ViewModel.PhoneNumber"/>
             </div>
 
             <div class="input-group my-4">
                 <div class="input-group-prepend">
                     <div class="input-group-text appisimo-prepend">Tessera FIT</div>
                 </div>
-                <input type="text" class="form-control" id="user-detail-cardNumber" placeholder="Tessera FIT" bind="@Entity.Fit.CardNumber"/>
-            </div>
-
-            <div class="input-group my-4">
-                <div class="input-group-prepend">
-                    <div class="input-group-text appisimo-prepend">Username</div>
-                </div>
-                <input type="text" class="form-control" id="user-detail-userName" placeholder="Username" bind="@Entity.Username"/>
+                <input type="text" class="form-control" id="user-detail-cardNumber" placeholder="Tessera FIT" bind="@ViewModel.FitCard"/>
             </div>
 
             <div class="input-group d-flex">

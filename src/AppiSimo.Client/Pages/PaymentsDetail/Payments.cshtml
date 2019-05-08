@@ -3,7 +3,7 @@
 @inherits PaymentsComponent
 
 <div class="d-flex mt-4">
-    <h1>@Entities.FirstOrDefault()?.User.Name @Entities.FirstOrDefault()?.User.Surname</h1>
+    <h1>@Entities.FirstOrDefault()?.User.Profile.GivenName @Entities.FirstOrDefault()?.User.Profile.FamilyName}</h1>
 </div>
 
 @if (!Entities.Any())

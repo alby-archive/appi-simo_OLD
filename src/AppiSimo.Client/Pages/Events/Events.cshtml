@@ -91,7 +91,7 @@
                             @foreach (var userEvent in e.UsersEvents)
                             {
                                 <p class=@($"text-left alert {(userEvent.Paid ? "alert-success" : "alert-danger")}")>
-                                    <span>@userEvent.User.Name&nbsp;@userEvent.User.Surname</span>
+                                    <span>@userEvent.User.Profile.GivenName&nbsp;@userEvent.User.Profile.FamilyName</span>
                                     <span class="text-secondary">@userEvent.Cost&nbsp;&euro;</span>
                                 </p>
                             }
