@@ -1,7 +1,6 @@
 namespace AppiSimo.Api.Providers
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Amazon.CognitoIdentityProvider;
@@ -23,9 +22,9 @@ namespace AppiSimo.Api.Providers
             _provider = provider;
         }
 
-        public async Task CreateAsync(User user)
+        public async Task<Guid> CreateAsync(Profile profile)
         {
-            var request = CreateUser(user);
+            var request = CreateUser(profile);
 
             AdminCreateUserResponse result = null;
 
@@ -38,16 +37,16 @@ namespace AppiSimo.Api.Providers
                 Console.WriteLine($"Exception: {e.Message}");
             }
 
-            user.Profile.Sub = Guid.Parse(result.User.Attributes.FirstOrDefault(a => a.Name == "sub").Value);
+            return Guid.Parse(result.User.Attributes.FirstOrDefault(a => a.Name == "sub").Value);
         }
 
-        public async Task AdminUpdateUserAttributesAsync(User user)
+        public async Task AdminUpdateUserAttributesAsync(Profile profile)
         {
             var request = new AdminUpdateUserAttributesRequest
             {
                 UserPoolId = _cognito.UserPool.Id,
-                Username = $"{user.Profile.Sub}",
-                UserAttributes = GetUserAttributes(user)
+                Username = $"{profile.Sub}",
+                UserAttributes = profile.GetCognitoAttributes().ToList()
             };
 
             try
@@ -60,82 +59,47 @@ namespace AppiSimo.Api.Providers
             }
         }
 
-        public async Task DisableUserAsync(Guid username)
+        public async Task DisableUserAsync(Guid key)
         {
             var request = new AdminDisableUserRequest
             {
-                Username = $"{username}",
+                Username = $"{key}",
                 UserPoolId = _cognito.UserPool.Id
             };
 
             await _provider.AdminDisableUserAsync(request);
         }
 
-        public async Task EnableUserAsync(Guid username)
+        public async Task EnableUserAsync(Guid key)
         {
             var request = new AdminEnableUserRequest
             {
-                Username = $"{username}",
+                Username = $"{key}",
                 UserPoolId = _cognito.UserPool.Id
             };
 
             await _provider.AdminEnableUserAsync(request);
         }
 
-        public async Task AdminResetUserPassword(Guid username)
+        public async Task AdminResetUserPassword(Guid key)
         {
             var request = new AdminResetUserPasswordRequest
             {
-                Username = $"{username}",
+                Username = $"{key}",
                 UserPoolId = _cognito.UserPool.Id
             };
 
             await _provider.AdminResetUserPasswordAsync(request);
         }
 
-        AdminCreateUserRequest CreateUser(User user) => new AdminCreateUserRequest
+        AdminCreateUserRequest CreateUser(Profile profile) => new AdminCreateUserRequest
         {
             UserPoolId = _cognito.UserPool.Id,
-            Username = user.Profile.Email,
+            Username = profile.Email,
             TemporaryPassword = $"RSC-{Guid.NewGuid()}",
             MessageAction = MessageActionType.SUPPRESS,
-            UserAttributes = GetUserAttributes(user)
+            UserAttributes = profile.GetCognitoAttributes().ToList()
         };
-
-        static List<AttributeType> GetUserAttributes(User user) =>
-            new List<AttributeType>
-            {
-                new AttributeType
-                {
-                    Value = user.Profile.FamilyName,
-                    Name = "family_name"
-                },
-                new AttributeType
-                {
-                    Value = user.Profile.GivenName,
-                    Name = "given_name"
-                },
-                new AttributeType
-                {
-                    Value = $"{user.Profile.Birthdate:d}",
-                    Name = "birthdate"
-                },
-                new AttributeType
-                {
-                    Value = user.Profile.Address,
-                    Name = "address"
-                },
-                new AttributeType
-                {
-                    Value = user.Profile.Email,
-                    Name = "email"
-                },
-                new AttributeType
-                {
-                    Value = user.Profile.Email != null ? "true" : "false",
-                    Name = "email_verified"
-                }
-            };
 
         public void Dispose()
         {

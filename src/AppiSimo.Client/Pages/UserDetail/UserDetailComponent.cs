@@ -1,6 +1,5 @@
 ﻿namespace AppiSimo.Client.Pages.UserDetail
 {
-    using System;
     using System.Threading.Tasks;
     using AppiSimo.Shared.Model;
     using EndPoints;

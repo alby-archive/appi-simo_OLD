@@ -6,11 +6,11 @@ namespace AppiSimo.Api.Areas.Authentication.Abstract
 
     public interface IUserProvider
     {
-        Task CreateAsync(User user);
-        Task AdminUpdateUserAttributesAsync(User user);
-        Task DisableUserAsync(Guid sub);
-        Task EnableUserAsync(Guid sub);
+        Task<Guid> CreateAsync(Profile profile);
+        Task AdminUpdateUserAttributesAsync(Profile profile);
+        Task DisableUserAsync(Guid key);
+        Task EnableUserAsync(Guid key);
 
-        Task AdminResetUserPassword (Guid sub);
+        Task AdminResetUserPassword (Guid key);
     }
 }

@@ -21,19 +21,34 @@ namespace AppiSimo.Api.Controllers
 
         public override async Task<IActionResult> Post(User user)
         {
-            user.Enabled = false;
+            Guid sub;
 
             try
             {
-                await _provider.CreateAsync(user);
+                sub = await _provider.CreateAsync(user.Profile);
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
 
+            user.Enabled = false;
+            user.Profile.Sub = sub;
+            
             await base.Post(user);
 
+            try
+            {
+                await DisableAsync(user.Id);
+            }
+            catch (Exception e)
+            {
+                user.Enabled = true;
+                await UpdateAsync(user);
+
+                return BadRequest($"User created! But remind enabled. Exception: {e.Message}");
+            }
+            // TODO: Genders and Roles in DB
             return Ok(user);
         }
 
@@ -41,7 +56,7 @@ namespace AppiSimo.Api.Controllers
         {
             try
             {
-                await _provider.AdminUpdateUserAttributesAsync(user);
+                await _provider.AdminUpdateUserAttributesAsync(user.Profile);
             }
             catch (Exception e)
             {
@@ -58,49 +73,37 @@ namespace AppiSimo.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Enable(Guid key)
         {
-            var user = await Context.Users.FindAsync(key);
-            user.Enabled = true;
-
             try
             {
-                await _provider.EnableUserAsync(user.Profile.Sub);
+                await EnableAsync(key);
             }
             catch (Exception e)
             {
                 return BadRequest(e);
             }
 
-            Context.Users.Update(user);
-            await Context.SaveChangesAsync();
-
-            return Ok(user);
+            return Ok();
         }
 
         [HttpPost]
         public async Task<IActionResult> Disable(Guid key)
         {
-            var user = await Context.Users.FindAsync(key);
-            user.Enabled = false;
-
             try
             {
-                await _provider.DisableUserAsync(user.Profile.Sub);
+                await DisableAsync(key);
             }
             catch (Exception e)
             {
                 return BadRequest(e);
             }
 
-            Context.Users.Update(user);
-            await Context.SaveChangesAsync();
-
-            return Ok(user);
+            return Ok();
         }
 
         [HttpPost]
         public async Task<IActionResult> ResetPassword(Guid key)
         {
-            var user = await Context.Users.FindAsync(key);
+            var user = await _context.Users.FindAsync(key);
 
             try
             {
@@ -116,6 +119,22 @@ namespace AppiSimo.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GiveMeBackMyMoney(Guid key) =>
-            Ok(await Context.Set<UserEvent>().Where(userEvent => userEvent.UserId == key && !userEvent.Paid).SumAsync(payment => payment.Cost));
+            Ok(await _context.Set<UserEvent>().Where(userEvent => userEvent.UserId == key && !userEvent.Paid).SumAsync(payment => payment.Cost));
+
+        async Task EnableAsync(Guid key) => await EnableDisableAsync(key, async sub => await _provider.EnableUserAsync(sub));
+
+        async Task DisableAsync(Guid key) => await EnableDisableAsync(key, async sub => await _provider.DisableUserAsync(sub));
+
+        async Task EnableDisableAsync(Guid key, Func<Guid, Task> selector)
+        {
+            var user = await _context.Users.FindAsync(key);
+
+            await selector(user.Profile.Sub);
+
+            user.Enabled = !user.Enabled;
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
     }
 }
