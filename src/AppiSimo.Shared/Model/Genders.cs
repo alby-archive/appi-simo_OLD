@@ -2,7 +2,7 @@ namespace AppiSimo.Shared.Model
 {
     public enum Genders
     {
-        Male = 0,
-        Female =1
+        Male = 1,
+        Female = 0
     }
 }

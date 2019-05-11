@@ -16,6 +16,7 @@
         protected UserDetailViewModel ViewModel { get; set; } = new UserDetailViewModel();
 
         protected override DataServiceQuery<User> Selector(DataServiceQuery<User> user) => user
+            .Expand(u => u.Profile)
             .Expand(u => u.Fit);
 
         protected override async Task OnInitAsync()

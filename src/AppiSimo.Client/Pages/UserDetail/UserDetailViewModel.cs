@@ -1,7 +1,6 @@
 namespace AppiSimo.Client.Pages.UserDetail
 {
     using System;
-    using System.Globalization;
     using AppiSimo.Shared.Model;
 
     public class UserDetailViewModel
@@ -19,17 +18,9 @@ namespace AppiSimo.Client.Pages.UserDetail
 
         public string GivenName { get => User.Profile.GivenName; set => User.Profile.GivenName = value; }
 
-        public string FamilyName
-        {
-            get => User.Profile.FamilyName;
-            set => User.Profile.FamilyName = value;
-        }
+        public string FamilyName { get => User.Profile.FamilyName; set => User.Profile.FamilyName = value; }
 
-        public int Gender
-        {
-            get => (int) User.Profile.Gender; 
-            set => User.Profile.Gender = (Genders) value;
-        }
+        public int Gender { get => (int) User.Profile.Gender; set => User.Profile.Gender = (Genders) value; }
 
         public bool BirthDateIsValid { get; set; }
 
@@ -38,15 +29,11 @@ namespace AppiSimo.Client.Pages.UserDetail
             get => User.Profile.Birthdate == DateTime.MinValue ? string.Empty : $"{User.Profile.Birthdate:d}";
             set
             {
-                BirthDateIsValid = DateTime.TryParse(
-                    value,
-                    CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal,
-                    out var birthDate);
+                BirthDateIsValid = DateTime.TryParse(value, out var birthDate);
 
                 if (BirthDateIsValid)
                 {
-                    User.Profile.Birthdate = birthDate;
+                    User.Profile.Birthdate = DateTime.SpecifyKind(birthDate, DateTimeKind.Utc);
                 }
             }
         }

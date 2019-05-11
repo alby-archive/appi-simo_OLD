@@ -3,17 +3,22 @@ namespace AppiSimo.Shared.Model
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.Serialization;
     using Amazon.CognitoIdentityProvider.Model;
     using Newtonsoft.Json;
 
+//    [DataContract]
     public class Profile : MandatoryProfile
     {
+//        [DataMember(Name = "preferred_username")]
         [JsonProperty(PropertyName = "preferred_username")]
         public string PreferredUsername { get; set; }
 
+//        [DataMember(Name = "phone_number")]
         [JsonProperty(PropertyName = "phone_number")]
         public string PhoneNumber { get; set; }
 
+//        [DataMember(Name = "phone_number_verified")]
         [JsonProperty(PropertyName = "phone_number_verified")]
         public bool PhoneNumberVerified => PhoneNumber != null;
 

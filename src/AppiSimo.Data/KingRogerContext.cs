@@ -2,6 +2,7 @@
 {
     using System;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using Shared.Model;
 
     public class KingRogerContext : DbContext
@@ -70,6 +71,15 @@
             modelBuilder.Entity<Fit>()
                 .Property(c => c.Id)
                 .ValueGeneratedOnAdd();
+            
+            var converter = new ValueConverter<DateTime, DateTime>(
+                v => v.Kind != DateTimeKind.Unspecified ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc),
+                v => v.Kind != DateTimeKind.Unspecified ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc)
+            );
+            
+            modelBuilder.Entity<Profile>()
+                .Property(p => p.Birthdate)
+                .HasConversion(converter);
         }
     }
 }
