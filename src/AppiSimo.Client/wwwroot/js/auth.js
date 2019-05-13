@@ -13,6 +13,11 @@
         const manager = buildManager(config);
 
         const user = await func(manager);
+
+        // HACK: manage cognito non standard adress property
+        if(user && user.profile.address.formatted){
+            user.profile.address = user.profile.address.formatted;
+        }
         
         return JSON.stringify(user);
     };

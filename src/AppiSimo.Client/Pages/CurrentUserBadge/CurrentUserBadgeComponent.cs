@@ -26,12 +26,12 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
             Auth = await AuthFactory.CreateAsync();
 
             ViewModel.IsLogged = Auth.CurrentUser != null;
-            ViewModel.CurrentUser = Auth?.CurrentUser?.MandatoryProfile?.Email ?? "User";
+            ViewModel.CurrentUser = Auth?.CurrentUser?.Profile?.Email ?? "User";
 
             _subscription =
                 Auth.User.Subscribe(user =>
                 {
-                    ViewModel.CurrentUser = user?.MandatoryProfile.Email ?? "User";
+                    ViewModel.CurrentUser = user?.Profile.Email ?? "User";
                     ViewModel.IsLogged = user != null;
 
                     StateHasChanged();
@@ -42,7 +42,7 @@ namespace AppiSimo.Client.Pages.CurrentUserBadge
 
         protected void SignOut() => Auth.SignOut();
 
-        protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Auth.CurrentUser.MandatoryProfile.Sub}");
+        protected void GoToDetail() => UriHelper.NavigateTo($"/user/{Auth.CurrentUser.Profile.Sub}");
 
         public void Dispose()
         {

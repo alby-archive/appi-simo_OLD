@@ -3,27 +3,23 @@ namespace AppiSimo.Shared.Model
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.Serialization;
     using Amazon.CognitoIdentityProvider.Model;
-    using Newtonsoft.Json;
+    using Attributes;
 
-//    [DataContract]
     public class Profile : MandatoryProfile
     {
-//        [DataMember(Name = "preferred_username")]
-        [JsonProperty(PropertyName = "preferred_username")]
+        [CognitoContract(Convention = "preferred_username")]
         public string PreferredUsername { get; set; }
 
-//        [DataMember(Name = "phone_number")]
-        [JsonProperty(PropertyName = "phone_number")]
+        [CognitoContract(Convention = "phone_number")]
         public string PhoneNumber { get; set; }
 
-//        [DataMember(Name = "phone_number_verified")]
-        [JsonProperty(PropertyName = "phone_number_verified")]
+        [CognitoContract(Convention = "phone_number_verified")]
         public bool PhoneNumberVerified => PhoneNumber != null;
 
+        // TODO: move?
         static string GetAttributeName(string name) =>
-            ((JsonPropertyAttribute) Attribute.GetCustomAttribute(typeof(Profile).GetProperty(name) ?? throw new Exception("Property Not Found!"), typeof(JsonPropertyAttribute)))?.PropertyName;
+            ((CognitoContract) Attribute.GetCustomAttribute(typeof(Profile).GetProperty(name) ?? throw new Exception("Property Not Found!"), typeof(CognitoContract)))?.Convention;
 
         public IEnumerable<AttributeType> GetCognitoAttributes() =>
             new List<AttributeType>

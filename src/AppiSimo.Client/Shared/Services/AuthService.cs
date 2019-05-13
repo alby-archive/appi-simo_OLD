@@ -3,10 +3,12 @@ namespace AppiSimo.Client.Shared.Services
     using System.Reactive.Subjects;
     using System.Threading.Tasks;
     using Abstract;
+    using AppiSimo.Shared.JSonConverters;
     using Environment;
     using Microsoft.JSInterop;
     using Model;
     using Newtonsoft.Json;
+    using Providers;
 
     public class AuthService : IAuthService
     {
@@ -16,10 +18,12 @@ namespace AppiSimo.Client.Shared.Services
         public RootObject CurrentUser => User.Value;
 
         readonly CognitoClient _config;
+        readonly IContractProvider<RootObject, CognitoContractResolver> _provider;
 
-        public AuthService(CognitoClient config)
+        public AuthService(CognitoClient config, IContractProvider<RootObject, CognitoContractResolver> provider)
         {
             _config = config;
+            _provider = provider;
         }
 
         public async Task TryLoadUser() =>
@@ -29,7 +33,6 @@ namespace AppiSimo.Client.Shared.Services
             ));
 
         public async Task SignIn() =>
-            // TODO: Invoke<void>
             await Js.InvokeAsync<Task>(
                 "interop.authentication.signIn",
                 JsonConvert.SerializeObject(_config)
@@ -50,9 +53,9 @@ namespace AppiSimo.Client.Shared.Services
                 "interop.authentication.signOut",
                 JsonConvert.SerializeObject(_config)
             );
-        
-        void SetSubject(string response) => User.OnNext(JsonConvert.DeserializeObject<RootObject>(response));
-        
+
+        void SetSubject(string response) => User.OnNext(_provider.Normalize(response));
+
         static void ClearSignedInHistory() => Js.Invoke<object>("interop.authentication.clearSignedInHistory");
     }
 }

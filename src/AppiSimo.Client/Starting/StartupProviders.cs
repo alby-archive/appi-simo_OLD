@@ -3,6 +3,7 @@ namespace AppiSimo.Client.Starting
     using System;
     using System.Net.Http;
     using AppiSimo.Shared.Abstract;
+    using AppiSimo.Shared.JSonConverters;
     using AppiSimo.Shared.Model;
     using AppiSimo.Shared.Validators;
     using EndPoints;
@@ -12,6 +13,8 @@ namespace AppiSimo.Client.Starting
     using Microsoft.AspNetCore.Blazor.Browser.Http;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.OData.Client;
+    using Providers;
+    using Shared.Model;
     using Shared.Pages.Pager;
     using Shared.Pages.Searcher;
     using Shared.Services;
@@ -64,6 +67,10 @@ namespace AppiSimo.Client.Starting
         public static void AddServices(this IServiceCollection services)
         {
             services.AddSingleton<IAsyncFactory<IAuthService>, AuthServiceAsyncFactory>();
+
+            // TODO: move
+            services.AddSingleton<CognitoContractResolver>();
+            services.AddSingleton<IContractProvider<RootObject, CognitoContractResolver>, ContractProvider<RootObject, CognitoContractResolver>>();
 
             services.AddTransient<BaseRxService<Pager>, PagerService>();
             services.AddTransient<BaseRxService<Searcher>, SearcherService>();

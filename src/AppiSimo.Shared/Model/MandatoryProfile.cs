@@ -1,46 +1,37 @@
 namespace AppiSimo.Shared.Model
 {
     using System;
-    using System.Runtime.Serialization;
-    using Newtonsoft.Json;
-    
-//    [DataContract]
+    using Attributes;
+    using Microsoft.OData.Client;
+
+    [OriginalName("MandatoryProfile")]
     public class MandatoryProfile : Entity
     {
-//        [DataMember(Name = "sub")]
-        [JsonProperty(PropertyName = "sub")]
+        [CognitoContract(Convention = "sub")]
         public Guid Sub { get; set; }
 
-//        [DataMember(Name = "given_name")]
-        [JsonProperty(PropertyName = "given_name")]
+        [CognitoContract(Convention = "given_name")]
         public string GivenName { get; set; }
 
-//        [DataMember(Name = "family_name")]
-        [JsonProperty(PropertyName = "family_name")]
+        [CognitoContract(Convention = "family_name")]
         public string FamilyName { get; set; }
 
-//        [DataMember(Name = "gender")]
-        [JsonProperty(PropertyName = "gender")]
+        [CognitoContract(Convention = "gender")]
         public Genders Gender { get; set; }
 
-//        [DataMember(Name = "birthdate")]
-        [JsonProperty(PropertyName = "birthdate")]
+        [CognitoContract(Convention = "birthdate")]
         public DateTime Birthdate { get; set; }
 
-//        [DataMember(Name = "address")]
-        [JsonProperty(PropertyName = "address")]
+        [CognitoContract(Convention = "address")]
         public string Address { get; set; }
-        
-//        [DataMember(Name = "email")]
-        [JsonProperty(PropertyName = "email")]
+
+        [CognitoContract(Convention = "email")]
         public string Email { get; set; }
 
-//        [DataMember(Name = "email_verified")]
-        [JsonProperty(PropertyName = "email_verified")]
+        [CognitoContract(Convention = "email_verified")]
         public bool EmailVerified => Email != null;
 
-//        [DataMember(Name = "custom:role")]
-        [JsonProperty(PropertyName = "custom:role")]
+        [CognitoContract(Convention = "custom:role")]
         public Roles Role { get; set; } = Roles.User;
     }
 }

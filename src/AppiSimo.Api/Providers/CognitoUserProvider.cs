@@ -92,14 +92,20 @@ namespace AppiSimo.Api.Providers
             await _provider.AdminResetUserPasswordAsync(request);
         }
 
-        AdminCreateUserRequest CreateUser(Profile profile) => new AdminCreateUserRequest
+        AdminCreateUserRequest CreateUser(Profile profile)
         {
-            UserPoolId = _cognito.UserPool.Id,
-            Username = profile.Email,
-            TemporaryPassword = $"RSC-{Guid.NewGuid()}",
-            MessageAction = MessageActionType.SUPPRESS,
-            UserAttributes = profile.GetCognitoAttributes().ToList()
-        };
+            var password = $"RSC-{Guid.NewGuid()}";
+            Console.WriteLine($@"PASSWORD: {password}");
+
+            return new AdminCreateUserRequest
+            {
+                UserPoolId = _cognito.UserPool.Id,
+                Username = profile.Email,
+                TemporaryPassword = password,
+                MessageAction = MessageActionType.SUPPRESS,
+                UserAttributes = profile.GetCognitoAttributes().ToList(),
+            };
+        }
 
         public void Dispose()
         {
