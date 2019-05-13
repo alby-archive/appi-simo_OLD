@@ -94,6 +94,7 @@ namespace AppiSimo.Api.Providers
 
         AdminCreateUserRequest CreateUser(Profile profile)
         {
+            // TODO: remove 
             var password = $"RSC-{Guid.NewGuid()}";
             Console.WriteLine($@"PASSWORD: {password}");
 

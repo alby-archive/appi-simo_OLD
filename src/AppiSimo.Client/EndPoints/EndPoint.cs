@@ -8,7 +8,6 @@
     using Factories.Abstract;
     using Microsoft.AspNetCore.Blazor;
     using Microsoft.OData.Client;
-    using Newtonsoft.Json;
 
     public class EndPoint<TEntity> : IEndPoint<TEntity>
         where TEntity : class, IEntity, new()
@@ -33,15 +32,14 @@
         public async Task Save(TEntity entity)
         {
             var factory = await _factory.CreateAsync();
-            var content = new StringContent(JsonConvert.SerializeObject(entity), encoding: null, "application/json");
-            
+
             if (entity.Id == Guid.Empty)
             {
-                await factory.PostAsync($"{_uri}/Post", content);     
+                await factory.SendJsonAsync<TEntity>(HttpMethod.Post, $"{_uri}/Post", entity);
             }
             else
             {
-                await factory.SendJsonAsync<TEntity>(HttpMethod.Put, $"{_uri}/Put", content);
+                await factory.SendJsonAsync<TEntity>(HttpMethod.Put, $"{_uri}/Put", entity);
             }
         }
 

@@ -7,7 +7,7 @@ namespace AppiSimo.Api.Providers
 
     public class CognitoUserProviderDisconnected : IUserProvider
     {
-        public Task<Guid> CreateAsync(Profile profile) => (Task<Guid>) Task.CompletedTask;
+        public Task<Guid> CreateAsync(Profile profile) => Task.FromResult(Guid.Empty);
 
         public Task AdminUpdateUserAttributesAsync(Profile profile) => Task.CompletedTask;
 

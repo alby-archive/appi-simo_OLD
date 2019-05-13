@@ -8,7 +8,6 @@ namespace AppiSimo.Api.Starting
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Net.Http.Headers;
     using Newtonsoft.Json;
 
     public static class StartupProviders
