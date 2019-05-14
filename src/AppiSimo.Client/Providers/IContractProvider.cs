@@ -4,7 +4,7 @@ namespace AppiSimo.Client.Providers
 
     public interface IContractProvider<out TEntity, TResolver>
         where TEntity : class, new()
-        where TResolver : DefaultContractResolver
+        where TResolver : IContractResolver
     {
         TEntity Normalize(string response);
     }

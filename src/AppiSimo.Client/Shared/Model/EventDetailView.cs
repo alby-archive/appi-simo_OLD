@@ -3,12 +3,11 @@ namespace AppiSimo.Client.Shared.Model
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Abstract;
     using AppiSimo.Shared.Model;
     using AppiSimo.Shared.Validators.Abstract;
     using AppiSimo.Shared.Validators.Model;
 
-    public class EventDetailView : IViewModel<Event>
+    public class EventDetailView
     {
         readonly IValidator<Event> _validator;
         public Event Event { get; }
@@ -88,7 +87,7 @@ namespace AppiSimo.Client.Shared.Model
 
         public Light SelectedCourtLight => Courts.FirstOrDefault(court => court.Id.ToString() == SelectedCourt)?.Light ?? new Light();
 
-        // TODO: https://github.com/aspnet/Blazor/issues/576
+        // BUG: https://github.com/aspnet/Blazor/issues/576
         public string SelectedLight
         {
             get => Event.LightId?.ToString();

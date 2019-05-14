@@ -2,6 +2,7 @@ namespace AppiSimo.Api.Providers
 {
     using System;
     using System.Linq;
+    using System.Net;
     using System.Threading.Tasks;
     using Amazon.CognitoIdentityProvider;
     using Amazon.CognitoIdentityProvider.Model;
@@ -40,23 +41,28 @@ namespace AppiSimo.Api.Providers
             return Guid.Parse(result.User.Attributes.FirstOrDefault(a => a.Name == "sub").Value);
         }
 
-        public async Task AdminUpdateUserAttributesAsync(Profile profile)
+        public async Task<HttpStatusCode> AdminUpdateUserAttributesAsync(Profile profile)
         {
             var request = new AdminUpdateUserAttributesRequest
             {
                 UserPoolId = _cognito.UserPool.Id,
-                Username = $"{profile.Sub}",
+                Username = $"{profile.Email}",
                 UserAttributes = profile.GetCognitoAttributes().ToList()
             };
 
+            AdminUpdateUserAttributesResponse response;
+            
             try
             {
-                await _provider.AdminUpdateUserAttributesAsync(request);
+                response = await _provider.AdminUpdateUserAttributesAsync(request);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Exception: {e}");
+                throw new Exception();
             }
+
+            return response.HttpStatusCode;
         }
 
         public async Task DisableUserAsync(Guid key)

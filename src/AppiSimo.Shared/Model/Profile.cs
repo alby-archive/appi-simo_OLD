@@ -37,7 +37,9 @@ namespace AppiSimo.Shared.Model
                 new AttributeType
                 {
                     Name = GetAttributeName(nameof(PhoneNumberVerified)),
-                    Value = PhoneNumberVerified.ToString().ToLower()
+                    Value = !PhoneNumberVerified
+                        ? string.Empty
+                        : PhoneNumberVerified.ToString().ToLower()
                 },
                 new AttributeType
                 {

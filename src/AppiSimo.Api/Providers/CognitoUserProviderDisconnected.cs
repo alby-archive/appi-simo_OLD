@@ -1,6 +1,7 @@
 namespace AppiSimo.Api.Providers
 {
     using System;
+    using System.Net;
     using System.Threading.Tasks;
     using Areas.Authentication.Abstract;
     using Shared.Model;
@@ -9,7 +10,7 @@ namespace AppiSimo.Api.Providers
     {
         public Task<Guid> CreateAsync(Profile profile) => Task.FromResult(Guid.Empty);
 
-        public Task AdminUpdateUserAttributesAsync(Profile profile) => Task.CompletedTask;
+        public Task<HttpStatusCode> AdminUpdateUserAttributesAsync(Profile profile) => Task.FromResult(HttpStatusCode.OK);
 
         public Task DisableUserAsync(Guid key) => Task.CompletedTask;
 

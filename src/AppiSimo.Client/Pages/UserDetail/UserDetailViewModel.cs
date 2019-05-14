@@ -5,7 +5,7 @@ namespace AppiSimo.Client.Pages.UserDetail
 
     public class UserDetailViewModel
     {
-        public User User { get; }
+        public User User { get; } = new User();
 
         public UserDetailViewModel()
         {

@@ -10,7 +10,6 @@ namespace AppiSimo.Client
     using System.Threading.Tasks;
     using Microsoft.OData.Client;
     using Newtonsoft.Json;
-        
 
     public static class Queryables
     {
@@ -53,11 +52,11 @@ namespace AppiSimo.Client
         public class ODataResult<T>
         {
             public T Value { get; set; }
-            
+
             [JsonProperty("@odata.count")]
             public int Count { get; set; }
         }
-        
+
         public static async Task<ODataResult<List<T>>> ToListAsync<T>(this IQueryable<T> source, HttpClient http)
         {
             var provider = (DataServiceQueryProvider) source.Provider;
@@ -65,6 +64,7 @@ namespace AppiSimo.Client
 
             var uri = toUri(provider, expression);
 
+            // TODO: check if this is removable when Blazor is released
             return JsonConvert.DeserializeObject<ODataResult<List<T>>>(await http.GetStringAsync(uri.AbsoluteUri));
         }
     }

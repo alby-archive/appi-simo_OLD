@@ -4,7 +4,7 @@
     <RunCommand>dotnet</RunCommand>
     <LangVersion>7.3</LangVersion>
     <RunArguments>blazor serve</RunArguments>
-    <!-- TODO: https://github.com/aspnet/Blazor/issues/972 -->
+    <!-- BUG: https://github.com/aspnet/Blazor/issues/972 -->
     <BlazorLinkOnBuild>False</BlazorLinkOnBuild>
   </PropertyGroup>
  

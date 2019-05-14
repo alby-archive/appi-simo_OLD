@@ -30,8 +30,6 @@ namespace AppiSimo.Client.Shared.Pages.Abstract
             if ((Id != null) & Guid.TryParse(Id, out var id))
             {
                 Entity = await EndPoint.Entity(id, Selector);
-                
-                Console.WriteLine($"FAMILY NAME: {(Entity as User)?.Profile?.FamilyName ?? "FUCK"}");
             }
         }
 
