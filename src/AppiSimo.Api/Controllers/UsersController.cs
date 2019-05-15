@@ -127,7 +127,9 @@ namespace AppiSimo.Api.Controllers
 
         async Task EnableDisableAsync(Guid key, Func<Guid, Task> selector)
         {
-            var user = await _context.Users.FindAsync(key);
+            var user = await _context.Users
+                .Include(user1 => user1.Profile)
+                .FirstOrDefaultAsync(user1 =>user1.Id == key);
 
             await selector(user.Profile.Sub);
 
