@@ -3,7 +3,7 @@
 @inherits PaymentsComponent
 
 <div class="d-flex mt-4">
-    <h1>@Entities.FirstOrDefault()?.User.Profile.GivenName @Entities.FirstOrDefault()?.User.Profile.FamilyName}</h1>
+    <h1>@Entities.FirstOrDefault()?.User.Profile.GivenName @Entities.FirstOrDefault()?.User.Profile.FamilyName</h1>
 </div>
 
 @if (!Entities.Any())
@@ -11,6 +11,7 @@
     <div class="d-flex mt-4">
         <h3 class="text-muted">Non ci sono prenotazioni attive per questo utente</h3>
     </div>
+    
     return;
 }
 

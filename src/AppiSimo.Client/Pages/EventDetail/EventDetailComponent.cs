@@ -35,7 +35,7 @@ namespace AppiSimo.Client.Pages.EventDetail
         {
             await base.OnInitAsync();
 
-            var users = (await UserEndPoint.Entities.IncludeTotalCount().ToListAsync(await CourtEndPoint._factory.CreateAsync())).Value;
+            var users = (await UserEndPoint.Entities.IncludeTotalCount().Expand("Profile").ToListAsync(await CourtEndPoint._factory.CreateAsync())).Value;
             var courts = (await CourtEndPoint.Entities.IncludeTotalCount().Expand(court => court.Light).Expand(court => court.Heat).Expand("CourtsRates($expand=Rate)").ToListAsync(await CourtEndPoint._factory.CreateAsync())).Value;
 
             ViewModel = new EventDetailView(Entity, users, courts, Validator);
